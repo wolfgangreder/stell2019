@@ -1,0 +1,35 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\author{Wolfgang Reder}
+\title{Kommunikation}
+\begin{document}
+\maketitle
+\begin{abstract}
+Dieses Dokument beschreibt die Kommunikation zwischen dem Stellwerkszentralrechner und den
+einzelnen Stellwerksfeldern. Der Aufbau dieses Dokuments orientiert sich am OSI 7 Schichten Modell\footnote{\href{http://standards.iso.org/ittf/PubliclyAvailableStandards/s020269_ISO_IEC_7498-1_1994(E).zip}{ISO/IEC standard 7498-1:1994} bzw. \href{http://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-X.200-199407-I!!PDF-E&type=items}{ISO ITU-T X.200}}.
+\end{abstract}
+\tableofcontents
+\newpage
+\section{Schichten 1 und 2}
+Die Kommunikation finden über einen I\textsuperscript{2}C\footnote{\href{https://www.i2c-bus.org/}{i2c-bus.org}} statt. Als Spannung ist 5V festgelegt. Alle Teilnehmer müssen Multi-Master und 10bit Adressen verarbeiten können. Die max. Busgeschwindigkeit wird mit $100k\frac{bit}{s}$ begrenzt.
+
+\section{Schicht 3}
+\subsection{Adressen}
+Der Stellwerkszentralrechner hat immer die Adresse 16. Feldbausteine erhalten Adresse von 17 aufwärts. Jedes Feld muss immer eine eindeutige und individuelle Adresse haben. Die gilt auch für Felder die logisch ident sind (z.B. mehrere benachbarte einfache Gleisfelder). Die Adressvergabe passiert währen der ersten Programmierung der Feldbausteine während der Produktion, und ist während des Betriebs nicht veränderbar. Die Adresse die nur zur Unterscheidung der Felder und trägt sonst keinerlei Information (z.B. Art und Funktion des Feldes).
+\subsection{Datenformate}
+Datenwerte größer als ein Byte werden im Little-Endian Format übertragen (niederwertiges Byte/Wort/DWord zuerst).
+
+Der allgemeine Aufbau eines Datenpakets ist folgender:
+\begin{itemize}
+\item 1 oder 2 Byte Adresse.
+\item bis zu 8 Datenbytes.
+\end{itemize}
+\end{document}

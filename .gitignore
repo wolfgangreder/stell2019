@@ -2,3 +2,8 @@
 *.l#*
 *.b#*
 *.s#*
+/feld/sw/build/
+/feld/sw/dist/
+/feld/sw/debug/
+/doc/build/
+/feld/sw/nbproject/private/
