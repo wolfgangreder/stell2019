@@ -1,0 +1,30 @@
+@startuml
+(*) -->[Power Up] "Check Flash CRC"
+
+"Check Flash CRC" -> if "ok?" then
+  ->[true] if "Check Update Flag" then
+    ->[true] "Update"
+    else
+    -->[false] "Idle"
+   endif
+else
+  ->[false] "Update" 
+     -> "Check Flash CRC"
+endif
+
+"Idle" ->[QueryState] "Idle"
+"Idle" ->[Update] "Update"
+"Idle" ->[Hello] "Running"
+"Idle" -->[Lamptest] "Lamptest"
+
+"Running" -->[Bye] "Idle"
+"Running" -->[Update] "Update"
+"Running" -->[any other Command] "Running"
+"Lamptest" -->  if "LastState?" then
+    ->[Idle] "Idle"
+    else 
+    ->[Running] "Running"
+    endif
+
+
+@enduml
