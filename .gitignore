@@ -2,6 +2,7 @@
 *.l#*
 *.b#*
 *.s#*
+*.bak
 /feld/sw/build/
 /feld/sw/dist/
 /feld/sw/debug/

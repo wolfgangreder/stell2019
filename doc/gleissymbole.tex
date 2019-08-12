@@ -1,6 +1,7 @@
 \documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[german]{babel}
+\usepackage[ngerman]{babel}
+%%\usepackage[babel,german=quotes]{csquotes}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -16,10 +17,12 @@ style=authoryear, %% Zitierstil (siehe Dokumentation)
 natbib=true, %% Bereitstellen von natbib-kompatiblen Zitierkommandos
 hyperref=true, %% hyperref-Paket verwenden, um Links zu erstellen
 ]{biblatex}
- 
+\usepackage{pdfpages} 
 
 \author{Wolfgang Reder}
 \title{Gleismodule}
+
+\addbibresource{gleissymbole.bib}
 \begin{document}
 
 \maketitle
@@ -44,11 +47,11 @@ Position 7 bleibt immer frei.
 \caption[Bestückungspositionen]{Bestückungspositionen von TOP aus gesehen}
 \end{figure}
 
-Zentrales Bauteil der Hardware ist der Microcontroller \href{https://www.microchip.com/wwwproducts/en/ATtiny804}{ATtiny804} der Firma Microchip. Er übersetzt die Statusbefehle vom Stellwerksrechner in die entsprechende Ansteuerung der LEDs bzw. meldet eine Änderung des Tastenzustandes.
+Zentrales Bauteil der Hardware ist der Microcontroller \href{https://www.microchip.com/wwwproducts/en/ATtiny804}{ATtiny804}\footcite{Microchip2019a} der Firma Microchip. Er übersetzt die Statusbefehle vom Stellwerksrechner in die entsprechende Ansteuerung der LEDs bzw. meldet eine Änderung des Tastenzustandes.
 
 Die Kommunikation mit dem Stellwerksrechner wird über einen 5V I\textsuperscript{2}C Bus mit $100k\frac{bit}{s}$ Übertragungsrate hergestellt. 
 
-Die Gleissymbole nehmen an der Kommunikation als Slave teil. Nur bei einer Änderung des Tastenzustandes übernimmt das Gleisfeld die Buskontrolle.
+
 \subsection{Steckerbelegung}
 Die einzelnen Module werden mittels Flachbandkabel untereinander verbunden. Jede Steckerposition am Kabel ist gleich.
 \begin{table}[h!]
@@ -496,6 +499,7 @@ Nicht verarbeitbare oder unbekannte Kommandos dürfen nicht quittiert werden, si
 Die Anschließende Kommandobeschreibung zeigt nur die Datenbytes !
 
 \subsection{Housekeeping}
+\label{sec:Housekeeping}
 In dieser Kommandogruppe liegen alle Kommandos die der Aktivierung und Konfigurierung der Module liegen. 
 \begin{figure}[H]
 \centering
@@ -504,6 +508,7 @@ In dieser Kommandogruppe liegen alle Kommandos die der Aktivierung und Konfiguri
 \end{figure}
 
 \subsubsection{QueryState}
+\label{sec:QueryState}
 Dieses Kommando dient zum Abfragen des aktuellen zustands des Moduls
 \begin{table}[H]
 \centering
@@ -549,6 +554,7 @@ Dieses Kommando dient zum Abfragen des aktuellen zustands des Moduls
 
 
 \subsubsection{Hello}
+\label{sec:Hello}
 Dieses Kommando aktiviert das Modul. Ohne Aktivierung muss sich ein Modul passiv verhalten (vor allem darf es nicht mehr Strom als notwendig.
 \begin{table}[H]
 \centering
@@ -561,6 +567,7 @@ Dieses Kommando aktiviert das Modul. Ohne Aktivierung muss sich ein Modul passiv
 Antwort wie unter \ref{QUERYSTATE_RESP} QueryState.
 
 \subsubsection{Lamptest}
+\label{sec:Lamptest}
 Führt einen Lamptest durch. Die selektierten Tests werden solange in einer Endlosschleife durchgeführt bis das Kommando mit dem Flagbyte=0 übertragen wird. Jeder Test wird eine Sekunde lang angezeigt.
 \begin{table}[H]
 \centering
@@ -589,6 +596,7 @@ Führt einen Lamptest durch. Die selektierten Tests werden solange in einer Endl
 \end{table}
 
 \subsubsection{Update}
+\label{sec:Update}
 Wechsel in den Modus Update.
 \begin{table}[H]
 \centering
@@ -600,6 +608,7 @@ Wechsel in den Modus Update.
 \end{table}
 
 \subsubsection{Bye}
+\label{sec:Bye}
 Wechsel in den Modus Idle.
 \begin{table}[H]
 \centering
@@ -609,6 +618,32 @@ Wechsel in den Modus Idle.
 \end{tabular}
 \caption{Bye Request}
 \end{table}
+
+\subsubsection{Healtcheck}
+\label{sec:Healthcheck}
+Führt eine Messung der Versorgungsspannung, bei Leerlauf (min. möglicher Stromverbrauch des Elements), und eine Messung bei Vollast (max. möglicher Stromverbrauch). 
+
+Die Vollastmessungen müssen am Ende der Vollastperiode durchgeführt werden.
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c|l}
+\textbf{Offset} & \textbf{Länge} & \textbf{Wert} & \textbf{Beschreibung} \\ \hline
+0 & 1 & 0x0c & Kommando Healtchcheck \\
+1 & 1 & t & Dauer der Vollastperiode in Sekunden.
+\end{tabular}
+\caption{Healthcheck Request}
+\end{table}
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c|l}
+\textbf{Offset} & \textbf{Länge} & \textbf{Wert} & \textbf{Beschreibung} \\ \hline
+0 & 1 & ul & Spannung bei Leerlauf in 0,1 V\\
+1 & 1 & ul & Spannung bei Vollast in 0,1 V\\
+4 & 2 & t & Chiptemeratur bei Vollast in Kelvin
+\end{tabular}
+\caption{Healthcheck Response}
+\end{table}
+
 
 \subsection{Update}
 Jedes Modul wird initial mit einem Bootloader programmiert.
@@ -620,6 +655,7 @@ Es gibt zwei Wege wie der Bootloader aktiviert wird:
 \end{itemize}
   
 \subsubsection{PageLoad}
+\label{sec:PageLoad}
 Übertragen der Daten eine Seite (64 Byte). Dieses Kommando ist ein Kommando mit überlangen Datenblock. Es muss immer eine vollständige Seite übertragen werden. Nicht definierte Bytes müssen mit 0xff übertragen werden.
 \begin{table}[H]
 \centering
@@ -632,6 +668,7 @@ Es gibt zwei Wege wie der Bootloader aktiviert wird:
 \end{table}
 
 \subsubsection{PageProgram}
+\label{sec:PageProgram}
 Übertragen der zuletzt gesendeten Speicherseite ins Flash. Sollte die zu Programmierende Seite in den Bootsektor zeigen, ist das Programm zu ignorieren. Der Programmiermodus wird durch das Kommand PageProgram mit Offset 0 (ist immer im Bootsektor) beendet.
 \begin{table}[H]
 \centering
@@ -645,6 +682,7 @@ Es gibt zwei Wege wie der Bootloader aktiviert wird:
 
 \subsubsection{CheckCRC}
 \label{CHECK_CRC}
+\label{sec:CheckCRC}
 Überprüfen des Flash Speichers.
 \begin{table}[H]
 \centering
@@ -676,6 +714,7 @@ Es gibt zwei Wege wie der Bootloader aktiviert wird:
 \subsection{Running}
 Diese Betriebsart stellt den eigentliche Betrieb des Moduls dar.
 \subsubsection{Lamp}
+\label{sec:Lamp}
 Schalten der LEDs.
 \begin{table}[H]
 \centering
@@ -689,6 +728,7 @@ Schalten der LEDs.
 \end{table}
 
 \subsubsection{KeyQuery}
+\label{sec:KeyQuery}
 Abfragen des Tastenstatus.
 \begin{table}[H]
 \centering
@@ -710,6 +750,7 @@ Abfragen des Tastenstatus.
 \end{table}
 
 \subsubsection{KeyEvent}
+\label{sec:KeyEvent}
 Dieses Kommando wird vom Modul ausgelöst.
 \begin{table}[H]
 \centering
@@ -721,6 +762,8 @@ Dieses Kommando wird vom Modul ausgelöst.
 \end{tabular}
 \caption{KeyEvent Request}
 \end{table}
+
+
 
 \newpage
 \appendix
@@ -797,4 +840,31 @@ begin
 end
 \end{alltt}
 
+\section{Kommandocodes}
+\begin{table}[H]
+\centering
+\begin{tabular}{c|l|l}
+\textbf{Code} & \textbf{Name} & \textbf{Abschnitt} \\ \hline
+0x01 & QueryState & \ref{sec:QueryState}\\
+0x02 & Hello & \ref{sec:Hello}\\
+0x03 & Lamptest & \ref{sec:Lamptest}\\
+0x04 & Update & \ref{sec:Update}\\
+0x05 & Bye & \ref{sec:Bye}\\
+0x06 & PageLoad & \ref{sec:PageLoad}\\
+0x07 & PageProgram & \ref{sec:PageProgram}\\
+0x08 & CheckCRC & \ref{sec:CheckCRC}\\
+0x09 & Lamp & \ref{sec:Lamp}\\
+0x0a & KeyQuery & \ref{sec:KeyQuery}\\
+0x0b & KeyEvent & \ref{sec:KeyEvent}\\
+0x0c & Healthcheck & \ref{sec:Healthcheck}
+\end{tabular}
+\caption{Kommandocodes}
+\end{table}
+
+
+
+\nocite{*}
+
+\addcontentsline{toc}{section}{Literatur und Quellen}
+\printbibliography
 \end{document}
