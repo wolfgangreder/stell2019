@@ -4,7 +4,7 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>feld</name>
-            <creation-uuid>cd0c4c03-00b1-4c84-9c6d-bb490ea5dd8e</creation-uuid>
+            <creation-uuid>c2b482d1-591f-41fc-8c43-18e82161c960</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>
@@ -13,7 +13,6 @@
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>include</sourceRootElem>
                 <sourceRootElem>source</sourceRootElem>
             </sourceRootList>
             <confList>

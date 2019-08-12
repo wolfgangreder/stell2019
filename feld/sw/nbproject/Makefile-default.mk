@@ -57,17 +57,21 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=source/main.c
+SOURCEFILES_QUOTED_IF_SPACED=source/boot.c source/main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/source/main.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/source/main.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/source/boot.o ${OBJECTDIR}/source/main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/source/boot.o.d ${OBJECTDIR}/source/main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/source/main.o
+OBJECTFILES=${OBJECTDIR}/source/boot.o ${OBJECTDIR}/source/main.o
 
 # Source Files
-SOURCEFILES=source/main.c
+SOURCEFILES=source/boot.c source/main.c
+
+# Pack Options 
+PACK_COMPILER_OPTIONS=-I ${DFP_DIR}/include
+PACK_COMMON_OPTIONS=-B ${DFP_DIR}/gcc/dev/attiny804
 
 
 
@@ -92,24 +96,6 @@ endif
 
 MP_PROCESSOR_OPTION=ATtiny804
 # ------------------------------------------------------------------------------------
-# Rules for buildStep: compile
-ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/source" 
-	@${RM} ${OBJECTDIR}/source/main.o.d 
-	@${RM} ${OBJECTDIR}/source/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1 -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -D__$(MP_PROCESSOR_OPTION)__  -mdfp="/opt/microchip/mplabx/v5.25/packs/Microchip/ATtiny_DFP/2.0.10"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -funsigned-char -funsigned-bitfields -I"include" -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3     -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o -o ${OBJECTDIR}/source/main.o source/main.c 
-	
-else
-${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/source" 
-	@${RM} ${OBJECTDIR}/source/main.o.d 
-	@${RM} ${OBJECTDIR}/source/main.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -x c -D__$(MP_PROCESSOR_OPTION)__  -mdfp="/opt/microchip/mplabx/v5.25/packs/Microchip/ATtiny_DFP/2.0.10"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -funsigned-char -funsigned-bitfields -I"include" -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3     -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o -o ${OBJECTDIR}/source/main.o source/main.c 
-	
-endif
-
-# ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 else
@@ -122,18 +108,66 @@ else
 endif
 
 # ------------------------------------------------------------------------------------
+# Rules for buildStep: compile
+ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/source/boot.o: source/boot.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/source" 
+	@${RM} ${OBJECTDIR}/source/boot.o.d 
+	@${RM} ${OBJECTDIR}/source/boot.o 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -Wall -MD -MP -MF "${OBJECTDIR}/source/boot.o.d" -MT "${OBJECTDIR}/source/boot.o.d" -MT ${OBJECTDIR}/source/boot.o  -o ${OBJECTDIR}/source/boot.o source/boot.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/source" 
+	@${RM} ${OBJECTDIR}/source/main.o.d 
+	@${RM} ${OBJECTDIR}/source/main.o 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+else
+${OBJECTDIR}/source/boot.o: source/boot.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/source" 
+	@${RM} ${OBJECTDIR}/source/boot.o.d 
+	@${RM} ${OBJECTDIR}/source/boot.o 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -Wall -MD -MP -MF "${OBJECTDIR}/source/boot.o.d" -MT "${OBJECTDIR}/source/boot.o.d" -MT ${OBJECTDIR}/source/boot.o  -o ${OBJECTDIR}/source/boot.o source/boot.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/source" 
+	@${RM} ${OBJECTDIR}/source/main.o.d 
+	@${RM} ${OBJECTDIR}/source/main.o 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+endif
+
+# ------------------------------------------------------------------------------------
+# Rules for buildStep: compileCPP
+ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+else
+endif
+
+# ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.map  -D__DEBUG=1  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="/opt/microchip/mplabx/v5.25/packs/Microchip/ATtiny_DFP/2.0.10"  -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2 -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -funsigned-char -funsigned-bitfields -I"include" -Wall -gdwarf-3     $(COMPARISON_BUILD) -Wl,--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml -o dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  -o dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${OUTPUT_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}      -Wl,--start-group  -Wl,-lm -Wl,--end-group  -Wl,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_SIMULATOR=1
-	@${RM} dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.hex 
+	${MP_CC} $(MP_EXTRA_LD_PRE) -mmcu=attiny804 ${PACK_COMMON_OPTIONS}  -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2 -D__$(MP_PROCESSOR_OPTION)__  -Wl,-static -Wl,-Map="dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.map"    -o dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}      -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_SIMULATOR=1 -Wl,--gc-sections -Wl,--start-group  -Wl,-lm -Wl,--end-group  -nostartfiles
+	
+	
+	
+	
+	
 	
 else
 dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="/opt/microchip/mplabx/v5.25/packs/Microchip/ATtiny_DFP/2.0.10"  -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -funsigned-char -funsigned-bitfields -I"include" -Wall -gdwarf-3     $(COMPARISON_BUILD) -Wl,--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml -o dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  -o dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}      -Wl,--start-group  -Wl,-lm -Wl,--end-group 
+	${MP_CC} $(MP_EXTRA_LD_PRE) -mmcu=attiny804 ${PACK_COMMON_OPTIONS}  -D__$(MP_PROCESSOR_OPTION)__  -Wl,-static -Wl,-Map="dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.map"    -o dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}      -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION) -Wl,--gc-sections -Wl,--start-group  -Wl,-lm -Wl,--end-group  -nostartfiles
 	${MP_CC_DIR}/avr-objcopy -O ihex "dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}" "dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.hex"
+	
+	
+	
+	
+	
+	@echo Normalizing hex file
+	@"/opt/microchip/mplabx/v5.25/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="/opt/microchip/mplabx/v5.25/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" dist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.hex -odist/${CND_CONF}/${IMAGE_TYPE}/sw.${IMAGE_TYPE}.hex
+
 endif
 
 
