@@ -45,7 +45,7 @@ typedef void (*const app_t)(void);
 /* Interface function prototypes */
 static char is_bootloader_requested(void);
 static void init_twi(void);
-
+extern void main();
 
 
 /*
@@ -57,6 +57,7 @@ __attribute__((naked)) __attribute__((section(".ctors"))) void boot(void)
 {
 	/* Initialize system for AVR GCC support, expects r1 = 0 */
 	asm volatile("clr r1");
+        main();
 
 	/* Check if entering application or continuing to bootloader */
 	if(!is_bootloader_requested()) {
@@ -96,10 +97,6 @@ __attribute__((naked)) __attribute__((section(".ctors"))) void boot(void)
 //
 //	/* Issue system reset */
 	_PROTECTED_WRITE(RSTCTRL.SWRR, RSTCTRL_SWRE_bm);
-    int a = 0;
-    int b = 2;
-    int c = a+b;
-  
 }
 
 /*

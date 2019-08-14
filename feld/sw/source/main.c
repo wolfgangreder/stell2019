@@ -16,7 +16,11 @@
 
 
 #include <avr/io.h>
+#include "update.h"
 
 void main(void) {
+    while (1) {
+//        enterUpdate();
+    }
     return;
 }
