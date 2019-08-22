@@ -49,7 +49,7 @@ Position 7 bleibt immer frei.
 
 Zentrales Bauteil der Hardware ist der Microcontroller \href{https://www.microchip.com/wwwproducts/en/ATtiny804}{ATtiny804}\footcite{Microchip2019a} der Firma Microchip. Er übersetzt die Statusbefehle vom Stellwerksrechner in die entsprechende Ansteuerung der LEDs bzw. meldet eine Änderung des Tastenzustandes.
 
-Die Kommunikation mit dem Stellwerksrechner wird über einen 5V I\textsuperscript{2}C Bus mit $100k\frac{bit}{s}$ Übertragungsrate hergestellt. 
+Die Kommunikation mit dem Stellwerksrechner wird über einen 5V I\textsuperscript{2}C Bus mit max. $100k\frac{bit}{s}$ Übertragungsrate hergestellt. 
 
 
 \subsection{Steckerbelegung}
@@ -472,31 +472,26 @@ Als Byte-Reihenfolge wird, soweit nicht explizit anders erwähnt immer Little-En
 \end{table}
 
 Der allgemeine Kommandoaufbau ist wie folgt\footnote{Da der verwendete Microcontroller nur das erste Adressbyte selbst Prüfen und verarbeiten kann muss das zweite Adressbyte von der Software verwaltet werden.}:
-\begin{table}[H]
-\centering
-\begin{tabular}{c|c|l}
-\textbf{Offset} & \textbf{Größe} & \textbf{Beschreibung} \\ \hline
-0 & 1 & Anzahl der Bytes  ohne Prüfsumme (n, max. 8)\\
-1 & 1 & CRC8 (siehe \ref{CRC8}) über die nachfolgenden Daten\\
-2 & n & Daten
-\end{tabular}
-\caption{Kommandoaufbau kurze Adresse (<128)}
-\end{table}
 
 \begin{table}[H]
 \centering
 \begin{tabular}{c|c|l}
 \textbf{Offset} & \textbf{Größe} & \textbf{Beschreibung} \\ \hline
-0 & 1 & Adressbits 0:7 \\
+0 & 1 & Adressbits 0:7\\
 1 & 1 & Anzahl der Bytes  ohne Prüfsumme (n, max. 8)\\
 2 & 1 & CRC8 (siehe \ref{CRC8}) über die nachfolgenden Daten\\
 3 & n & Daten
 \end{tabular}
-\caption{Kommandoaufbau lange Adresse (>=128)}
+\caption{Kommandoaufbau}
 \end{table}
 Nicht verarbeitbare oder unbekannte Kommandos dürfen nicht quittiert werden, sind aber sonst zu ignorieren. Dies gilt vor allem für Kommandos mit mehr als 8 Datenbytes. So ist sichergestellt, dass in Zukunft auch Kommandos mit mehr Daten implementiert werden können.
 
 Die Anschließende Kommandobeschreibung zeigt nur die Datenbytes !
+
+\subsubsection{Lange Adressen}
+Bei kurzen Adressen wird die Adressfilterung von der Hardware durchgeführt. Byte 0 ist dann undefiniert. 
+
+Bei langen Adressen, werden nur die oberen zwei Adressbits von der Hardware gefiltert. Byte 0 enthält dann die Adressbits 0-7.
 
 \subsection{Housekeeping}
 \label{sec:Housekeeping}

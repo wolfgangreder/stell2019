@@ -8,3 +8,5 @@
 /feld/sw/debug/
 /doc/build/
 /feld/sw/nbproject/private/
+/tools/bootloader.X/build/
+/tools/bootloader.X/dist/
