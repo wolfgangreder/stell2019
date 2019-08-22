@@ -14,35 +14,27 @@
  * limitations under the License.
  */
 
-#ifndef TYPES_H
-#define	TYPES_H
+#ifndef BOOTLOADER_H
+#define	BOOTLOADER_H
+
 #include <avr/io.h>
-
-
+#include <avr/eeprom.h>
+#include "types.h"
+/*
+ * Provides Application access to bootloader functions.
+ * Code uses EEPROM Address 0 as flag
+ */
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-
-    typedef unsigned char bool;
-#define true  (1)
-#define false (0)
-
-    typedef union {
-        uint8_t data[67];
-
-        struct {
-            uint8_t adress;
-            uint8_t dataSize;
-            uint8_t crc8;
-            uint8_t payload[64];
-        };
-    } update_rec;
-
+#define enterBootloader \
+    eeprom_write_byte(0,true);\
+    _PROTECTED_WRITE(RSTCTRL.SWRR,RSTCTRL_SWRE_bm)
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* TYPES_H */
+#endif	/* BOOTLOADER_H */
 

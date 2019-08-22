@@ -118,7 +118,7 @@
         <property key="no-system-directories" value="false"/>
         <property key="optimization-level" value="-O1"/>
         <property key="pack-struct" value="true"/>
-        <property key="preprocessor-macros" value=""/>
+        <property key="preprocessor-macros" value="BOOTLOADER_CODE=1"/>
         <property key="preprocessor-macros-undefined" value=""/>
         <property key="save-temps" value="false"/>
         <property key="short-calls" value="false"/>
@@ -132,16 +132,16 @@
       </AVR-GCC>
       <AVR-Global>
         <property key="common-include-directories" value="include"/>
-        <property key="eep" value="false"/>
+        <property key="eep" value="true"/>
         <property key="external-ram-check" value="false"/>
         <property key="hex" value="true"/>
-        <property key="lss" value="false"/>
+        <property key="lss" value="true"/>
         <property key="omit-pack-options" value="false"/>
         <property key="relax-branches" value="false"/>
-        <property key="srec" value="false"/>
+        <property key="srec" value="true"/>
         <property key="user-pack-device-support" value=""/>
         <property key="user-pack-include" value=""/>
-        <property key="usersig" value="false"/>
+        <property key="usersig" value="true"/>
       </AVR-Global>
       <AVR-LD>
         <property key="eeprom-segment" value=""/>

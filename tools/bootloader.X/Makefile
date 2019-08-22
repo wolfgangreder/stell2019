@@ -57,7 +57,7 @@ build: .build-post
 # Add your pre 'build' code here...
 
 .build-post: .build-impl
-	#${OBJDUMP} -DS ${CND_ARTIFACT_NAME}
+	
 	
 # Add your post 'build' code here...
 
