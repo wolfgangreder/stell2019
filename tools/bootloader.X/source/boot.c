@@ -79,9 +79,10 @@ boot(void)
 	_PROTECTED_WRITE(RSTCTRL.SWRR, RSTCTRL_SWRE_bm);
 }
 
+static update_rec page_buffer;
+
 static void updateflash()
 {
-	update_rec page_buffer;
 	memset(&page_buffer, 0, sizeof(page_buffer));
 	while (1) {
 		while (page_load(&page_buffer)) {

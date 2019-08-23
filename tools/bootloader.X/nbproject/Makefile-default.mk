@@ -114,14 +114,14 @@ ${OBJECTDIR}/source/boot.o: source/boot.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source" 
 	@${RM} ${OBJECTDIR}/source/boot.o.d 
 	@${RM} ${OBJECTDIR}/source/boot.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/boot.o.d" -MT "${OBJECTDIR}/source/boot.o.d" -MT ${OBJECTDIR}/source/boot.o  -o ${OBJECTDIR}/source/boot.o source/boot.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/boot.o.d" -MT "${OBJECTDIR}/source/boot.o.d" -MT ${OBJECTDIR}/source/boot.o  -o ${OBJECTDIR}/source/boot.o source/boot.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 else
 ${OBJECTDIR}/source/boot.o: source/boot.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source" 
 	@${RM} ${OBJECTDIR}/source/boot.o.d 
 	@${RM} ${OBJECTDIR}/source/boot.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/boot.o.d" -MT "${OBJECTDIR}/source/boot.o.d" -MT ${OBJECTDIR}/source/boot.o  -o ${OBJECTDIR}/source/boot.o source/boot.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=attiny804 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O0 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/boot.o.d" -MT "${OBJECTDIR}/source/boot.o.d" -MT ${OBJECTDIR}/source/boot.o  -o ${OBJECTDIR}/source/boot.o source/boot.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 endif
 
