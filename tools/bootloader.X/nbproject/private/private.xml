@@ -4,10 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/reder/projects/stell2019/tools/bootloader.X/source/boot.c</file>
-            <file>file:/opt/microchip/mplabx/v5.25/packs/Microchip/ATtiny_DFP/2.0.10/include/avr/iotn804.h</file>
-            <file>file:/opt/microchip/avr8-gnu-toolchain-linux_x86_64/avr/include/avr/eeprom.h</file>
+            <file>file:/home/reder/projects/stell2019/tools/bootloader.X/source/e2mem.c</file>
+            <file>file:/home/reder/projects/stell2019/tools/bootloader.X/nbproject/configurations.xml</file>
             <file>file:/home/reder/projects/stell2019/tools/bootloader.X/include/types.h</file>
+            <file>file:/home/reder/projects/stell2019/tools/bootloader.X/nbproject/project.xml</file>
             <file>file:/home/reder/projects/stell2019/tools/bootloader.X/include/bootloader.h</file>
+            <file>file:/home/reder/projects/stell2019/tools/bootloader.X/include/e2mem.h</file>
         </group>
     </open-files>
 </project-private>

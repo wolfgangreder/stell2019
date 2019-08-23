@@ -19,6 +19,7 @@
 #include <string.h>
 #include "types.h"
 #include "bootloader.h"
+#include "e2mem.h"
 /* Memory configuration
  * BOOTEND_FUSE * 256 must be above Bootloader Program Memory Usage,
  * this is 490 bytes at optimization level -O3, so BOOTEND_FUSE = 0x02
@@ -89,7 +90,8 @@ boot(void)
 static bool
 is_bootloader_requested(void)
 {
-	if (eeprom_read_byte(0) == 0) { // no forced update requested, check crc
+	//if (*(&bootloaderRequired + MAPPED_EEPROM_START) == 0) {
+	if (e2mem_read_uint8(&bootloaderRequired) == 0) { // no forced update requested, check crc
 		CRCSCAN.CTRLB = 0; //Priority on Flash; Scan entire Flash
 
 		CRCSCAN.CTRLA = 1 << CRCSCAN_ENABLE_bp /* Enable CRC scan: enabled */
