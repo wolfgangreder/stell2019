@@ -45,17 +45,15 @@ FUSES = {
 
 bool bootloaderRequired EEMEM = true;
 
-
 /* Define application pointer type */
 typedef void (*const app_t) (void);
 
 /* Interface function prototypes */
 static bool is_bootloader_requested(void);
 static void init_twi(void);
-static bool page_load();
-static void page_write();
-
-static update_rec page_buffer;
+static void updateflash();
+static bool page_load(update_rec*);
+static void page_write(update_rec*);
 
 /*
  * Main boot function
@@ -70,35 +68,43 @@ boot(void)
 	// Init Stack !
 	SP = RAMEND;
 
-	if (!is_bootloader_requested()) {
-		app_t app = (app_t) (BOOT_SIZE / sizeof(app_t));
-		app();
-	} else {
-		init_twi();
-		memset(&page_buffer, 0, sizeof(page_buffer));
-		while (page_load()) {
-			page_write();
-		}
-	}
+	//	if (!is_bootloader_requested()) {
+	//		app_t app = (app_t) (BOOT_SIZE / sizeof(app_t));
+	//		app();
+	//	} else {
+	init_twi();
+	updateflash();
+	//	}
 	//	/* Issue system reset */
 	_PROTECTED_WRITE(RSTCTRL.SWRR, RSTCTRL_SWRE_bm);
+}
+
+static void updateflash()
+{
+	update_rec page_buffer;
+	memset(&page_buffer, 0, sizeof(page_buffer));
+	while (1) {
+		while (page_load(&page_buffer)) {
+			page_write(&page_buffer);
+		}
+	}
 }
 
 /*
  * Boot access request function
  */
-static bool
-is_bootloader_requested(void)
+static bool is_bootloader_requested(void)
 {
-	//if (*(&bootloaderRequired + MAPPED_EEPROM_START) == 0) {
-	if (e2mem_read_uint8(&bootloaderRequired) == 0) { // no forced update requested, check crc
-		CRCSCAN.CTRLB = 0; //Priority on Flash; Scan entire Flash
-
-		CRCSCAN.CTRLA = 1 << CRCSCAN_ENABLE_bp /* Enable CRC scan: enabled */
-			| 0 << CRCSCAN_NMIEN_bp;
-		return !(CRCSCAN_STATUS & CRCSCAN_OK_bm);
-	}
 	return true;
+	//if (*(&bootloaderRequired + MAPPED_EEPROM_START) == 0) {
+	//	if (e2mem_read_uint8(&bootloaderRequired) == 0) { // no forced update requested, check crc
+	//		CRCSCAN.CTRLB = 0; //Priority on Flash; Scan entire Flash
+	//
+	//		CRCSCAN.CTRLA = 1 << CRCSCAN_ENABLE_bp /* Enable CRC scan: enabled */
+	//			| 0 << CRCSCAN_NMIEN_bp;
+	//		return !(CRCSCAN_STATUS & CRCSCAN_OK_bm);
+	//	}
+	//	return true;
 }
 
 /*
@@ -115,14 +121,21 @@ init_twi(void)
 }
 
 static bool
-page_load()
+page_load(update_rec* page_buffer)
 {
-	return false;
+	if (page_buffer->adress == 0xff) {
+		return false;
+	}
+	page_buffer->adress = 0x1f;
+	page_buffer->crc8 = 0x2f;
+	page_buffer->dataSize = 64;
+	return true;
 }
 
 static void
-page_write()
+page_write(update_rec* page_buffer)
 {
+	page_buffer->adress = 0xff;
 	//	uint8_t *app_ptr = (uint8_t *)MAPPED_APPLICATION_START;
 	//	while(app_ptr - MAPPED_PROGMEM_START <= (uint8_t *)PROGMEM_END) {
 	//		/* Receive and echo data before loading to memory */

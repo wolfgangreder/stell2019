@@ -46,7 +46,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -118,7 +118,7 @@
         <property key="no-system-directories" value="false"/>
         <property key="optimization-level" value="-O1"/>
         <property key="pack-struct" value="true"/>
-        <property key="preprocessor-macros" value="BOOTLOADER_CODE=1"/>
+        <property key="preprocessor-macros" value=""/>
         <property key="preprocessor-macros-undefined" value=""/>
         <property key="save-temps" value="false"/>
         <property key="short-calls" value="false"/>
@@ -158,7 +158,7 @@
         <property key="other-options" value=""/>
         <property key="remove-unused-sections" value="true"/>
         <property key="rodata-writable" value="false"/>
-        <property key="sram-segment" value=""/>
+        <property key="sram-segment" value="data=0x3e00"/>
         <property key="v-printf" value="false"/>
       </AVR-LD>
       <Simulator>
