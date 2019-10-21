@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="powerPanel1" min="-2" pref="250" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="powerControlPanel1" min="-2" pref="115" max="-2" attributes="0"/>
+              <EmptySpace pref="68" max="32767" attributes="0"/>
+              <Component id="powerControlPanel2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="powerPanel2" min="-2" pref="250" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="powerPanel1" max="32767" attributes="0"/>
+          <Component id="powerPanel2" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="powerControlPanel1" max="32767" attributes="0"/>
+                  <Component id="powerControlPanel2" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="at.or.reder.rpi.PowerPanel" name="powerPanel1">
+      <Properties>
+        <Property name="limitCurrent" type="double" value="5.0"/>
+        <Property name="limitVoltage" type="double" value="15.0"/>
+        <Property name="maxCurrent" type="double" value="6.0"/>
+        <Property name="maxVoltage" type="double" value="20.0"/>
+        <Property name="port" type="at.or.reder.zcan20.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="OUT_1"/>
+        </Property>
+        <Property name="powerMode" type="at.or.reder.zcan20.PowerMode" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="ON"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+    </Component>
+    <Component class="at.or.reder.rpi.PowerPanel" name="powerPanel2">
+      <Properties>
+        <Property name="limitCurrent" type="double" value="3.0"/>
+        <Property name="limitVoltage" type="double" value="15.0"/>
+        <Property name="maxCurrent" type="double" value="6.0"/>
+        <Property name="maxVoltage" type="double" value="20.0"/>
+        <Property name="port" type="at.or.reder.zcan20.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="OUT_2"/>
+        </Property>
+        <Property name="powerMode" type="at.or.reder.zcan20.PowerMode" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="ON"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+    </Component>
+    <Component class="at.or.reder.rpi.PowerControlPanel" name="powerControlPanel1">
+      <Properties>
+        <Property name="port" type="at.or.reder.zcan20.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="OUT_1"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+    </Component>
+    <Component class="at.or.reder.rpi.PowerControlPanel" name="powerControlPanel2">
+      <Properties>
+        <Property name="port" type="at.or.reder.zcan20.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="OUT_2"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+    </Component>
+  </SubComponents>
+</Form>

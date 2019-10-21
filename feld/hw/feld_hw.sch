@@ -9695,6 +9695,10 @@ DIN A4, landscape with extra doc field</description>
 rot: 150R
 gelb: 150R
 gruen: 82R</text>
+<text x="69.85" y="20.32" size="1.778" layer="97">Wenn S1 bestueckt wird, muessen R9 und V9 nicht bestueckt werden.
+Es wird dann der interne Pull-Up von D1 verwendet.</text>
+<text x="121.92" y="-17.78" size="6.4516" layer="97" font="vector">Gleisfeld</text>
+<text x="209.55" y="-36.83" size="2.54" layer="97">1.0</text>
 </plain>
 <instances>
 <instance part="D1" gate="G$1" x="55.88" y="60.96" smashed="yes">
@@ -9903,7 +9907,7 @@ gruen: 82R</text>
 <wire x1="48.26" y1="73.66" x2="48.26" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$15" class="0">
+<net name="UPDI" class="0">
 <segment>
 <pinref part="D1" gate="G$1" pin="PA0/RST/UPDI"/>
 <pinref part="R7" gate="G$1" pin="1"/>
@@ -9916,6 +9920,7 @@ gruen: 82R</text>
 <wire x1="63.5" y1="96.52" x2="63.5" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="63.5" y1="71.12" x2="55.88" y2="71.12" width="0.1524" layer="91"/>
 <junction x="55.88" y="71.12"/>
+<label x="139.7" y="96.52" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -10024,7 +10029,7 @@ gruen: 82R</text>
 <wire x1="111.76" y1="71.12" x2="111.76" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$19" class="0">
+<net name="SCL" class="0">
 <segment>
 <pinref part="D1" gate="G$1" pin="PB0"/>
 <wire x1="83.82" y1="50.8" x2="96.52" y2="50.8" width="0.1524" layer="91"/>
@@ -10033,9 +10038,10 @@ gruen: 82R</text>
 <wire x1="124.46" y1="30.48" x2="124.46" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="X1" gate="G$1" pin="2"/>
 <wire x1="124.46" y1="66.04" x2="134.62" y2="66.04" width="0.1524" layer="91"/>
+<label x="127" y="66.04" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$20" class="0">
+<net name="SDA" class="0">
 <segment>
 <pinref part="D1" gate="G$1" pin="PB1"/>
 <wire x1="83.82" y1="48.26" x2="99.06" y2="48.26" width="0.1524" layer="91"/>
@@ -10044,9 +10050,10 @@ gruen: 82R</text>
 <wire x1="121.92" y1="33.02" x2="121.92" y2="68.58" width="0.1524" layer="91"/>
 <pinref part="X1" gate="G$1" pin="4"/>
 <wire x1="121.92" y1="68.58" x2="134.62" y2="68.58" width="0.1524" layer="91"/>
+<label x="127" y="68.58" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$21" class="0">
+<net name="BLINK" class="0">
 <segment>
 <pinref part="D1" gate="G$1" pin="PB2"/>
 <pinref part="R10" gate="G$1" pin="1"/>
@@ -10057,6 +10064,7 @@ gruen: 82R</text>
 <pinref part="X1" gate="G$1" pin="1"/>
 <wire x1="104.14" y1="27.94" x2="149.86" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="149.86" y1="27.94" x2="149.86" y2="66.04" width="0.1524" layer="91"/>
+<label x="139.7" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
