@@ -27,7 +27,6 @@ import javax.swing.SwingUtilities;
 public class SettigsPanel extends DevicePanel
 {
 
-  private Runnable reconnectCallaback;
   private LinkStateListener linkStateListener;
 
   public SettigsPanel()
@@ -66,19 +65,8 @@ public class SettigsPanel extends DevicePanel
     linkStateListener = null;
   }
 
-  public Runnable getReconnectCallaback()
-  {
-    return reconnectCallaback;
-  }
-
-  public void setReconnectCallaback(Runnable reconnectCallaback)
-  {
-    this.reconnectCallaback = reconnectCallaback;
-  }
-
   private void setControlState()
   {
-    btReconnect.setEnabled(device != null && device.getLinkState() != LinkState.OPEN && reconnectCallaback != null);
   }
 
   /**
@@ -90,42 +78,18 @@ public class SettigsPanel extends DevicePanel
   private void initComponents()
   {
 
-    btReconnect.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-    btReconnect.setText(org.openide.util.NbBundle.getMessage(SettigsPanel.class, "SettigsPanel.btReconnect.text")); // NOI18N
-    btReconnect.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        btReconnectActionPerformed(evt);
-      }
-    });
-
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(btReconnect)
-        .addContainerGap(278, Short.MAX_VALUE))
+      .addGap(0, 400, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(btReconnect)
-        .addContainerGap(257, Short.MAX_VALUE))
+      .addGap(0, 300, Short.MAX_VALUE)
     );
   }// </editor-fold>//GEN-END:initComponents
 
-  private void btReconnectActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btReconnectActionPerformed
-  {//GEN-HEADEREND:event_btReconnectActionPerformed
-    if (reconnectCallaback != null) {
-      reconnectCallaback.run();
-    }
-  }//GEN-LAST:event_btReconnectActionPerformed
-
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private final javax.swing.JButton btReconnect = new javax.swing.JButton();
   // End of variables declaration//GEN-END:variables
 }

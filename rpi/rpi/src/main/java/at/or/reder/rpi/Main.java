@@ -32,6 +32,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import org.openide.util.Exceptions;
@@ -44,6 +45,7 @@ import org.openide.util.RequestProcessor;
 public final class Main extends JFrame implements ContainerListener
 {
 
+  public static final Logger LOGGER = Logger.getLogger("at.or.reder.rpi");
   private static final String PROP_LAYOUT = "layout";
   private static final String LAYOUT_DASHBOARD = "dashboard";
   private static final String LAYOUT_POWER = "power";
@@ -60,7 +62,6 @@ public final class Main extends JFrame implements ContainerListener
   {
     cardPanel.addContainerListener(this);
     initComponents();
-    settigsPanel1.setReconnectCallaback(this::doReconnect);
     cardLayout = (CardLayout) cardPanel.getLayout();
     setBounds(0,
               0,
@@ -339,7 +340,7 @@ public final class Main extends JFrame implements ContainerListener
       try (InputStream is = Main.class
               .getResourceAsStream("/logging.properties")) {
         if (is
-                    != null) {
+            != null) {
           LogManager.getLogManager().
                   readConfiguration(is);
         }
@@ -351,7 +352,7 @@ public final class Main extends JFrame implements ContainerListener
     /* Set the Nimbus look and feel */
     //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
     /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+     * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
      */
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

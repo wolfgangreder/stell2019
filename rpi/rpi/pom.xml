@@ -33,6 +33,7 @@
             <configuration>
               <excludeTransitive>false</excludeTransitive>
               <excludeArtifactIds>testng</excludeArtifactIds>
+              <excludeArtifactIds>org-netbeans-core-startup</excludeArtifactIds>
               <outputDirectory>${project.build.directory}/deploy/lib</outputDirectory>
             </configuration>
           </execution>
