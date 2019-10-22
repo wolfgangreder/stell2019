@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -58,8 +59,9 @@ public final class Main extends JFrame implements ContainerListener
   private final CardLayout cardLayout;
   private final LinkStateListener linkListener = this::onLinkConnectionChanged;
 
-  public Main() throws IOException
+  public Main(boolean undecorated) throws IOException
   {
+    setUndecorated(undecorated);
     cardPanel.addContainerListener(this);
     initComponents();
     cardLayout = (CardLayout) cardPanel.getLayout();
@@ -337,16 +339,18 @@ public final class Main extends JFrame implements ContainerListener
       }
     }
     if (!loggerInitialized) {
-      try (InputStream is = Main.class
-              .getResourceAsStream("/logging.properties")) {
-        if (is
-            != null) {
-          LogManager.getLogManager().
-                  readConfiguration(is);
+      try (InputStream is = Main.class.getResourceAsStream("/logging.properties")) {
+        if (is != null) {
+          LogManager.getLogManager().readConfiguration(is);
         }
-
       } catch (IOException ex) {
         Exceptions.printStackTrace(ex);
+      }
+    }
+    final AtomicBoolean undekorated = new AtomicBoolean(true);
+    for (String a : args) {
+      if ("-u-".equals(a)) {
+        undekorated.set(false);
       }
     }
     /* Set the Nimbus look and feel */
@@ -387,7 +391,7 @@ public final class Main extends JFrame implements ContainerListener
     /* Create and display the form */
     java.awt.EventQueue.invokeLater(() -> {
       try {
-        new Main().setVisible(true);
+        new Main(undekorated.get()).setVisible(true);
       } catch (IOException ex) {
         Exceptions.printStackTrace(ex);
       }

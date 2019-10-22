@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+check4Updates()
+{
+  echo "Check for updates..."
+  zipfile="rpi.tar.gz"
+  if [ -f $zipfile ]; then
+    echo "Found update...."
+    rm -r bin && mkdir bin && cd bin && tar -xvxf ../$zipfile && cd .. && rm $zipfile
+  fi
+}
+
+retcode=125
+while [ $retcode  =  "125" ]
+do
+  check4Updates;
+  java -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9009 -jar bin/rpi-1.0-SNAPSHOT.jar $*
+  retcode=$?
+done
+exit $retcode
+
+

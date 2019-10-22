@@ -40,8 +40,42 @@ public class SwitchPanel extends DevicePanel
   {
 
     jLabel1 = new javax.swing.JLabel();
+    symbolPanel1 = new at.or.reder.rpi.SymbolPanel();
+    jButton1 = new javax.swing.JButton();
+    jButton2 = new javax.swing.JButton();
+    jButton3 = new javax.swing.JButton();
 
     jLabel1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jLabel1.text")); // NOI18N
+
+    symbolPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.ON);
+    symbolPanel1.setSymbolType(at.or.reder.rpi.SymbolType.G1);
+
+    jButton1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton1.text")); // NOI18N
+    jButton1.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton1ActionPerformed(evt);
+      }
+    });
+
+    jButton2.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton2.text")); // NOI18N
+    jButton2.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton2ActionPerformed(evt);
+      }
+    });
+
+    jButton3.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton3.text")); // NOI18N
+    jButton3.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton3ActionPerformed(evt);
+      }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
@@ -49,19 +83,55 @@ public class SwitchPanel extends DevicePanel
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jLabel1)
-        .addContainerGap(349, Short.MAX_VALUE))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(jLabel1)
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(symbolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(29, 29, 29)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(jButton1)
+              .addComponent(jButton2)
+              .addComponent(jButton3))))
+        .addContainerGap(222, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
         .addComponent(jLabel1)
-        .addContainerGap(274, Short.MAX_VALUE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(symbolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(jButton1)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton3)))
+        .addContainerGap(184, Short.MAX_VALUE))
     );
   }// </editor-fold>//GEN-END:initComponents
 
+  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+  {//GEN-HEADEREND:event_jButton1ActionPerformed
+    symbolPanel1.setLedState(LedPanel.LedState.OFF);
+  }//GEN-LAST:event_jButton1ActionPerformed
+
+  private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
+  {//GEN-HEADEREND:event_jButton2ActionPerformed
+    symbolPanel1.setLedState(LedPanel.LedState.ON);
+  }//GEN-LAST:event_jButton2ActionPerformed
+
+  private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
+  {//GEN-HEADEREND:event_jButton3ActionPerformed
+    symbolPanel1.setLedState(LedPanel.LedState.BLINK);
+  }//GEN-LAST:event_jButton3ActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton jButton1;
+  private javax.swing.JButton jButton2;
+  private javax.swing.JButton jButton3;
   private javax.swing.JLabel jLabel1;
+  private at.or.reder.rpi.SymbolPanel symbolPanel1;
   // End of variables declaration//GEN-END:variables
 }
