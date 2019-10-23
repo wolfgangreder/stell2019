@@ -15,6 +15,12 @@
  */
 package at.or.reder.rpi;
 
+import at.or.reder.zcan20.CommandGroup;
+import at.or.reder.zcan20.PacketListener;
+import at.or.reder.zcan20.ZCAN;
+import at.or.reder.zcan20.packet.AccessoryPacketCommandAdapter;
+import at.or.reder.zcan20.packet.Packet;
+
 /**
  *
  * @author Wolfgang Reder
@@ -22,12 +28,47 @@ package at.or.reder.rpi;
 public class SwitchPanel extends DevicePanel
 {
 
+  private PacketListener packetListener;
+
   /**
    * Creates new form SwitchPanel
    */
   public SwitchPanel()
   {
     initComponents();
+  }
+
+  @Override
+  protected void connectListener()
+  {
+    if (packetListener == null && device != null) {
+      packetListener = this::onPacket;
+      device.addPacketListener(CommandGroup.ACCESSORY,
+                               packetListener);
+    } else {
+      packetListener = null;
+    }
+  }
+
+  @Override
+  protected void disconnectListener()
+  {
+    if (device != null && packetListener != null) {
+      device.removePacketListener(CommandGroup.ACCESSORY,
+                                  packetListener);
+      packetListener = null;
+    }
+  }
+
+  private void onPacket(ZCAN device,
+                        Packet packet)
+  {
+    AccessoryPacketCommandAdapter adapter = packet.getAdapter(AccessoryPacketCommandAdapter.class);
+    if (adapter != null) {
+      System.err.println(adapter.toString());
+    } else {
+      System.err.println(packet.toString());
+    }
   }
 
   /**
@@ -47,8 +88,8 @@ public class SwitchPanel extends DevicePanel
 
     jLabel1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jLabel1.text")); // NOI18N
 
-    symbolPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.ON);
-    symbolPanel1.setSymbolType(at.or.reder.rpi.SymbolType.G1);
+    symbolPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.OFF);
+    symbolPanel1.setSymbolType(at.or.reder.rpi.SymbolType.W2);
 
     jButton1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton1.text")); // NOI18N
     jButton1.addActionListener(new java.awt.event.ActionListener()

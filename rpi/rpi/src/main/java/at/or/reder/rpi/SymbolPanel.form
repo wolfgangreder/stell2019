@@ -36,6 +36,9 @@
     <Component class="at.or.reder.rpi.LedPanel" name="ledPanel4">
     </Component>
     <Component class="at.or.reder.rpi.LedPanel" name="ledPanel9">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ledPanel9ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="at.or.reder.rpi.LedPanel" name="ledPanel5">
     </Component>

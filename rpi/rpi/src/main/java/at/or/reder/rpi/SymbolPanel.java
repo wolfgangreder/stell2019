@@ -16,16 +16,32 @@
 package at.or.reder.rpi;
 
 import java.awt.Graphics;
+import java.awt.event.ActionListener;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import javax.swing.JPanel;
 
 public final class SymbolPanel extends JPanel
 {
 
   private SymbolType symbolType = SymbolType.EMPTY;
+  private final Set<ActionListener> actionListener = new CopyOnWriteArraySet<>();
 
   public SymbolPanel()
   {
     initComponents();
+  }
+
+  public void addActionListener(ActionListener l)
+  {
+    if (l != null) {
+      actionListener.add(l);
+    }
+  }
+
+  public void removeActionListener(ActionListener l)
+  {
+    actionListener.remove(l);
   }
 
   public void setLedState(LedPanel.LedState state)
@@ -117,12 +133,28 @@ public final class SymbolPanel extends JPanel
     add(ledPanel2);
     add(ledPanel3);
     add(ledPanel4);
+
+    ledPanel9.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        ledPanel9ActionPerformed(evt);
+      }
+    });
     add(ledPanel9);
     add(ledPanel5);
     add(ledPanel6);
     add(ledPanel7);
     add(ledPanel8);
   }// </editor-fold>//GEN-END:initComponents
+
+  private void ledPanel9ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ledPanel9ActionPerformed
+  {//GEN-HEADEREND:event_ledPanel9ActionPerformed
+    evt.setSource(this);
+    for (ActionListener l : actionListener) {
+      l.actionPerformed(evt);
+    }
+  }//GEN-LAST:event_ledPanel9ActionPerformed
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private at.or.reder.rpi.LedPanel ledPanel1;

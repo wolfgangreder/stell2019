@@ -66,10 +66,10 @@
     <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel1">
       <Properties>
         <Property name="ledState" type="at.or.reder.rpi.LedPanel$LedState" editor="org.netbeans.modules.form.editors.EnumEditor">
-          <Value id="ON"/>
+          <Value id="OFF"/>
         </Property>
         <Property name="symbolType" type="at.or.reder.rpi.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
-          <Value id="G1"/>
+          <Value id="W2"/>
         </Property>
       </Properties>
     </Component>
