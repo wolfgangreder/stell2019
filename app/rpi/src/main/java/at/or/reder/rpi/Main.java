@@ -69,7 +69,7 @@ public final class Main extends JFrame implements ContainerListener
               0,
               800,
               480);
-    connect();
+    tryReconnect();
     showSelectedPanel(btDashboard);
     Runtime.getRuntime().addShutdownHook(new Thread(this::disconnect));
   }
