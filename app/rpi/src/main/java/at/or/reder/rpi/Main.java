@@ -15,11 +15,11 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.LinkState;
-import at.or.reder.zcan20.LinkStateListener;
-import at.or.reder.zcan20.PowerPort;
-import at.or.reder.zcan20.ZCAN;
-import at.or.reder.zcan20.ZCANFactory;
+import at.or.reder.dcc.Controller;
+import at.or.reder.dcc.ControllerProvider;
+import at.or.reder.dcc.LinkState;
+import at.or.reder.dcc.LinkStateListener;
+import at.or.reder.dcc.PropertySet;
 import java.awt.CardLayout;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -28,8 +28,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.LogManager;
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -54,7 +56,7 @@ public final class Main extends JFrame implements ContainerListener
   private static final String LAYOUT_SWITCH = "switch";
   private static final String LAYOUT_SETTINGS = "settings";
   private static final String LAYOUT_PROGRAM = "program";
-  private ZCAN device;
+  private Controller device;
   private final List<DevicePanel> devicePanels = new ArrayList<>();
   private final CardLayout cardLayout;
   private final LinkStateListener linkListener = this::onLinkConnectionChanged;
@@ -74,7 +76,7 @@ public final class Main extends JFrame implements ContainerListener
     Runtime.getRuntime().addShutdownHook(new Thread(this::disconnect));
   }
 
-  private void onLinkConnectionChanged(ZCAN device,
+  private void onLinkConnectionChanged(Controller device,
                                        LinkState state)
   {
     if (state == LinkState.BROKEN) {
@@ -87,29 +89,41 @@ public final class Main extends JFrame implements ContainerListener
   private void tryReconnect()
   {
     doReconnect();
-    if (device == null || device.getLinkState() != LinkState.OPEN) {
+    if (device.getLinkState() != LinkState.OPEN) {
       RequestProcessor.getDefault().schedule(this::tryReconnect,
                                              5000,
                                              TimeUnit.MILLISECONDS);
     }
   }
 
+  private ControllerProvider getMX10ControllerProvider()
+  {
+    UUID mx10 = UUID.fromString("761e3de9-d8b0-46ee-b44b-738671f15b88");
+    for (ControllerProvider provider : Lookup.getDefault().lookupAll(ControllerProvider.class)) {
+      if (provider.getId().equals(mx10)) {
+        return provider;
+      }
+    }
+    return null;
+  }
+
   public void connect()
   {
     try {
       disconnect();
-      device = ZCANFactory.open("192.168.1.145",
-                                14520,
-                                14521,
-                                null,
-                                5,
-                                TimeUnit.SECONDS);
-      for (DevicePanel p : devicePanels) {
-        p.setDevice(device);
+      if (device == null) {
+        ControllerProvider provider = getMX10ControllerProvider();
+        PropertySet set = provider.getPropertySet();
+        Map<String, String> props = set.getDefaultProperties();
+        device = provider.createController(props);
+        for (DevicePanel p : devicePanels) {
+          p.setDevice(device);
+        }
+//      device.getPowerStateInfo(EnumSet.of(PowerPort.OUT_1,
+//                                          PowerPort.OUT_2));
+        device.addLinkStateListener(linkListener);
       }
-      device.getPowerStateInfo(EnumSet.of(PowerPort.OUT_1,
-                                          PowerPort.OUT_2));
-      device.addLinkStateListener(linkListener);
+      device.open();
     } catch (IOException ex) {
       Exceptions.printStackTrace(ex);
     }
@@ -118,15 +132,10 @@ public final class Main extends JFrame implements ContainerListener
   public void disconnect()
   {
     if (device != null) {
-      for (DevicePanel p : devicePanels) {
-        p.setDevice(null);
-      }
       try {
         device.close();
       } catch (IOException ex) {
         Exceptions.printStackTrace(ex);
-      } finally {
-        device = null;
       }
     }
   }

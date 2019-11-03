@@ -15,8 +15,9 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.LinkState;
-import at.or.reder.zcan20.ZCAN;
+import at.or.reder.dcc.Controller;
+import at.or.reder.dcc.LinkState;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -36,11 +37,11 @@ public class DashboardPanel extends DevicePanel
   @Override
   protected void doLinkStateChanged(LinkState linkState)
   {
-    ledConnection.setLedOn(linkState == LinkState.OPEN);
+    SwingUtilities.invokeLater(() -> ledConnection.setLedOn(linkState == LinkState.OPEN));
   }
 
   @Override
-  public void setDevice(ZCAN device)
+  public void setDevice(Controller device)
   {
     super.setDevice(device);
     ledConnection.setLedOn(device != null && device.getLinkState() == LinkState.OPEN);
@@ -59,13 +60,13 @@ public class DashboardPanel extends DevicePanel
     javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
     javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
 
-    powerControlPanel1.setPort(at.or.reder.zcan20.PowerPort.OUT_1);
+    powerControlPanel1.setPort(at.or.reder.dcc.PowerPort.OUT_1);
 
     jLabel2.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
     jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     jLabel2.setText(org.openide.util.NbBundle.getMessage(DashboardPanel.class, "DashboardPanel.jLabel2.text")); // NOI18N
 
-    powerControlPanel2.setPort(at.or.reder.zcan20.PowerPort.OUT_2);
+    powerControlPanel2.setPort(at.or.reder.dcc.PowerPort.OUT_2);
 
     jLabel3.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
     jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

@@ -15,12 +15,25 @@
  */
 package at.or.reder.rpi;
 
+import at.or.reder.dcc.CVEvent;
+import at.or.reder.dcc.CVEventListener;
+import at.or.reder.dcc.DecoderType;
+import at.or.reder.dcc.PowerPort;
+import at.or.reder.zcan20.TrackConfig;
+import at.or.reder.zcan20.ZCAN;
+import at.or.reder.zcan20.packet.CVInfoAdapter;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+import org.openide.util.Exceptions;
+
 /**
  *
  * @author Wolfgang Reder
  */
-public class ProgramPanel extends DevicePanel
+public final class ProgramPanel extends DevicePanel
 {
+
+  private final CVEventListener listener = this::onCVEvent;
 
   /**
    * Creates new form ProgramPanel
@@ -28,6 +41,52 @@ public class ProgramPanel extends DevicePanel
   public ProgramPanel()
   {
     initComponents();
+  }
+
+  private void onCVEvent(CVEvent event)
+  {
+    CVInfoAdapter info = event.getLookup().lookup(CVInfoAdapter.class);
+    System.err.println(info.toString());
+  }
+
+  @Override
+  protected void connectListener()
+  {
+    device.addCVEventListener(listener);
+  }
+
+  @Override
+  protected void disconnectListener()
+  {
+    if (device != null) {
+      device.removeCVEventListener(listener);
+    }
+  }
+
+  private byte mode = 0;
+
+  private String readCV()
+  {
+    if (device != null) {
+      try {
+        ZCAN zcan = device.getLookup().lookup(ZCAN.class);
+        TrackConfig trackConfig = zcan.getLookup().lookup(TrackConfig.class);
+//        trackConfig.requestPowerPortMode(PowerPort.OUT_1);
+        trackConfig.enterPowerMode(PowerPort.OUT_1,
+                                   (byte) 9,
+                                   5000);
+        int decoderID = ((Number) spAddress.getValue()).intValue();
+        int cvIndex = ((Number) spCV.getValue()).intValue();
+        int value = device.getCV(DecoderType.LOCO,
+                                 decoderID,
+                                 cvIndex);
+        return Integer.toString(value);
+      } catch (IOException | TimeoutException ex) {
+        Exceptions.printStackTrace(ex);
+        return "ERR";
+      }
+    }
+    return "";
   }
 
   /**
@@ -39,9 +98,47 @@ public class ProgramPanel extends DevicePanel
   private void initComponents()
   {
 
+    jLabel2 = new javax.swing.JLabel();
     jLabel1 = new javax.swing.JLabel();
+    jLabel3 = new javax.swing.JLabel();
+    jLabel4 = new javax.swing.JLabel();
+    jLabel5 = new javax.swing.JLabel();
+    jLabel6 = new javax.swing.JLabel();
+
+    spCV.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1024, 1));
+
+    jLabel2.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.jLabel2.text")); // NOI18N
+
+    btRead.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.btRead.text")); // NOI18N
+    btRead.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        btReadActionPerformed(evt);
+      }
+    });
 
     jLabel1.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.jLabel1.text")); // NOI18N
+
+    spAddress.setModel(new javax.swing.SpinnerNumberModel(3, 1, null, 1));
+
+    btIdentify.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.btIdentify.text")); // NOI18N
+
+    jLabel3.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.jLabel3.text")); // NOI18N
+
+    edDekoderName.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.edDekoderName.text")); // NOI18N
+
+    jLabel4.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.jLabel4.text")); // NOI18N
+
+    edFWVersion.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.edFWVersion.text")); // NOI18N
+
+    jLabel5.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.jLabel5.text")); // NOI18N
+
+    edDekoderID.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.edDekoderID.text")); // NOI18N
+
+    jLabel6.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.jLabel6.text")); // NOI18N
+
+    edValue.setText(org.openide.util.NbBundle.getMessage(ProgramPanel.class, "ProgramPanel.edValue.text")); // NOI18N
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
@@ -49,19 +146,90 @@ public class ProgramPanel extends DevicePanel
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jLabel1)
-        .addContainerGap(338, Short.MAX_VALUE))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(jLabel2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(spCV, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jLabel6)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(edValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(btRead))
+          .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+            .addGroup(layout.createSequentialGroup()
+              .addComponent(jLabel1)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addComponent(spAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+              .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(btIdentify)
+                .addGroup(layout.createSequentialGroup()
+                  .addComponent(jLabel4)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                  .addComponent(edFWVersion, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addGroup(layout.createSequentialGroup()
+              .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(jLabel5)
+                .addComponent(jLabel3))
+              .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                  .addGap(12, 12, 12)
+                  .addComponent(edDekoderName, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createSequentialGroup()
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                  .addComponent(edDekoderID))))))
+        .addContainerGap(87, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jLabel1)
-        .addContainerGap(274, Short.MAX_VALUE))
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel1)
+          .addComponent(spAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(btIdentify))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel3)
+          .addComponent(edDekoderName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel4)
+          .addComponent(edFWVersion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel5)
+          .addComponent(edDekoderID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addGap(20, 20, 20)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel2)
+          .addComponent(spCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel6)
+          .addComponent(edValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(btRead))
+        .addContainerGap(172, Short.MAX_VALUE))
     );
   }// </editor-fold>//GEN-END:initComponents
 
+  private void btReadActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btReadActionPerformed
+  {//GEN-HEADEREND:event_btReadActionPerformed
+    edValue.setText(readCV());
+  }//GEN-LAST:event_btReadActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private final javax.swing.JButton btIdentify = new javax.swing.JButton();
+  private final javax.swing.JButton btRead = new javax.swing.JButton();
+  private final javax.swing.JTextField edDekoderID = new javax.swing.JTextField();
+  private final javax.swing.JTextField edDekoderName = new javax.swing.JTextField();
+  private final javax.swing.JTextField edFWVersion = new javax.swing.JTextField();
+  private final javax.swing.JTextField edValue = new javax.swing.JTextField();
   private javax.swing.JLabel jLabel1;
+  private javax.swing.JLabel jLabel2;
+  private javax.swing.JLabel jLabel3;
+  private javax.swing.JLabel jLabel4;
+  private javax.swing.JLabel jLabel5;
+  private javax.swing.JLabel jLabel6;
+  private final javax.swing.JSpinner spAddress = new javax.swing.JSpinner();
+  private final javax.swing.JSpinner spCV = new javax.swing.JSpinner();
   // End of variables declaration//GEN-END:variables
 }

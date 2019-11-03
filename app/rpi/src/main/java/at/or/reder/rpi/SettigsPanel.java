@@ -15,9 +15,9 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.LinkState;
-import at.or.reder.zcan20.LinkStateListener;
-import at.or.reder.zcan20.ZCAN;
+import at.or.reder.dcc.Controller;
+import at.or.reder.dcc.LinkState;
+import at.or.reder.dcc.LinkStateListener;
 import javax.swing.SwingUtilities;
 
 /**
@@ -41,7 +41,7 @@ public class SettigsPanel extends DevicePanel
     setControlState();
   }
 
-  private void onLickState(ZCAN can,
+  private void onLickState(Controller can,
                            LinkState state)
   {
     SwingUtilities.invokeLater(this::setControlState);
@@ -50,19 +50,23 @@ public class SettigsPanel extends DevicePanel
   @Override
   protected void connectListener()
   {
-    if (device != null && linkStateListener == null) {
-      linkStateListener = this::onLickState;
-      device.addLinkStateListener(linkStateListener);
+    if (device != null) {
+      if (linkStateListener == null) {
+        linkStateListener = this::onLickState;
+        device.addLinkStateListener(linkStateListener);
+      }
     }
   }
 
   @Override
   protected void disconnectListener()
   {
-    if (linkStateListener != null && device != null) {
-      device.removeLinkStateListener(linkStateListener);
+    if (device != null) {
+      if (linkStateListener != null) {
+        device.removeLinkStateListener(linkStateListener);
+        linkStateListener = null;
+      }
     }
-    linkStateListener = null;
   }
 
   private void setControlState()

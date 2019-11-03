@@ -15,14 +15,11 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.CommandGroup;
-import at.or.reder.zcan20.LinkState;
-import at.or.reder.zcan20.PacketListener;
-import at.or.reder.zcan20.PowerMode;
-import at.or.reder.zcan20.PowerPort;
-import at.or.reder.zcan20.ZCAN;
-import at.or.reder.zcan20.packet.Packet;
-import at.or.reder.zcan20.packet.PowerStateInfo;
+import at.or.reder.dcc.LinkState;
+import at.or.reder.dcc.PowerEvent;
+import at.or.reder.dcc.PowerEventListener;
+import at.or.reder.dcc.PowerMode;
+import at.or.reder.dcc.PowerPort;
 import java.awt.Color;
 import java.io.IOException;
 import javax.swing.JButton;
@@ -36,7 +33,7 @@ import org.openide.util.Exceptions;
 public class PowerControlPanel extends DevicePanel
 {
 
-  private final PacketListener packetListener = this::onPacket;
+  private final PowerEventListener powerListener = this::onPowerEvent;
   private boolean listenerConnected;
   private volatile PowerPort port;
   private final Color red = new Color(0xcc0000);
@@ -57,12 +54,10 @@ public class PowerControlPanel extends DevicePanel
     setControlState();
   }
 
-  private void onPacket(ZCAN device,
-                        Packet packet)
+  private void onPowerEvent(PowerEvent event)
   {
-    PowerStateInfo powerState = packet.getAdapter(PowerStateInfo.class);
-    if (powerState != null && powerState.getOutput() == port) {
-      SwingUtilities.invokeLater(() -> assignPowerState(powerState.getMode()));
+    if (event.getPort() == port) {
+      SwingUtilities.invokeLater(() -> assignPowerState(event.getMode()));
     }
   }
 
@@ -93,11 +88,11 @@ public class PowerControlPanel extends DevicePanel
                  red,
                  gray);
     enableButton(btSSPEm,
-                 mode != PowerMode.SSPE && mode != PowerMode.SSP0,
+                 mode != PowerMode.SSPEM && mode != PowerMode.SSPF0,
                  blue,
                  gray);
     enableButton(btSSPF0,
-                 mode != PowerMode.SSPE && mode != PowerMode.SSP0,
+                 mode != PowerMode.SSPEM && mode != PowerMode.SSPF0,
                  blue,
                  gray);
     enableButton(btOn,
@@ -110,8 +105,8 @@ public class PowerControlPanel extends DevicePanel
   {
     if (device != null) {
       try {
-        device.setPowerModeInfo(port,
-                                mode);
+        device.setPowerMode(port,
+                            mode);
       } catch (IOException ex) {
         Exceptions.printStackTrace(ex);
       }
@@ -132,8 +127,7 @@ public class PowerControlPanel extends DevicePanel
   protected void connectListener()
   {
     if (device != null && !listenerConnected) {
-      device.addPacketListener(CommandGroup.SYSTEM,
-                               packetListener);
+      device.addPowerEventListener(powerListener);
       listenerConnected = true;
     }
     setControlState();
@@ -144,8 +138,7 @@ public class PowerControlPanel extends DevicePanel
   {
     if (listenerConnected) {
       if (device != null) {
-        device.removePacketListener(CommandGroup.SYSTEM,
-                                    packetListener);
+        device.removePowerEventListener(powerListener);
       }
       listenerConnected = false;
     }
@@ -220,12 +213,12 @@ public class PowerControlPanel extends DevicePanel
 
   private void btSSPEmActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btSSPEmActionPerformed
   {//GEN-HEADEREND:event_btSSPEmActionPerformed
-    setPowerMode(PowerMode.SSPE);
+    setPowerMode(PowerMode.SSPEM);
   }//GEN-LAST:event_btSSPEmActionPerformed
 
   private void btSSPF0ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btSSPF0ActionPerformed
   {//GEN-HEADEREND:event_btSSPF0ActionPerformed
-    setPowerMode(PowerMode.SSP0);
+    setPowerMode(PowerMode.SSPF0);
   }//GEN-LAST:event_btSSPF0ActionPerformed
 
   private void btOnActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btOnActionPerformed

@@ -15,9 +15,9 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.LinkState;
-import at.or.reder.zcan20.LinkStateListener;
-import at.or.reder.zcan20.ZCAN;
+import at.or.reder.dcc.Controller;
+import at.or.reder.dcc.LinkState;
+import at.or.reder.dcc.LinkStateListener;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ContainerEvent;
@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
 public abstract class DevicePanel extends JPanel implements ContainerListener
 {
 
-  protected ZCAN device;
+  protected Controller device;
   private final List<DevicePanel> subDevices = new ArrayList<>();
   private LinkStateListener linkStateListener;
 
@@ -54,7 +54,7 @@ public abstract class DevicePanel extends JPanel implements ContainerListener
 
   }
 
-  private void onLinkStateEvent(ZCAN device,
+  private void onLinkStateEvent(Controller device,
                                 LinkState linkState)
   {
     SwingUtilities.invokeLater(() -> doLinkStateChanged(linkState));
@@ -134,12 +134,12 @@ public abstract class DevicePanel extends JPanel implements ContainerListener
     }
   }
 
-  public ZCAN getDevice()
+  public Controller getDevice()
   {
     return device;
   }
 
-  public void setDevice(ZCAN device)
+  public void setDevice(Controller device)
   {
     if (this.device != device) {
       disconnectLinkStateListener();

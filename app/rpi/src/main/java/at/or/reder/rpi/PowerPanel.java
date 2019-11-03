@@ -15,15 +15,12 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.CommandGroup;
-import at.or.reder.zcan20.LinkState;
-import at.or.reder.zcan20.PacketListener;
-import at.or.reder.zcan20.PowerMode;
-import at.or.reder.zcan20.PowerPort;
-import at.or.reder.zcan20.ZCAN;
-import at.or.reder.zcan20.packet.Packet;
+import at.or.reder.dcc.LinkState;
+import at.or.reder.dcc.PowerEvent;
+import at.or.reder.dcc.PowerEventListener;
+import at.or.reder.dcc.PowerMode;
+import at.or.reder.dcc.PowerPort;
 import at.or.reder.zcan20.packet.PowerInfo;
-import at.or.reder.zcan20.packet.PowerStateInfo;
 import eu.hansolo.steelseries.tools.Section;
 import java.awt.Color;
 import javax.swing.SwingUtilities;
@@ -45,7 +42,7 @@ public final class PowerPanel extends DevicePanel
   private double limitCurrent;
   private double limitVoltage;
   private PowerMode mode;
-  private final PacketListener packetListener = this::onPacket;
+  private final PowerEventListener packetListener = this::onPacket;
   private boolean listenerConnected;
   private PowerPort port;
 
@@ -74,18 +71,15 @@ public final class PowerPanel extends DevicePanel
     SwingUtilities.invokeLater(this::setControlState);
   }
 
-  private void onPacket(ZCAN device,
-                        Packet packet)
+  private void onPacket(PowerEvent event)
   {
     if (port != null) {
-      PowerInfo power = packet.getAdapter(PowerInfo.class);
+      PowerInfo power = event.getLookup().lookup(PowerInfo.class);
       if (power != null) {
         SwingUtilities.invokeLater(() -> assignPowerInfo(power));
       } else {
-        PowerStateInfo powerState = packet.getAdapter(PowerStateInfo.class);
-        if (powerState != null) {
-          SwingUtilities.invokeLater(() -> assignPowerState(powerState));
-        }
+        SwingUtilities.invokeLater(() -> assignPowerState(event.getPort(),
+                                                          event.getMode()));
       }
     }
   }
@@ -101,10 +95,11 @@ public final class PowerPanel extends DevicePanel
     }
   }
 
-  private void assignPowerState(PowerStateInfo powerState)
+  private void assignPowerState(PowerPort port,
+                                PowerMode mode)
   {
-    if (powerState.getOutput() == port) {
-      setPowerMode(powerState.getMode());
+    if (port == this.port) {
+      setPowerMode(mode);
     }
   }
 
@@ -146,10 +141,7 @@ public final class PowerPanel extends DevicePanel
   protected void disconnectListener()
   {
     if (this.device != null) {
-      this.device.removePacketListener(CommandGroup.SYSTEM,
-                                       packetListener);
-      this.device.removePacketListener(CommandGroup.CONFIG,
-                                       packetListener);
+      this.device.removePowerEventListener(packetListener);
       listenerConnected = false;
     }
     setControlState();
@@ -159,10 +151,7 @@ public final class PowerPanel extends DevicePanel
   protected void connectListener()
   {
     if (this.device != null && !listenerConnected) {
-      this.device.addPacketListener(CommandGroup.SYSTEM,
-                                    packetListener);
-      this.device.addPacketListener(CommandGroup.CONFIG,
-                                    packetListener);
+      this.device.addPowerEventListener(packetListener);
       listenerConnected = true;
     }
     setControlState();

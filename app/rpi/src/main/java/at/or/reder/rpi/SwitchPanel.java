@@ -15,7 +15,6 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.CommandGroup;
 import at.or.reder.zcan20.PacketListener;
 import at.or.reder.zcan20.ZCAN;
 import at.or.reder.zcan20.packet.AccessoryPacketCommandAdapter;
@@ -41,23 +40,11 @@ public class SwitchPanel extends DevicePanel
   @Override
   protected void connectListener()
   {
-    if (packetListener == null && device != null) {
-      packetListener = this::onPacket;
-      device.addPacketListener(CommandGroup.ACCESSORY,
-                               packetListener);
-    } else {
-      packetListener = null;
-    }
   }
 
   @Override
   protected void disconnectListener()
   {
-    if (device != null && packetListener != null) {
-      device.removePacketListener(CommandGroup.ACCESSORY,
-                                  packetListener);
-      packetListener = null;
-    }
   }
 
   private void onPacket(ZCAN device,

@@ -52,45 +52,43 @@ public class EnergyPanel extends DevicePanel
     powerPanel1.setLimitVoltage(15.0);
     powerPanel1.setMaxCurrent(6.0);
     powerPanel1.setMaxVoltage(20.0);
-    powerPanel1.setPort(at.or.reder.zcan20.PowerPort.OUT_1);
-    powerPanel1.setPowerMode(at.or.reder.zcan20.PowerMode.ON);
+    powerPanel1.setPort(at.or.reder.dcc.PowerPort.OUT_1);
+    powerPanel1.setPowerMode(at.or.reder.dcc.PowerMode.ON);
+
+    powerControlPanel1.setPort(at.or.reder.dcc.PowerPort.OUT_1);
+
+    powerControlPanel2.setPort(at.or.reder.dcc.PowerPort.OUT_2);
 
     powerPanel2.setLimitCurrent(3.0);
     powerPanel2.setLimitVoltage(15.0);
     powerPanel2.setMaxCurrent(6.0);
     powerPanel2.setMaxVoltage(20.0);
-    powerPanel2.setPort(at.or.reder.zcan20.PowerPort.OUT_2);
-    powerPanel2.setPowerMode(at.or.reder.zcan20.PowerMode.ON);
-
-    powerControlPanel1.setPort(at.or.reder.zcan20.PowerPort.OUT_1);
-
-    powerControlPanel2.setPort(at.or.reder.zcan20.PowerPort.OUT_2);
+    powerPanel2.setPort(at.or.reder.dcc.PowerPort.OUT_2);
+    powerPanel2.setPowerMode(at.or.reder.dcc.PowerMode.ON);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(powerPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(powerPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(powerControlPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-        .addComponent(powerControlPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(powerControlPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGap(27, 27, 27)
+        .addComponent(powerControlPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(powerPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addContainerGap())
+        .addComponent(powerPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addComponent(powerPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
       .addComponent(powerPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
       .addGroup(layout.createSequentialGroup()
-        .addGap(18, 18, 18)
+        .addGap(15, 15, 15)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(powerControlPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
           .addComponent(powerControlPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        .addGap(18, 18, 18))
+        .addGap(15, 15, 15))
     );
   }// </editor-fold>//GEN-END:initComponents
 

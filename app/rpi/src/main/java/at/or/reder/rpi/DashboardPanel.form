@@ -66,7 +66,7 @@
   <SubComponents>
     <Component class="at.or.reder.rpi.PowerControlPanel" name="powerControlPanel1">
       <Properties>
-        <Property name="port" type="at.or.reder.zcan20.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
+        <Property name="port" type="at.or.reder.dcc.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="OUT_1"/>
         </Property>
       </Properties>
@@ -91,7 +91,7 @@
     </Component>
     <Component class="at.or.reder.rpi.PowerControlPanel" name="powerControlPanel2">
       <Properties>
-        <Property name="port" type="at.or.reder.zcan20.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
+        <Property name="port" type="at.or.reder.dcc.PowerPort" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="OUT_2"/>
         </Property>
       </Properties>
