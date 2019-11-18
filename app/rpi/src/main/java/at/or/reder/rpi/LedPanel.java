@@ -102,7 +102,10 @@ public final class LedPanel extends JPanel
     jButton1 = new javax.swing.JButton();
     led1 = new eu.hansolo.steelseries.extras.Led();
 
+    setOpaque(false);
     setLayout(new java.awt.CardLayout());
+
+    jPanel1.setOpaque(false);
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);

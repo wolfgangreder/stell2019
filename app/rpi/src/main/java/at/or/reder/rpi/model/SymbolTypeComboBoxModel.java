@@ -15,7 +15,6 @@
  */
 package at.or.reder.rpi.model;
 
-import at.or.reder.rpi.SymbolType;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.swing.ComboBoxModel;

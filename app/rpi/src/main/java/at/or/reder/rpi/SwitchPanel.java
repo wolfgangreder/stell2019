@@ -20,7 +20,6 @@ import at.or.reder.dcc.AccessoryEventListener;
 import at.or.reder.dcc.LinkState;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import javax.swing.SwingUtilities;
 import org.openide.util.Exceptions;
 
 /**
@@ -75,39 +74,8 @@ public class SwitchPanel extends DevicePanel
     }
   }
 
-  @Override
-  protected void disconnectListener()
-  {
-    if (device != null && eventListener != null) {
-      device.removeAccessoryEventListener(eventListener);
-      eventListener = null;
-    }
-  }
-
-  private void showState(AccessoryEvent evt)
-  {
-    if (evt != null && evt.getDeocder() == getDecoder() && evt.getPort() == getPort()) {
-      state = evt.getValue();
-      lbState.setText(Integer.toString(state));
-      symbolPanel1.setLedState(state == 1 ? LedPanel.LedState.ON : LedPanel.LedState.OFF);
-    }
-  }
-
-  private void switchState()
-  {
-    byte newState = (byte) ((state + 1) & 0x1);
-    try {
-      device.setAccessoryState(getDecoder(),
-                               getPort(),
-                               newState);
-    } catch (IOException ex) {
-      Exceptions.printStackTrace(ex);
-    }
-  }
-
   private void onAccessoryEvent(AccessoryEvent evt)
   {
-    SwingUtilities.invokeLater(() -> showState(evt));
   }
 
   /**
@@ -119,117 +87,13 @@ public class SwitchPanel extends DevicePanel
   private void initComponents()
   {
 
-    jLabel1 = new javax.swing.JLabel();
-    symbolPanel1 = new at.or.reder.rpi.SymbolPanel();
-    jButton1 = new javax.swing.JButton();
-    jButton2 = new javax.swing.JButton();
-    jButton3 = new javax.swing.JButton();
+    marchtrenkPanel1 = new at.or.reder.rpi.MarchtrenkPanel();
 
-    jLabel1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jLabel1.text")); // NOI18N
-
-    symbolPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.OFF);
-    symbolPanel1.setSymbolType(at.or.reder.rpi.SymbolType.W2);
-    symbolPanel1.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        symbolPanel1ActionPerformed(evt);
-      }
-    });
-
-    jButton1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton1.text")); // NOI18N
-    jButton1.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton1ActionPerformed(evt);
-      }
-    });
-
-    jButton2.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton2.text")); // NOI18N
-    jButton2.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton2ActionPerformed(evt);
-      }
-    });
-
-    jButton3.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton3.text")); // NOI18N
-    jButton3.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton3ActionPerformed(evt);
-      }
-    });
-
-    lbState.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.lbState.text")); // NOI18N
-
-    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-    this.setLayout(layout);
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jLabel1)
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(symbolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(29, 29, 29)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(jButton1)
-              .addComponent(jButton2)
-              .addComponent(jButton3)))
-          .addComponent(lbState))
-        .addContainerGap(222, Short.MAX_VALUE))
-    );
-    layout.setVerticalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(jLabel1)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(symbolPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(jButton1)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButton2)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButton3)))
-        .addGap(18, 18, 18)
-        .addComponent(lbState)
-        .addContainerGap(152, Short.MAX_VALUE))
-    );
+    setLayout(new java.awt.BorderLayout());
+    add(marchtrenkPanel1, java.awt.BorderLayout.CENTER);
   }// </editor-fold>//GEN-END:initComponents
 
-  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
-  {//GEN-HEADEREND:event_jButton1ActionPerformed
-    symbolPanel1.setLedState(LedPanel.LedState.OFF);
-  }//GEN-LAST:event_jButton1ActionPerformed
-
-  private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
-  {//GEN-HEADEREND:event_jButton2ActionPerformed
-    symbolPanel1.setLedState(LedPanel.LedState.ON);
-  }//GEN-LAST:event_jButton2ActionPerformed
-
-  private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
-  {//GEN-HEADEREND:event_jButton3ActionPerformed
-    symbolPanel1.setLedState(LedPanel.LedState.BLINK);
-  }//GEN-LAST:event_jButton3ActionPerformed
-
-  private void symbolPanel1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_symbolPanel1ActionPerformed
-  {//GEN-HEADEREND:event_symbolPanel1ActionPerformed
-    switchState();
-  }//GEN-LAST:event_symbolPanel1ActionPerformed
-
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton jButton1;
-  private javax.swing.JButton jButton2;
-  private javax.swing.JButton jButton3;
-  private javax.swing.JLabel jLabel1;
-  private final javax.swing.JLabel lbState = new javax.swing.JLabel();
-  private at.or.reder.rpi.SymbolPanel symbolPanel1;
+  private at.or.reder.rpi.MarchtrenkPanel marchtrenkPanel1;
   // End of variables declaration//GEN-END:variables
 }

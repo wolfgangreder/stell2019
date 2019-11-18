@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.rpi;
+package at.or.reder.rpi.model;
 
 import eu.hansolo.steelseries.tools.LedColor;
 import java.awt.Color;
