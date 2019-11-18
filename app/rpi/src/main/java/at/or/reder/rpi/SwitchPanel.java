@@ -15,10 +15,13 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.zcan20.PacketListener;
-import at.or.reder.zcan20.ZCAN;
-import at.or.reder.zcan20.packet.AccessoryPacketCommandAdapter;
-import at.or.reder.zcan20.packet.Packet;
+import at.or.reder.dcc.AccessoryEvent;
+import at.or.reder.dcc.AccessoryEventListener;
+import at.or.reder.dcc.LinkState;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+import javax.swing.SwingUtilities;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -27,7 +30,8 @@ import at.or.reder.zcan20.packet.Packet;
 public class SwitchPanel extends DevicePanel
 {
 
-  private PacketListener packetListener;
+  private AccessoryEventListener eventListener;
+  private int state;
 
   /**
    * Creates new form SwitchPanel
@@ -37,25 +41,73 @@ public class SwitchPanel extends DevicePanel
     initComponents();
   }
 
+  private short getDecoder()
+  {
+    return 10;
+  }
+
+  private byte getPort()
+  {
+    return 0;
+  }
+
+  @Override
+
+  protected void doLinkStateChanged(LinkState linkState)
+  {
+    if (linkState == LinkState.OPEN && device != null) {
+      try {
+        device.getAccessoryState(getDecoder(),
+                                 getPort(),
+                                 500);
+      } catch (IOException | TimeoutException ex) {
+        Exceptions.printStackTrace(ex);
+      }
+    }
+  }
+
   @Override
   protected void connectListener()
   {
+    if (device != null && eventListener == null) {
+      eventListener = this::onAccessoryEvent;
+      device.addAccessoryEventListener(eventListener);
+    }
   }
 
   @Override
   protected void disconnectListener()
   {
+    if (device != null && eventListener != null) {
+      device.removeAccessoryEventListener(eventListener);
+      eventListener = null;
+    }
   }
 
-  private void onPacket(ZCAN device,
-                        Packet packet)
+  private void showState(AccessoryEvent evt)
   {
-    AccessoryPacketCommandAdapter adapter = packet.getAdapter(AccessoryPacketCommandAdapter.class);
-    if (adapter != null) {
-      System.err.println(adapter.toString());
-    } else {
-      System.err.println(packet.toString());
+    if (evt != null && evt.getDeocder() == getDecoder() && evt.getPort() == getPort()) {
+      state = evt.getValue();
+      lbState.setText(Integer.toString(state));
+      symbolPanel1.setLedState(state == 1 ? LedPanel.LedState.ON : LedPanel.LedState.OFF);
     }
+  }
+
+  private void switchState()
+  {
+    byte newState = (byte) ((state + 1) & 0x1);
+    try {
+      device.setAccessoryState(getDecoder(),
+                               getPort(),
+                               newState);
+    } catch (IOException ex) {
+      Exceptions.printStackTrace(ex);
+    }
+  }
+
+  private void onAccessoryEvent(AccessoryEvent evt)
+  {
+    SwingUtilities.invokeLater(() -> showState(evt));
   }
 
   /**
@@ -77,6 +129,13 @@ public class SwitchPanel extends DevicePanel
 
     symbolPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.OFF);
     symbolPanel1.setSymbolType(at.or.reder.rpi.SymbolType.W2);
+    symbolPanel1.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        symbolPanel1ActionPerformed(evt);
+      }
+    });
 
     jButton1.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.jButton1.text")); // NOI18N
     jButton1.addActionListener(new java.awt.event.ActionListener()
@@ -105,6 +164,8 @@ public class SwitchPanel extends DevicePanel
       }
     });
 
+    lbState.setText(org.openide.util.NbBundle.getMessage(SwitchPanel.class, "SwitchPanel.lbState.text")); // NOI18N
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
@@ -119,7 +180,8 @@ public class SwitchPanel extends DevicePanel
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(jButton1)
               .addComponent(jButton2)
-              .addComponent(jButton3))))
+              .addComponent(jButton3)))
+          .addComponent(lbState))
         .addContainerGap(222, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
@@ -136,7 +198,9 @@ public class SwitchPanel extends DevicePanel
             .addComponent(jButton2)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jButton3)))
-        .addContainerGap(184, Short.MAX_VALUE))
+        .addGap(18, 18, 18)
+        .addComponent(lbState)
+        .addContainerGap(152, Short.MAX_VALUE))
     );
   }// </editor-fold>//GEN-END:initComponents
 
@@ -155,11 +219,17 @@ public class SwitchPanel extends DevicePanel
     symbolPanel1.setLedState(LedPanel.LedState.BLINK);
   }//GEN-LAST:event_jButton3ActionPerformed
 
+  private void symbolPanel1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_symbolPanel1ActionPerformed
+  {//GEN-HEADEREND:event_symbolPanel1ActionPerformed
+    switchState();
+  }//GEN-LAST:event_symbolPanel1ActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton jButton1;
   private javax.swing.JButton jButton2;
   private javax.swing.JButton jButton3;
   private javax.swing.JLabel jLabel1;
+  private final javax.swing.JLabel lbState = new javax.swing.JLabel();
   private at.or.reder.rpi.SymbolPanel symbolPanel1;
   // End of variables declaration//GEN-END:variables
 }

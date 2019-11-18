@@ -12,3 +12,4 @@
 /tools/bootloader.X/dist/
 /rpi/rpi/target/
 /app/rpi/target/
+/app/mcan/target/

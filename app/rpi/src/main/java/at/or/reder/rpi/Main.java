@@ -20,6 +20,7 @@ import at.or.reder.dcc.ControllerProvider;
 import at.or.reder.dcc.LinkState;
 import at.or.reder.dcc.LinkStateListener;
 import at.or.reder.dcc.PropertySet;
+import at.or.reder.zcan20.MX10PropertiesSet;
 import java.awt.CardLayout;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -115,6 +116,10 @@ public final class Main extends JFrame implements ContainerListener
         ControllerProvider provider = getMX10ControllerProvider();
         PropertySet set = provider.getPropertySet();
         Map<String, String> props = set.getDefaultProperties();
+        props.put(MX10PropertiesSet.PROP_HOST,
+                  "230.1.1.1");
+        props.put(MX10PropertiesSet.PROP_OUTPORT,
+                  "14373");
         device = provider.createController(props);
         for (DevicePanel p : devicePanels) {
           p.setDevice(device);

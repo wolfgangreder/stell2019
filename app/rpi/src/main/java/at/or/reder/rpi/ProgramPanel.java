@@ -17,10 +17,7 @@ package at.or.reder.rpi;
 
 import at.or.reder.dcc.CVEvent;
 import at.or.reder.dcc.CVEventListener;
-import at.or.reder.dcc.DecoderType;
-import at.or.reder.dcc.PowerPort;
-import at.or.reder.zcan20.TrackConfig;
-import at.or.reder.zcan20.ZCAN;
+import at.or.reder.dcc.Locomotive;
 import at.or.reder.zcan20.packet.CVInfoAdapter;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -52,35 +49,28 @@ public final class ProgramPanel extends DevicePanel
   @Override
   protected void connectListener()
   {
-    device.addCVEventListener(listener);
+//    device.addCVEventListener(listener);
   }
 
   @Override
   protected void disconnectListener()
   {
     if (device != null) {
-      device.removeCVEventListener(listener);
+//      device.removeCVEventListener(listener);
     }
   }
-
-  private byte mode = 0;
 
   private String readCV()
   {
     if (device != null) {
       try {
-        ZCAN zcan = device.getLookup().lookup(ZCAN.class);
-        TrackConfig trackConfig = zcan.getLookup().lookup(TrackConfig.class);
-//        trackConfig.requestPowerPortMode(PowerPort.OUT_1);
-        trackConfig.enterPowerMode(PowerPort.OUT_1,
-                                   (byte) 9,
-                                   5000);
-        int decoderID = ((Number) spAddress.getValue()).intValue();
-        int cvIndex = ((Number) spCV.getValue()).intValue();
-        int value = device.getCV(DecoderType.LOCO,
-                                 decoderID,
-                                 cvIndex);
-        return Integer.toString(value);
+        short decoderID = ((Number) spAddress.getValue()).shortValue();
+        try (Locomotive loc = device.getLocomotive(decoderID)) {
+          int cvIndex = ((Number) spCV.getValue()).intValue();
+          int value = loc.readCV(cvIndex,
+                                 5000) & 0xff;
+          return Integer.toString(value);
+        }
       } catch (IOException | TimeoutException ex) {
         Exceptions.printStackTrace(ex);
         return "ERR";
