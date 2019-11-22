@@ -20,31 +20,232 @@ import at.or.reder.rpi.model.SymbolType;
 import at.or.reder.rpi.model.TrackElement;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 import javax.swing.JPanel;
 
 public final class SymbolPanel extends JPanel
 {
 
+  public static enum Neighbour
+  {
+    NORTH, EAST, SOUTH, WEST;
+  }
   private SymbolType symbolType = SymbolType.EMPTY;
   private final Set<ActionListener> actionListener = new CopyOnWriteArraySet<>();
   private TrackElement element;
   private SymbolRotation rotation = SymbolRotation.NONE;
-  private final List<Point> endPoints = new ArrayList<>();
-  private final List<Rectangle> bars = new ArrayList<>();
+  private final Set<Integer> endPoints = new HashSet<>();
+  private final Map<SymbolPanel, Set<Integer>> cornerPoints = new HashMap<>();
+  private BufferedImage background;
+  private final Map<Neighbour, SymbolPanel> neighbours = new HashMap<>();
 
   public SymbolPanel()
   {
     initComponents();
+  }
+
+  protected void removeCorner(SymbolPanel panel)
+  {
+    if (panel != null) {
+      cornerPoints.remove(panel);
+    }
+  }
+
+  public void setNeighbour(Neighbour n,
+                           SymbolPanel p)
+  {
+    if (p != this) {
+      SymbolPanel old;
+      if (p != null) {
+        old = neighbours.put(n,
+                             p);
+      } else {
+        old = neighbours.remove(n);
+      }
+      if (old != null) {
+        old.removeCorner(this);
+      }
+      if (old != p) {
+        fixCornerPoints();
+        repaint();
+      }
+    }
+  }
+
+  public SymbolPanel getNorthNeighbour()
+  {
+    return neighbours.get(Neighbour.NORTH);
+  }
+
+  public void setNorthNeighbour(SymbolPanel p)
+  {
+    setNeighbour(Neighbour.NORTH,
+                 p);
+  }
+
+  public SymbolPanel getEastNeighbour()
+  {
+    return neighbours.get(Neighbour.EAST);
+  }
+
+  public void setEastNeighbour(SymbolPanel p)
+  {
+    setNeighbour(Neighbour.EAST,
+                 p);
+  }
+
+  public SymbolPanel getSouthNeighbour()
+  {
+    return neighbours.get(Neighbour.SOUTH);
+  }
+
+  public void setSouthNeighbour(SymbolPanel p)
+  {
+    setNeighbour(Neighbour.SOUTH,
+                 p);
+  }
+
+  public SymbolPanel getWestNeighbour()
+  {
+    return neighbours.get(Neighbour.WEST);
+  }
+
+  public void setWestNeighbour(SymbolPanel p)
+  {
+    setNeighbour(Neighbour.WEST,
+                 p);
+  }
+
+  public void clearCorner()
+  {
+    if (!cornerPoints.isEmpty()) {
+      cornerPoints.clear();
+      repaint();
+    }
+  }
+
+  void addCorner(SymbolPanel panel,
+                 int corner)
+  {
+    if (cornerPoints.computeIfAbsent(panel,
+                                     (p) -> new HashSet<>()).add(corner)) {
+      repaint();
+    }
+  }
+
+  private SymbolPanel findNeighbour(Neighbour n)
+  {
+    Rectangle bounds = getBounds();
+    Container parent = getParent();
+    if (parent == null) {
+      return null;
+    }
+    Component comp = null;
+    switch (n) {
+      case EAST:
+        comp = parent.getComponentAt(bounds.x + bounds.width + 1,
+                                     bounds.y + 1);
+        break;
+      case NORTH:
+        comp = parent.getComponentAt(bounds.x + 1,
+                                     bounds.y - 1);
+        break;
+      case SOUTH:
+        comp = parent.getComponentAt(bounds.x + 1,
+                                     bounds.y + bounds.height + 1);
+        break;
+      case WEST:
+        comp = parent.getComponentAt(bounds.x - 1,
+                                     bounds.y + 1);
+        break;
+    }
+    if (comp instanceof SymbolPanel && comp != this) {
+      return (SymbolPanel) comp;
+    }
+    return null;
+  }
+
+  public void fixCornerPoints()
+  {
+    for (Integer ep : endPoints) {
+      SymbolPanel n;
+      switch (ep) {
+        case 1:
+          n = neighbours.computeIfAbsent(Neighbour.WEST,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        3);
+          }
+          n = neighbours.computeIfAbsent(Neighbour.NORTH,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        6);
+          }
+          break;
+        case 3:
+          n = neighbours.computeIfAbsent(Neighbour.NORTH,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        8);
+          }
+          n = neighbours.computeIfAbsent(Neighbour.EAST,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        1);
+          }
+          break;
+        case 6:
+          n = neighbours.computeIfAbsent(Neighbour.SOUTH,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        1);
+          }
+          n = neighbours.computeIfAbsent(Neighbour.WEST,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        8);
+          }
+          break;
+        case 8:
+          n = neighbours.computeIfAbsent(Neighbour.SOUTH,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        3);
+          }
+          n = neighbours.computeIfAbsent(Neighbour.EAST,
+                                         this::findNeighbour);
+          if (n != null) {
+            n.addCorner(this,
+                        6);
+          }
+          break;
+      }
+    }
   }
 
   public void addActionListener(ActionListener l)
@@ -129,42 +330,7 @@ public final class SymbolPanel extends JPanel
     ledPanel9.setState(symbolType.getVisibleLeds().get(9),
                        symbolType.getButtonColor());
     endPoints.clear();
-    for (Integer l : symbolType.getLines()) {
-      switch (l) {
-        case 1:
-          endPoints.add(new Point(-1,
-                                  -1));
-          break;
-        case 2:
-          endPoints.add(new Point(0,
-                                  -1));
-          break;
-        case 3:
-          endPoints.add(new Point(1,
-                                  -1));
-          break;
-        case 4:
-          endPoints.add(new Point(-1,
-                                  0));
-          break;
-        case 5:
-          endPoints.add(new Point(1,
-                                  0));
-          break;
-        case 6:
-          endPoints.add(new Point(-1,
-                                  1));
-          break;
-        case 7:
-          endPoints.add(new Point(0,
-                                  1));
-          break;
-        case 8:
-          endPoints.add(new Point(1,
-                                  1));
-          break;
-      }
-    }
+    endPoints.addAll(symbolType.getLines());
   }
 //  1  2  3
 //  4  9  5
@@ -197,36 +363,28 @@ public final class SymbolPanel extends JPanel
     for (Integer l : symbolType.getLines()) {
       switch (l) {
         case 6:
-          endPoints.add(new Point(-1,
-                                  -1));
+          endPoints.add(1);
           break;
         case 4:
-          endPoints.add(new Point(0,
-                                  -1));
+          endPoints.add(2);
           break;
         case 1:
-          endPoints.add(new Point(1,
-                                  -1));
+          endPoints.add(3);
           break;
         case 7:
-          endPoints.add(new Point(-1,
-                                  0));
+          endPoints.add(4);
           break;
         case 2:
-          endPoints.add(new Point(1,
-                                  0));
+          endPoints.add(5);
           break;
         case 8:
-          endPoints.add(new Point(-1,
-                                  1));
+          endPoints.add(6);
           break;
         case 5:
-          endPoints.add(new Point(0,
-                                  1));
+          endPoints.add(7);
           break;
         case 3:
-          endPoints.add(new Point(1,
-                                  1));
+          endPoints.add(8);
           break;
       }
     }
@@ -262,36 +420,28 @@ public final class SymbolPanel extends JPanel
     for (Integer l : symbolType.getLines()) {
       switch (l) {
         case 8:
-          endPoints.add(new Point(-1,
-                                  -1));
+          endPoints.add(1);
           break;
         case 7:
-          endPoints.add(new Point(0,
-                                  -1));
+          endPoints.add(2);
           break;
         case 6:
-          endPoints.add(new Point(1,
-                                  -1));
+          endPoints.add(3);
           break;
         case 5:
-          endPoints.add(new Point(-1,
-                                  0));
+          endPoints.add(4);
           break;
         case 4:
-          endPoints.add(new Point(1,
-                                  0));
+          endPoints.add(5);
           break;
         case 3:
-          endPoints.add(new Point(-1,
-                                  1));
+          endPoints.add(6);
           break;
         case 2:
-          endPoints.add(new Point(0,
-                                  1));
+          endPoints.add(7);
           break;
         case 1:
-          endPoints.add(new Point(1,
-                                  1));
+          endPoints.add(8);
           break;
       }
     }
@@ -327,36 +477,28 @@ public final class SymbolPanel extends JPanel
     for (Integer l : symbolType.getLines()) {
       switch (l) {
         case 3:
-          endPoints.add(new Point(-1,
-                                  -1));
+          endPoints.add(1);
           break;
         case 5:
-          endPoints.add(new Point(0,
-                                  -1));
+          endPoints.add(2);
           break;
         case 8:
-          endPoints.add(new Point(1,
-                                  -1));
+          endPoints.add(3);
           break;
         case 2:
-          endPoints.add(new Point(-1,
-                                  0));
+          endPoints.add(4);
           break;
         case 7:
-          endPoints.add(new Point(1,
-                                  0));
+          endPoints.add(5);
           break;
         case 1:
-          endPoints.add(new Point(-1,
-                                  1));
+          endPoints.add(6);
           break;
         case 4:
-          endPoints.add(new Point(0,
-                                  1));
+          endPoints.add(7);
           break;
         case 6:
-          endPoints.add(new Point(1,
-                                  1));
+          endPoints.add(8);
           break;
       }
     }
@@ -381,7 +523,7 @@ public final class SymbolPanel extends JPanel
         setLedsCW270();
         break;
     }
-    buildBars();
+    background = null;
   }
 
   public void setSymbolType(SymbolType symbolType)
@@ -395,30 +537,14 @@ public final class SymbolPanel extends JPanel
   @Override
   protected void paintComponent(Graphics g)
   {
-    if (this.symbolType != null) {
-      Dimension dim = getSize();
-      dim.setSize(dim.getWidth() / 2,
-                  dim.getHeight() / 2);
-      Graphics2D g2 = (Graphics2D) g.create();
-      try {
-        g2.setStroke(new BasicStroke((int) (dim.getHeight() / 6),
-                                     BasicStroke.CAP_BUTT,
-                                     BasicStroke.JOIN_BEVEL));
-        g.setColor(Color.BLACK);
-        for (Point p : endPoints) {
-          System.err.println("dim.width=" + dim.width);
-          System.err.println("dim.height=" + dim.height);
-          System.err.println("end.x=" + (dim.width + (dim.width * p.x)));
-          System.err.println("end.y=" + (dim.height + (dim.height * p.y)));
-
-          g.drawLine(dim.width,
-                     dim.height,
-                     dim.width + (dim.width * p.x),
-                     dim.height + (dim.height * p.y));
-        }
-      } finally {
-        g2.dispose();
-      }
+    if (background == null) {
+      buildBackground();
+    }
+    if (background != null) {
+      g.drawImage(background,
+                  0,
+                  0,
+                  null);
     }
   }
 
@@ -426,21 +552,200 @@ public final class SymbolPanel extends JPanel
   public void setBounds(int x,
                         int y,
                         int width,
-                        int height
-  )
+                        int height)
   {
-//    int wh = Math.min(width,
-//                      height);
     super.setBounds(x,
                     y,
                     width,
                     height);
-    buildBars();
+    background = null;
   }
 
-  private void buildBars()
+  private Polygon buildPolygon(double... points)
   {
+    int numPoints = points.length / 2;
+    int[] x = new int[numPoints];
+    int[] y = new int[numPoints];
+    for (int i = 0; i < numPoints; ++i) {
+      x[i] = (int) points[2 * i];
+      y[i] = (int) points[2 * i + 1];
+    }
+    return new Polygon(x,
+                       y,
+                       numPoints);
+  }
 
+  private void drawCorner(Graphics2D g,
+                          Dimension dim,
+                          int corner)
+  {
+    double w = (dim.getHeight() / 2 - 1) / 3;
+    double phi = Math.atan2(dim.getHeight(),
+                            dim.getWidth());
+    Polygon p = null;
+    Color savedColor = g.getColor();
+    Color color = savedColor;
+    switch (corner) {
+      case 1:
+        p = buildPolygon(0,
+                         0,
+                         0,
+                         w * Math.sin(phi),
+                         w * Math.cos(phi),
+                         0);
+//        color = Color.RED;
+        break;
+      case 3:
+        p = buildPolygon(dim.getWidth(),
+                         0,
+                         dim.getWidth(),
+                         w * Math.sin(phi),
+                         dim.getWidth() - w * Math.cos(phi),
+                         0);
+//        color = Color.GREEN;
+        break;
+      case 6:
+        p = buildPolygon(0,
+                         dim.getHeight(),
+                         0,
+                         dim.getHeight() - w * Math.sin(phi),
+                         w * Math.cos(phi),
+                         dim.getHeight());
+//        color = Color.BLUE;
+        break;
+      case 8:
+        p = buildPolygon(dim.getWidth(),
+                         dim.getHeight(),
+                         dim.getWidth(),
+                         dim.getHeight() - w * Math.sin(phi),
+                         dim.getWidth() - w * Math.cos(phi),
+                         dim.getHeight());
+//        color = Color.WHITE;
+        break;
+    }
+    try {
+      if (p != null) {
+        g.setColor(color);
+        g.drawPolygon(p);
+        g.fillPolygon(p);
+      }
+    } finally {
+      g.setColor(savedColor);
+    }
+  }
+
+  private void drawEndPoint(Graphics2D g,
+                            Dimension dim,
+                            int endPoint)
+  {
+    double cy = dim.getHeight() / 2 - 1;
+    double cx = dim.getWidth() / 2;
+    double w = cy / 3;
+    Polygon p = null;
+    Stroke savedStroke = g.getStroke();
+    g.setStroke(new BasicStroke((float) w,
+                                BasicStroke.CAP_ROUND,
+                                BasicStroke.JOIN_ROUND));
+    switch (endPoint) {
+      case 1:
+        p = buildPolygon(-1,
+                         -1,
+                         cx,
+                         cy);
+        break;
+      case 2:
+        p = buildPolygon(cx,
+                         -1,
+                         cx,
+                         cy);
+        break;
+      case 3:
+        p = buildPolygon(dim.getWidth() + 1,
+                         -1,
+                         cx,
+                         cy);
+        break;
+      case 4:
+        p = buildPolygon(-1,
+                         cy,
+                         cx,
+                         cy);
+        break;
+      case 5:
+        p = buildPolygon(dim.getWidth() + 1,
+                         cy,
+                         cx,
+                         cy);
+        break;
+      case 6:
+        p = buildPolygon(-1,
+                         dim.getHeight() + 1,
+                         cx,
+                         cy);
+        break;
+      case 7:
+        p = buildPolygon(cx,
+                         dim.getHeight() + 1,
+                         cx,
+                         cy);
+        break;
+      case 8:
+        p = buildPolygon(dim.getWidth() + 1,
+                         dim.getHeight() + 1,
+                         cx,
+                         cy);
+        break;
+    }
+    try {
+      if (p != null) {
+        g.drawPolygon(p);
+      }
+    } finally {
+      g.setStroke(savedStroke);
+    }
+  }
+
+  private void buildBackground()
+  {
+    Dimension dim = getSize();
+    background = new BufferedImage(dim.width,
+                                   dim.height,
+                                   BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = background.createGraphics();
+    try {
+      g.setColor(getForeground());
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+//      g.drawRect(0,
+//                 0,
+//                 dim.width - 1,
+//                 dim.height - 1);
+      for (Integer p : endPoints) {
+        drawEndPoint(g,
+                     dim,
+                     p);
+      }
+      List<Integer> cp = cornerPoints.values().stream().
+              flatMap((s) -> s.stream()).
+              collect(Collectors.toList());
+      for (Integer e : cp) {
+        drawCorner(g,
+                   dim,
+                   e);
+      }
+    } finally {
+      g.dispose();
+    }
+  }
+
+  private void fireAction()
+  {
+    ActionEvent e = new ActionEvent(this,
+                                    ActionEvent.ACTION_FIRST,
+                                    "ButtonPressed");
+    for (ActionListener l : actionListener) {
+      l.actionPerformed(e);
+    }
   }
 
   /**
@@ -454,9 +759,16 @@ public final class SymbolPanel extends JPanel
 
     setMinimumSize(new java.awt.Dimension(50, 50));
     setPreferredSize(new java.awt.Dimension(75, 75));
+    addMouseListener(new java.awt.event.MouseAdapter()
+    {
+      public void mouseClicked(java.awt.event.MouseEvent evt)
+      {
+        formMouseClicked(evt);
+      }
+    });
     setLayout(new java.awt.GridLayout(3, 3));
 
-    ledPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.ON);
+    ledPanel1.setLedState(at.or.reder.rpi.LedPanel.LedState.OFF);
     add(ledPanel1);
     add(ledPanel2);
     add(ledPanel3);
@@ -478,11 +790,15 @@ public final class SymbolPanel extends JPanel
 
   private void ledPanel9ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ledPanel9ActionPerformed
   {//GEN-HEADEREND:event_ledPanel9ActionPerformed
-    evt.setSource(this);
-    for (ActionListener l : actionListener) {
-      l.actionPerformed(evt);
-    }
+    fireAction();
   }//GEN-LAST:event_ledPanel9ActionPerformed
+
+  private void formMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_formMouseClicked
+  {//GEN-HEADEREND:event_formMouseClicked
+    if (symbolType.getButtonColor() != null) {
+      fireAction();
+    }
+  }//GEN-LAST:event_formMouseClicked
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private final at.or.reder.rpi.LedPanel ledPanel1 = new at.or.reder.rpi.LedPanel();

@@ -205,6 +205,8 @@ public final class Main extends JFrame implements ContainerListener
       }
     });
 
+    jPanel1.setMinimumSize(new java.awt.Dimension(894, 35));
+    jPanel1.setPreferredSize(new java.awt.Dimension(894, 35));
     jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
     buttonGroup1.add(btDashboard);

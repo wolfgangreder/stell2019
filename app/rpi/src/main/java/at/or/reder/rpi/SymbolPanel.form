@@ -9,6 +9,9 @@
       <Dimension value="[75, 75]"/>
     </Property>
   </Properties>
+  <Events>
+    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="formMouseClicked"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -30,7 +33,7 @@
     <Component class="at.or.reder.rpi.LedPanel" name="ledPanel1">
       <Properties>
         <Property name="ledState" type="at.or.reder.rpi.LedPanel$LedState" editor="org.netbeans.modules.form.editors.EnumEditor">
-          <Value id="ON"/>
+          <Value id="OFF"/>
         </Property>
       </Properties>
       <AuxValues>

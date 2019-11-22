@@ -15,19 +15,44 @@
  */
 package at.or.reder.rpi;
 
+import java.awt.Component;
+
 /**
  *
  * @author Wolfgang Reder
  */
-public class MarchtrenkPanel extends javax.swing.JPanel
+public final class APanel extends javax.swing.JPanel
 {
 
   /**
    * Creates new form MarchtrenkPanel
    */
-  public MarchtrenkPanel()
+  public APanel()
   {
     initComponents();
+  }
+
+  private void fixCornerPoints()
+  {
+    for (int i = 0; i < getComponentCount(); ++i) {
+      Component c = getComponent(i);
+      if (c instanceof SymbolPanel) {
+        ((SymbolPanel) c).fixCornerPoints();
+      }
+    }
+  }
+
+  @Override
+  public void setBounds(int x,
+                        int y,
+                        int w,
+                        int h)
+  {
+    super.setBounds(x,
+                    y,
+                    w,
+                    h);
+    fixCornerPoints();
   }
 
   /**
@@ -40,456 +65,524 @@ public class MarchtrenkPanel extends javax.swing.JPanel
   {
     java.awt.GridBagConstraints gridBagConstraints;
 
-    symbolPanel1 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel33 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel2 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel3 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel4 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel5 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel6 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel7 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel8 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel9 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel10 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel11 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel12 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel13 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel14 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel15 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel16 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel17 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel18 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel19 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel20 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel21 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel22 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel23 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel24 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel25 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel26 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel27 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel32 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel31 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel30 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel29 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel28 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel34 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel35 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel36 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel37 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel38 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel39 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel40 = new at.or.reder.rpi.SymbolPanel();
-    symbolPanel41 = new at.or.reder.rpi.SymbolPanel();
+    e6 = new at.or.reder.rpi.SymbolPanel();
+    e8 = new at.or.reder.rpi.SymbolPanel();
+    e4 = new at.or.reder.rpi.SymbolPanel();
 
     setLayout(new java.awt.GridBagLayout());
 
-    symbolPanel1.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
+    k7.setName("K7"); // NOI18N
+    k7.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel1, gridBagConstraints);
+    add(k7, gridBagConstraints);
 
-    symbolPanel33.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
+    as7.setName("AS7"); // NOI18N
+    as7.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel33, gridBagConstraints);
+    add(as7, gridBagConstraints);
 
-    symbolPanel2.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
-    symbolPanel2.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
+    w6.setEastNeighbour(g107_1);
+    w6.setName("W6"); // NOI18N
+    w6.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
+    w6.setSouthNeighbour(as5);
+    w6.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel2, gridBagConstraints);
+    add(w6, gridBagConstraints);
 
-    symbolPanel3.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g107_1.setName("G107.1"); // NOI18N
+    g107_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel3, gridBagConstraints);
+    add(g107_1, gridBagConstraints);
 
-    symbolPanel4.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
+    k5.setName("K5"); // NOI18N
+    k5.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel4, gridBagConstraints);
+    add(k5, gridBagConstraints);
 
-    symbolPanel5.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g5_1.setName("G5.1"); // NOI18N
+    g5_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel5, gridBagConstraints);
+    add(g5_1, gridBagConstraints);
 
-    symbolPanel6.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
+    as5.setName("AS5"); // NOI18N
+    as5.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel6, gridBagConstraints);
+    add(as5, gridBagConstraints);
 
-    symbolPanel7.setSymbolType(at.or.reder.rpi.model.SymbolType.D2);
+    g103.setName("G103"); // NOI18N
+    g103.setSymbolType(at.or.reder.rpi.model.SymbolType.D2);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 2;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel7, gridBagConstraints);
+    add(g103, gridBagConstraints);
 
-    symbolPanel8.setSymbolType(at.or.reder.rpi.model.SymbolType.W4);
+    w5.setEastNeighbour(e5);
+    w5.setName("W5"); // NOI18N
+    w5.setSouthNeighbour(g3_2);
+    w5.setSymbolType(at.or.reder.rpi.model.SymbolType.W4);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel8, gridBagConstraints);
+    add(w5, gridBagConstraints);
 
-    symbolPanel9.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
-    symbolPanel9.setSymbolType(at.or.reder.rpi.model.SymbolType.B1);
+    g3_2.setEastNeighbour(g103);
+    g3_2.setName("G3.2"); // NOI18N
+    g3_2.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
+    g3_2.setSouthNeighbour(as1);
+    g3_2.setSymbolType(at.or.reder.rpi.model.SymbolType.B1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 2;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel9, gridBagConstraints);
+    add(g3_2, gridBagConstraints);
 
-    symbolPanel10.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
+    as3.setName("AS3"); // NOI18N
+    as3.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 2;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel10, gridBagConstraints);
+    add(as3, gridBagConstraints);
 
-    symbolPanel11.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g3_1.setName("G3.1"); // NOI18N
+    g3_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 2;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel11, gridBagConstraints);
+    add(g3_1, gridBagConstraints);
 
-    symbolPanel12.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
+    k3.setName("K3"); // NOI18N
+    k3.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 2;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel12, gridBagConstraints);
+    add(k3, gridBagConstraints);
 
-    symbolPanel13.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g107_2.setName("G107.2"); // NOI18N
+    g107_2.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel13, gridBagConstraints);
+    add(g107_2, gridBagConstraints);
 
-    symbolPanel14.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
+    k1.setName("K1"); // NOI18N
+    k1.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel14, gridBagConstraints);
+    add(k1, gridBagConstraints);
 
-    symbolPanel15.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g1_1.setName("G1.1"); // NOI18N
+    g1_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel15, gridBagConstraints);
+    add(g1_1, gridBagConstraints);
 
-    symbolPanel16.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g1_2.setName("G1.2"); // NOI18N
+    g1_2.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel16, gridBagConstraints);
+    add(g1_2, gridBagConstraints);
 
-    symbolPanel17.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
+    as1.setName("AS1"); // NOI18N
+    as1.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel17, gridBagConstraints);
+    add(as1, gridBagConstraints);
 
-    symbolPanel18.setSymbolType(at.or.reder.rpi.model.SymbolType.K2);
+    w4.setEastNeighbour(w3);
+    w4.setName("W4"); // NOI18N
+    w4.setNorthNeighbour(g103);
+    w4.setSouthNeighbour(as2);
+    w4.setSymbolType(at.or.reder.rpi.model.SymbolType.K2);
+    w4.setWestNeighbour(as1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel18, gridBagConstraints);
+    add(w4, gridBagConstraints);
 
-    symbolPanel19.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
+    w3.setName("W3"); // NOI18N
+    w3.setNorthNeighbour(e3);
+    w3.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
+    w3.setWestNeighbour(w4);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 5;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel19, gridBagConstraints);
+    add(w3, gridBagConstraints);
 
-    symbolPanel20.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
+    as2.setName("AS2"); // NOI18N
+    as2.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel20, gridBagConstraints);
+    add(as2, gridBagConstraints);
 
-    symbolPanel21.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g2_4.setName("G2.4"); // NOI18N
+    g2_4.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel21, gridBagConstraints);
+    add(g2_4, gridBagConstraints);
 
-    symbolPanel22.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g2_3.setName("G2.3"); // NOI18N
+    g2_3.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel22, gridBagConstraints);
+    add(g2_3, gridBagConstraints);
 
-    symbolPanel23.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g2_2.setName("G2.2"); // NOI18N
+    g2_2.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel23, gridBagConstraints);
+    add(g2_2, gridBagConstraints);
 
-    symbolPanel24.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g2_1.setName("G2.1"); // NOI18N
+    g2_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel24, gridBagConstraints);
+    add(g2_1, gridBagConstraints);
 
-    symbolPanel25.setSymbolType(at.or.reder.rpi.model.SymbolType.W2);
+    w9.setName("W9"); // NOI18N
+    w9.setSouthNeighbour(e6);
+    w9.setSymbolType(at.or.reder.rpi.model.SymbolType.W2);
+    w9.setWestNeighbour(as4);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 5;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel25, gridBagConstraints);
+    add(w9, gridBagConstraints);
 
-    symbolPanel26.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
+    as4.setName("AS4"); // NOI18N
+    as4.setSymbolType(at.or.reder.rpi.model.SymbolType.S1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 5;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel26, gridBagConstraints);
+    add(as4, gridBagConstraints);
 
-    symbolPanel27.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
-    symbolPanel27.setSymbolType(at.or.reder.rpi.model.SymbolType.W3);
+    w10.setName("W10"); // NOI18N
+    w10.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
+    w10.setSouthNeighbour(e8);
+    w10.setSymbolType(at.or.reder.rpi.model.SymbolType.W3);
+    w10.setWestNeighbour(g6);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 2;
     gridBagConstraints.gridy = 6;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel27, gridBagConstraints);
+    add(w10, gridBagConstraints);
 
-    symbolPanel32.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g6.setName("G6"); // NOI18N
+    g6.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 6;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel32, gridBagConstraints);
+    add(g6, gridBagConstraints);
 
-    symbolPanel31.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
-    symbolPanel31.setSymbolType(at.or.reder.rpi.model.SymbolType.DW1);
+    w8.setName("W8"); // NOI18N
+    w8.setNorthNeighbour(w3);
+    w8.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
+    w8.setSouthNeighbour(e4);
+    w8.setSymbolType(at.or.reder.rpi.model.SymbolType.DW1);
+    w8.setWestNeighbour(as2);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 5;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel31, gridBagConstraints);
+    add(w8, gridBagConstraints);
 
-    symbolPanel30.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
-    symbolPanel30.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
+    w1.setEastNeighbour(es1);
+    w1.setName("W1"); // NOI18N
+    w1.setRotation(at.or.reder.rpi.model.SymbolRotation.CW180);
+    w1.setSouthNeighbour(g2_5);
+    w1.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 7;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel30, gridBagConstraints);
+    add(w1, gridBagConstraints);
 
-    symbolPanel29.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
+    k1_1.setName("K1.1"); // NOI18N
+    k1_1.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 6;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel29, gridBagConstraints);
+    add(k1_1, gridBagConstraints);
 
-    symbolPanel28.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
+    k2.setName("K2"); // NOI18N
+    k2.setSymbolType(at.or.reder.rpi.model.SymbolType.F1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 6;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel28, gridBagConstraints);
+    add(k2, gridBagConstraints);
 
-    symbolPanel34.setSymbolType(at.or.reder.rpi.model.SymbolType.B2);
+    g4_3.setEastNeighbour(e4);
+    g4_3.setName("G4.3"); // NOI18N
+    g4_3.setNorthNeighbour(as2);
+    g4_3.setSymbolType(at.or.reder.rpi.model.SymbolType.B2);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 4;
     gridBagConstraints.gridy = 5;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel34, gridBagConstraints);
+    add(g4_3, gridBagConstraints);
 
-    symbolPanel35.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g2_5.setName("G2.5"); // NOI18N
+    g2_5.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 7;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel35, gridBagConstraints);
+    add(g2_5, gridBagConstraints);
 
-    symbolPanel36.setSymbolType(at.or.reder.rpi.model.SymbolType.S2);
+    es1.setName("ES1"); // NOI18N
+    es1.setSymbolType(at.or.reder.rpi.model.SymbolType.S2);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 8;
     gridBagConstraints.gridy = 3;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel36, gridBagConstraints);
+    add(es1, gridBagConstraints);
 
-    symbolPanel37.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
+    w7.setName("W7"); // NOI18N
+    w7.setNorthNeighbour(es1);
+    w7.setSymbolType(at.or.reder.rpi.model.SymbolType.W1);
+    w7.setWestNeighbour(g2_5);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 8;
     gridBagConstraints.gridy = 4;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel37, gridBagConstraints);
+    add(w7, gridBagConstraints);
 
-    symbolPanel38.setSymbolType(at.or.reder.rpi.model.SymbolType.B2);
+    g8_2.setEastNeighbour(e8);
+    g8_2.setName("G8.2"); // NOI18N
+    g8_2.setNorthNeighbour(g6);
+    g8_2.setSymbolType(at.or.reder.rpi.model.SymbolType.B2);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 7;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel38, gridBagConstraints);
+    add(g8_2, gridBagConstraints);
 
-    symbolPanel39.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g8_1.setName("G8.1"); // NOI18N
+    g8_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 7;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel39, gridBagConstraints);
+    add(g8_1, gridBagConstraints);
 
-    symbolPanel40.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g4_1.setName("G4.1"); // NOI18N
+    g4_1.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 5;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel40, gridBagConstraints);
+    add(g4_1, gridBagConstraints);
 
-    symbolPanel41.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
+    g4_2.setName("G4.2"); // NOI18N
+    g4_2.setSymbolType(at.or.reder.rpi.model.SymbolType.G1);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 5;
     gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
     gridBagConstraints.weightx = 0.1428;
     gridBagConstraints.weighty = 0.1428;
-    add(symbolPanel41, gridBagConstraints);
+    add(g4_2, gridBagConstraints);
+
+    e5.setName("EG5"); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 4;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    add(e5, gridBagConstraints);
+
+    e6.setName("EG6"); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 3;
+    gridBagConstraints.gridy = 6;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    add(e6, gridBagConstraints);
+
+    e8.setName("EG8"); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 7;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    add(e8, gridBagConstraints);
+
+    e4.setName("EG4"); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 5;
+    gridBagConstraints.gridy = 5;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    add(e4, gridBagConstraints);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 5;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    add(e3, gridBagConstraints);
   }// </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private at.or.reder.rpi.SymbolPanel symbolPanel1;
-  private at.or.reder.rpi.SymbolPanel symbolPanel10;
-  private at.or.reder.rpi.SymbolPanel symbolPanel11;
-  private at.or.reder.rpi.SymbolPanel symbolPanel12;
-  private at.or.reder.rpi.SymbolPanel symbolPanel13;
-  private at.or.reder.rpi.SymbolPanel symbolPanel14;
-  private at.or.reder.rpi.SymbolPanel symbolPanel15;
-  private at.or.reder.rpi.SymbolPanel symbolPanel16;
-  private at.or.reder.rpi.SymbolPanel symbolPanel17;
-  private at.or.reder.rpi.SymbolPanel symbolPanel18;
-  private at.or.reder.rpi.SymbolPanel symbolPanel19;
-  private at.or.reder.rpi.SymbolPanel symbolPanel2;
-  private at.or.reder.rpi.SymbolPanel symbolPanel20;
-  private at.or.reder.rpi.SymbolPanel symbolPanel21;
-  private at.or.reder.rpi.SymbolPanel symbolPanel22;
-  private at.or.reder.rpi.SymbolPanel symbolPanel23;
-  private at.or.reder.rpi.SymbolPanel symbolPanel24;
-  private at.or.reder.rpi.SymbolPanel symbolPanel25;
-  private at.or.reder.rpi.SymbolPanel symbolPanel26;
-  private at.or.reder.rpi.SymbolPanel symbolPanel27;
-  private at.or.reder.rpi.SymbolPanel symbolPanel28;
-  private at.or.reder.rpi.SymbolPanel symbolPanel29;
-  private at.or.reder.rpi.SymbolPanel symbolPanel3;
-  private at.or.reder.rpi.SymbolPanel symbolPanel30;
-  private at.or.reder.rpi.SymbolPanel symbolPanel31;
-  private at.or.reder.rpi.SymbolPanel symbolPanel32;
-  private at.or.reder.rpi.SymbolPanel symbolPanel33;
-  private at.or.reder.rpi.SymbolPanel symbolPanel34;
-  private at.or.reder.rpi.SymbolPanel symbolPanel35;
-  private at.or.reder.rpi.SymbolPanel symbolPanel36;
-  private at.or.reder.rpi.SymbolPanel symbolPanel37;
-  private at.or.reder.rpi.SymbolPanel symbolPanel38;
-  private at.or.reder.rpi.SymbolPanel symbolPanel39;
-  private at.or.reder.rpi.SymbolPanel symbolPanel4;
-  private at.or.reder.rpi.SymbolPanel symbolPanel40;
-  private at.or.reder.rpi.SymbolPanel symbolPanel41;
-  private at.or.reder.rpi.SymbolPanel symbolPanel5;
-  private at.or.reder.rpi.SymbolPanel symbolPanel6;
-  private at.or.reder.rpi.SymbolPanel symbolPanel7;
-  private at.or.reder.rpi.SymbolPanel symbolPanel8;
-  private at.or.reder.rpi.SymbolPanel symbolPanel9;
+  private final at.or.reder.rpi.SymbolPanel as1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel as2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel as3 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel as4 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel as5 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel as7 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel e3 = new at.or.reder.rpi.SymbolPanel();
+  private at.or.reder.rpi.SymbolPanel e4;
+  private final at.or.reder.rpi.SymbolPanel e5 = new at.or.reder.rpi.SymbolPanel();
+  private at.or.reder.rpi.SymbolPanel e6;
+  private at.or.reder.rpi.SymbolPanel e8;
+  private final at.or.reder.rpi.SymbolPanel es1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g103 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g107_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g107_2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g1_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g1_2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g2_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g2_2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g2_3 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g2_4 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g2_5 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g3_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g3_2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g4_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g4_2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g4_3 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g5_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g6 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g8_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel g8_2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel k1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel k1_1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel k2 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel k3 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel k5 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel k7 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w1 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w10 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w3 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w4 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w5 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w6 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w7 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w8 = new at.or.reder.rpi.SymbolPanel();
+  private final at.or.reder.rpi.SymbolPanel w9 = new at.or.reder.rpi.SymbolPanel();
   // End of variables declaration//GEN-END:variables
 }

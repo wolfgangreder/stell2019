@@ -87,13 +87,13 @@ public class SwitchPanel extends DevicePanel
   private void initComponents()
   {
 
-    marchtrenkPanel1 = new at.or.reder.rpi.MarchtrenkPanel();
+    marchtrenkPanel1 = new at.or.reder.rpi.APanel();
 
     setLayout(new java.awt.BorderLayout());
     add(marchtrenkPanel1, java.awt.BorderLayout.CENTER);
   }// </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private at.or.reder.rpi.MarchtrenkPanel marchtrenkPanel1;
+  private at.or.reder.rpi.APanel marchtrenkPanel1;
   // End of variables declaration//GEN-END:variables
 }

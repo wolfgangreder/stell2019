@@ -16,510 +16,808 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
   <SubComponents>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel1">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="k7">
       <Properties>
+        <Property name="name" type="java.lang.String" value="K7" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="F1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel33">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="as7">
       <Properties>
+        <Property name="name" type="java.lang.String" value="AS7" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel2">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w6">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g107_1"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="W6" noResource="true"/>
         <Property name="rotation" type="at.or.reder.rpi.model.SymbolRotation" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="CW180"/>
+        </Property>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as5"/>
         </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel3">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g107_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G107.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel4">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="k5">
       <Properties>
+        <Property name="name" type="java.lang.String" value="K5" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="F1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel5">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g5_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G5.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel6">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="as5">
       <Properties>
+        <Property name="name" type="java.lang.String" value="AS5" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel7">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g103">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G103" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="D2"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="4" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel8">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w5">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e5"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="W5" noResource="true"/>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g3_2"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W4"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel9">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g3_2">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g103"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="G3.2" noResource="true"/>
         <Property name="rotation" type="at.or.reder.rpi.model.SymbolRotation" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="CW180"/>
+        </Property>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as1"/>
         </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="B1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel10">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="as3">
       <Properties>
+        <Property name="name" type="java.lang.String" value="AS3" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel11">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g3_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G3.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel12">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="k3">
       <Properties>
+        <Property name="name" type="java.lang.String" value="K3" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="F1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel13">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g107_2">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G107.2" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel14">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="k1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="K1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="F1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel15">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g1_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G1.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel16">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g1_2">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G1.2" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel17">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="as1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="AS1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel18">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w4">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="w3"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="W4" noResource="true"/>
+        <Property name="northNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g103"/>
+        </Property>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as2"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="K2"/>
         </Property>
+        <Property name="westNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as1"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="4" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel19">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w3">
       <Properties>
+        <Property name="name" type="java.lang.String" value="W3" noResource="true"/>
+        <Property name="northNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e3"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W1"/>
         </Property>
+        <Property name="westNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="w4"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="5" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel20">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="as2">
       <Properties>
+        <Property name="name" type="java.lang.String" value="AS2" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="4" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel21">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g2_4">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G2.4" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel22">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g2_3">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G2.3" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel23">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g2_2">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G2.2" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel24">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g2_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G2.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel25">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w9">
       <Properties>
+        <Property name="name" type="java.lang.String" value="W9" noResource="true"/>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e6"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W2"/>
         </Property>
+        <Property name="westNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as4"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="5" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel26">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="as4">
       <Properties>
+        <Property name="name" type="java.lang.String" value="AS4" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="5" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel27">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w10">
       <Properties>
+        <Property name="name" type="java.lang.String" value="W10" noResource="true"/>
         <Property name="rotation" type="at.or.reder.rpi.model.SymbolRotation" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="CW180"/>
+        </Property>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e8"/>
         </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W3"/>
         </Property>
+        <Property name="westNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g6"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="6" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel32">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g6">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G6" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="6" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel31">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w8">
       <Properties>
+        <Property name="name" type="java.lang.String" value="W8" noResource="true"/>
+        <Property name="northNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="w3"/>
+        </Property>
         <Property name="rotation" type="at.or.reder.rpi.model.SymbolRotation" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="CW180"/>
+        </Property>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e4"/>
         </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="DW1"/>
         </Property>
+        <Property name="westNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as2"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="5" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel30">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w1">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="es1"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="W1" noResource="true"/>
         <Property name="rotation" type="at.or.reder.rpi.model.SymbolRotation" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="CW180"/>
+        </Property>
+        <Property name="southNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g2_5"/>
         </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="7" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel29">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="k1_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="K1.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="F1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="6" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel28">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="k2">
       <Properties>
+        <Property name="name" type="java.lang.String" value="K2" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="F1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="6" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel34">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g4_3">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e4"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="G4.3" noResource="true"/>
+        <Property name="northNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="as2"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="B2"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="4" gridY="5" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel35">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g2_5">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G2.5" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="7" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel36">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="es1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="ES1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="S2"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="8" gridY="3" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel37">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="w7">
       <Properties>
+        <Property name="name" type="java.lang.String" value="W7" noResource="true"/>
+        <Property name="northNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="es1"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="W1"/>
         </Property>
+        <Property name="westNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g2_5"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="8" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel38">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g8_2">
       <Properties>
+        <Property name="eastNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="e8"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="G8.2" noResource="true"/>
+        <Property name="northNeighbour" type="at.or.reder.rpi.SymbolPanel" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="g6"/>
+        </Property>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="B2"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="7" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel39">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g8_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G8.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="7" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel40">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g4_1">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G4.1" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="5" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="at.or.reder.rpi.SymbolPanel" name="symbolPanel41">
+    <Component class="at.or.reder.rpi.SymbolPanel" name="g4_2">
       <Properties>
+        <Property name="name" type="java.lang.String" value="G4.2" noResource="true"/>
         <Property name="symbolType" type="at.or.reder.rpi.model.SymbolType" editor="org.netbeans.modules.form.editors.EnumEditor">
           <Value id="G1"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="5" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.1428" weightY="0.1428"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="at.or.reder.rpi.SymbolPanel" name="e5">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="EG5" noResource="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="4" gridY="1" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="at.or.reder.rpi.SymbolPanel" name="e6">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="EG6" noResource="true"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="3" gridY="6" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="at.or.reder.rpi.SymbolPanel" name="e8">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="EG8" noResource="true"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="2" gridY="7" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="at.or.reder.rpi.SymbolPanel" name="e4">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="EG4" noResource="true"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="5" gridY="5" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Component class="at.or.reder.rpi.SymbolPanel" name="e3">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="5" gridY="2" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
         </Constraint>
       </Constraints>
     </Component>
