@@ -253,10 +253,56 @@ public enum SymbolType
      null,
      Color.RED,
      Arrays.asList(4,
-                   5));
+                   5)),
+  WGT(null,
+      LedColor.YELLOW_LED,
+      null,
+      null,
+      null,
+      null,
+      null,
+      (Color) new Color(0x006ad9),
+      Collections.emptyList(),
+      true,
+      "WGT"),
+  FHT(null,
+      LedColor.YELLOW_LED,
+      null,
+      null,
+      null,
+      null,
+      null,
+      (Color) new Color(0x00a933C),
+      Collections.emptyList(),
+      true,
+      "FHT"),
+  HAGT(null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       (Color) new Color(0xff0000),
+       Collections.emptyList(),
+       true,
+       "HAGT"),
+  SGT(null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      (Color) new Color(0xff0000),
+      Collections.emptyList(),
+      true,
+      "SGT");
   private final Map<Integer, LedColor> visibleLeds;
   private final Color buttonColor;
   private final Set<Integer> lines;
+  private final boolean specialPainting;
+  private final String label;
 
   private SymbolType(LedColor led1,
                      LedColor led2,
@@ -267,6 +313,32 @@ public enum SymbolType
                      LedColor led8,
                      Color buttonColor,
                      Collection<Integer> lines)
+
+  {
+    this(led1,
+         led2,
+         led3,
+         led4,
+         led5,
+         led6,
+         led8,
+         buttonColor,
+         lines,
+         false,
+         null);
+  }
+
+  private SymbolType(LedColor led1,
+                     LedColor led2,
+                     LedColor led3,
+                     LedColor led4,
+                     LedColor led5,
+                     LedColor led6,
+                     LedColor led8,
+                     Color buttonColor,
+                     Collection<Integer> lines,
+                     boolean specialPainting,
+                     String label)
   {
     this.lines = Collections.unmodifiableSet(new HashSet<>(lines));
     Map<Integer, LedColor> map = new HashMap<>();
@@ -300,6 +372,8 @@ public enum SymbolType
     }
     this.visibleLeds = Collections.unmodifiableMap(map);
     this.buttonColor = buttonColor;
+    this.specialPainting = specialPainting;
+    this.label = label != null ? label : name();
   }
 
   private SymbolType(LedColor led1,
@@ -311,6 +385,31 @@ public enum SymbolType
                      LedColor led8,
                      LedColor led9,
                      Collection<Integer> lines)
+  {
+    this(led1,
+         led2,
+         led3,
+         led4,
+         led5,
+         led6,
+         led8,
+         led9,
+         lines,
+         false,
+         null);
+  }
+
+  private SymbolType(LedColor led1,
+                     LedColor led2,
+                     LedColor led3,
+                     LedColor led4,
+                     LedColor led5,
+                     LedColor led6,
+                     LedColor led8,
+                     LedColor led9,
+                     Collection<Integer> lines,
+                     boolean specialPainting,
+                     String label)
   {
     this.lines = Collections.unmodifiableSet(new HashSet<>(lines));
     Map<Integer, LedColor> map = new HashMap<>();
@@ -348,6 +447,8 @@ public enum SymbolType
     }
     this.visibleLeds = Collections.unmodifiableMap(map);
     this.buttonColor = null;
+    this.specialPainting = specialPainting;
+    this.label = label != null ? label : name();
   }
 
   public Map<Integer, LedColor> getVisibleLeds()
@@ -363,6 +464,16 @@ public enum SymbolType
   public Set<Integer> getLines()
   {
     return lines;
+  }
+
+  public boolean isSpecialPainting()
+  {
+    return specialPainting;
+  }
+
+  public String getLabel()
+  {
+    return label;
   }
 
 }

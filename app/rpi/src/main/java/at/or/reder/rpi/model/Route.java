@@ -35,4 +35,6 @@ public interface Route
 
   public List<TrackElement> getLockedElements();
 
+  public List<TrackElement> getMargins();
+
 }

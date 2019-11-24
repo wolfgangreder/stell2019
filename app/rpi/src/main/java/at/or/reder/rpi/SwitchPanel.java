@@ -55,6 +55,7 @@ public class SwitchPanel extends DevicePanel
   protected void doLinkStateChanged(LinkState linkState)
   {
     if (linkState == LinkState.OPEN && device != null) {
+      marchtrenkPanel1.setEnabled(true);
       try {
         device.getAccessoryState(getDecoder(),
                                  getPort(),
@@ -62,6 +63,8 @@ public class SwitchPanel extends DevicePanel
       } catch (IOException | TimeoutException ex) {
         Exceptions.printStackTrace(ex);
       }
+    } else {
+      marchtrenkPanel1.setEnabled(false);
     }
   }
 

@@ -15,6 +15,7 @@
  */
 package at.or.reder.rpi;
 
+import eu.hansolo.steelseries.tools.BlinkTimer;
 import eu.hansolo.steelseries.tools.LedColor;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -38,6 +39,16 @@ public final class LedPanel extends JPanel
   public LedPanel()
   {
     initComponents();
+  }
+
+  public BlinkTimer getBlinkTimer()
+  {
+    return led1.getBlinkTimer();
+  }
+
+  public void setBlinkTimer(BlinkTimer t)
+  {
+    led1.setBlinkTimer(t);
   }
 
   public void addActionListener(ActionListener actionListener)
@@ -87,6 +98,15 @@ public final class LedPanel extends JPanel
                       "led");
       led1.setLedColor(ledColor);
     }
+  }
+
+  @Override
+  public void setEnabled(boolean en)
+  {
+    super.setEnabled(en);
+    jButton1.setEnabled(en);
+    jPanel1.setEnabled(en);
+    led1.setEnabled(en);
   }
 
   /**

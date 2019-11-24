@@ -18,20 +18,29 @@ package at.or.reder.rpi;
 import at.or.reder.rpi.model.SymbolRotation;
 import at.or.reder.rpi.model.SymbolType;
 import at.or.reder.rpi.model.TrackElement;
+import eu.hansolo.steelseries.tools.BlinkTimer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,9 +49,22 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.openide.util.Exceptions;
 
 public final class SymbolPanel extends JPanel
 {
+
+  static {
+    try (InputStream is = SwitchPanel.class.getResourceAsStream("/font/DINPro-Regular.ttf")) {
+      Font font = Font.createFont(Font.TRUETYPE_FONT,
+                                  is);
+      GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+    } catch (IOException | FontFormatException ex) {
+      Exceptions.printStackTrace(ex);
+    }
+  }
 
   public static enum Neighbour
   {
@@ -56,10 +78,29 @@ public final class SymbolPanel extends JPanel
   private final Map<SymbolPanel, Set<Integer>> cornerPoints = new HashMap<>();
   private BufferedImage background;
   private final Map<Neighbour, SymbolPanel> neighbours = new HashMap<>();
+  private final ChangeListener elementChangeListener = this::onElementChanged;
 
   public SymbolPanel()
   {
     initComponents();
+  }
+
+  public BlinkTimer getBlinkTimer()
+  {
+    return ledPanel1.getBlinkTimer();
+  }
+
+  public void setBlinkTimer(BlinkTimer t)
+  {
+    ledPanel1.setBlinkTimer(t);
+    ledPanel2.setBlinkTimer(t);
+    ledPanel3.setBlinkTimer(t);
+    ledPanel4.setBlinkTimer(t);
+    ledPanel5.setBlinkTimer(t);
+    ledPanel6.setBlinkTimer(t);
+    ledPanel7.setBlinkTimer(t);
+    ledPanel8.setBlinkTimer(t);
+    ledPanel9.setBlinkTimer(t);
   }
 
   protected void removeCorner(SymbolPanel panel)
@@ -265,10 +306,28 @@ public final class SymbolPanel extends JPanel
     return element;
   }
 
+  private void onElementChanged(ChangeEvent evt)
+  {
+    if (evt.getSource() == this.element) {
+      Map<Integer, LedPanel.LedState> states = this.element.getCurrentLedStates();
+      for (int i = 1; i <= 9; i++) {
+        getLedPanel(i).setLedState(LedPanel.LedState.OFF);
+      }
+      for (Map.Entry<Integer, LedPanel.LedState> e : states.entrySet()) {
+        LedPanel pnl = getLedPanel(e.getKey());
+        pnl.setLedState(e.getValue());
+      }
+    }
+  }
+
   public void setElement(TrackElement element)
   {
+    if (this.element != null) {
+      this.element.removeChangeListener(elementChangeListener);
+    }
     this.element = element;
     if (element != null) {
+      this.element.addChangeListener(elementChangeListener);
       setSymbolType(element.getSymbolType());
     } else {
       setSymbolType(SymbolType.EMPTY);
@@ -575,62 +634,53 @@ public final class SymbolPanel extends JPanel
                        numPoints);
   }
 
+  private Stroke createStroke(double w,
+                              boolean round)
+  {
+    if (round) {
+      return new BasicStroke((float) w,
+                             BasicStroke.CAP_ROUND,
+                             BasicStroke.JOIN_ROUND);
+    } else {
+      return new BasicStroke((float) w,
+                             BasicStroke.CAP_SQUARE,
+                             BasicStroke.JOIN_MITER);
+    }
+  }
+
   private void drawCorner(Graphics2D g,
                           Dimension dim,
                           int corner)
   {
-    double w = (dim.getHeight() / 2 - 1) / 3;
-    double phi = Math.atan2(dim.getHeight(),
-                            dim.getWidth());
     Polygon p = null;
-    Color savedColor = g.getColor();
-    Color color = savedColor;
     switch (corner) {
       case 1:
-        p = buildPolygon(0,
-                         0,
-                         0,
-                         w * Math.sin(phi),
-                         w * Math.cos(phi),
-                         0);
-//        color = Color.RED;
+        p = buildPolygon(-dim.getWidth() - 1,
+                         dim.getHeight() + 1,
+                         +1 + dim.getWidth(),
+                         -1 - dim.getHeight());
         break;
       case 3:
-        p = buildPolygon(dim.getWidth(),
-                         0,
-                         dim.getWidth(),
-                         w * Math.sin(phi),
-                         dim.getWidth() - w * Math.cos(phi),
-                         0);
-//        color = Color.GREEN;
+        p = buildPolygon(0,
+                         -dim.getHeight(),
+                         2 * dim.getWidth(),
+                         dim.getHeight());
         break;
       case 6:
-        p = buildPolygon(0,
-                         dim.getHeight(),
-                         0,
-                         dim.getHeight() - w * Math.sin(phi),
-                         w * Math.cos(phi),
-                         dim.getHeight());
-//        color = Color.BLUE;
+        p = buildPolygon(-2 * dim.getWidth(),
+                         -dim.getHeight(),
+                         dim.getWidth(),
+                         dim.getHeight() * 2);
         break;
       case 8:
-        p = buildPolygon(dim.getWidth(),
-                         dim.getHeight(),
-                         dim.getWidth(),
-                         dim.getHeight() - w * Math.sin(phi),
-                         dim.getWidth() - w * Math.cos(phi),
-                         dim.getHeight());
-//        color = Color.WHITE;
+        p = buildPolygon(0,
+                         dim.getHeight() * 2,
+                         dim.getWidth() * 2,
+                         0);
         break;
     }
-    try {
-      if (p != null) {
-        g.setColor(color);
-        g.drawPolygon(p);
-        g.fillPolygon(p);
-      }
-    } finally {
-      g.setColor(savedColor);
+    if (p != null) {
+      g.drawPolygon(p);
     }
   }
 
@@ -640,12 +690,7 @@ public final class SymbolPanel extends JPanel
   {
     double cy = dim.getHeight() / 2 - 1;
     double cx = dim.getWidth() / 2;
-    double w = cy / 3;
     Polygon p = null;
-    Stroke savedStroke = g.getStroke();
-    g.setStroke(new BasicStroke((float) w,
-                                BasicStroke.CAP_ROUND,
-                                BasicStroke.JOIN_ROUND));
     switch (endPoint) {
       case 1:
         p = buildPolygon(-1,
@@ -696,13 +741,138 @@ public final class SymbolPanel extends JPanel
                          cy);
         break;
     }
-    try {
-      if (p != null) {
-        g.drawPolygon(p);
-      }
-    } finally {
-      g.setStroke(savedStroke);
+    if (p != null) {
+      g.drawPolygon(p);
     }
+  }
+
+  private void drawSignalS2(Graphics2D g,
+                            Dimension dim)
+  {
+    switch (rotation) {
+      case NONE:
+      case CCW180:
+      case CW180:
+        g.scale(-1,
+                1);
+        g.translate(-dim.getWidth(),
+                    0);
+        break;
+      case CCW270:
+      case CCW90:
+      case CW270:
+      case CW90:
+        g.scale(1,
+                -1);
+        g.translate(0,
+                    -dim.getHeight());
+    }
+    drawSignalS1(g,
+                 dim);
+  }
+
+  private void drawSignalS1(Graphics2D g,
+                            Dimension dim)
+  {
+    Rectangle redLed;
+    Rectangle greenLed;
+    Arc2D arc;
+    Rectangle2D r1;
+    Rectangle2D r2;
+    Rectangle2D r3;
+    double rot = 0;
+    redLed = getLedRect(3);
+    greenLed = getLedRect(2);
+    double m = Math.min(greenLed.getWidth(),
+                        greenLed.getHeight()) * 0.8;
+    arc = new Arc2D.Double(redLed.getCenterX() - m / 2 + m / 6,
+                           redLed.getCenterY() - m / 2,
+                           m,
+                           m,
+                           270,
+                           180,
+                           Arc2D.CHORD);
+    r1 = new Rectangle2D.Double(greenLed.getX(),
+                                greenLed.getCenterY() - m / 2,
+                                redLed.getCenterX() - greenLed.getX() + m / 6,
+                                m);
+    r2 = new Rectangle2D.Double(greenLed.getX() - greenLed.getWidth() / 2,
+                                greenLed.getCenterY() - m / 8,
+                                greenLed.getWidth() / 2,
+                                m / 4);
+    r3 = new Rectangle2D.Double(r2.getX(),
+                                r1.getY(),
+                                m / 4,
+                                m);
+    switch (rotation) {
+      case NONE:
+        rot = 0;
+        break;
+      case CW90:
+      case CCW270:
+        rot = Math.PI / 2;
+        break;
+      case CCW180:
+      case CW180:
+        rot = Math.PI;
+        break;
+      case CCW90:
+      case CW270:
+        rot = 3 * Math.PI / 2;
+        break;
+    }
+    g.rotate(rot,
+             dim.getWidth() / 2,
+             dim.getHeight() / 2);
+    g.fill(arc);
+    g.fill(r1);
+    g.fill(r2);
+    g.fill(r3);
+  }
+
+  private LedPanel getLedPanel(int iLed)
+  {
+    LedPanel pnl = null;
+    switch (iLed) {
+      case 1:
+        pnl = ledPanel1;
+        break;
+      case 2:
+        pnl = ledPanel2;
+        break;
+      case 3:
+        pnl = ledPanel3;
+        break;
+      case 4:
+        pnl = ledPanel4;
+        break;
+      case 5:
+        pnl = ledPanel5;
+        break;
+      case 6:
+        pnl = ledPanel6;
+        break;
+      case 7:
+        pnl = ledPanel7;
+        break;
+      case 8:
+        pnl = ledPanel8;
+        break;
+      case 9:
+        pnl = ledPanel9;
+        break;
+    }
+    return pnl;
+  }
+
+  private Rectangle getLedRect(int iLed)
+  {
+    LedPanel pnl = getLedPanel(iLed);
+    if (pnl != null) {
+      Rectangle b = pnl.getBounds();
+      return b;
+    }
+    return null;
   }
 
   private void buildBackground()
@@ -712,19 +882,51 @@ public final class SymbolPanel extends JPanel
                                    dim.height,
                                    BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = background.createGraphics();
+    double w = (dim.getHeight() / 2 - 1) / 3;
     try {
-      g.setColor(getForeground());
+      if (isEnabled()) {
+        g.setColor(getForeground());
+      } else {
+        g.setColor(Color.GRAY);
+      }
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 //      g.drawRect(0,
 //                 0,
 //                 dim.width - 1,
 //                 dim.height - 1);
-      for (Integer p : endPoints) {
-        drawEndPoint(g,
-                     dim,
-                     p);
+      if (!symbolType.isSpecialPainting()) {
+        Graphics2D gs = null;
+        try {
+          if (symbolType == SymbolType.S1) {
+            gs = (Graphics2D) g.create();
+            drawSignalS1(gs,
+                         dim);
+          } else if (symbolType == SymbolType.S2) {
+            gs = (Graphics2D) g.create();
+            drawSignalS2(gs,
+                         dim);
+          }
+        } finally {
+          if (gs != null) {
+            gs.dispose();
+          }
+        }
+        g.setStroke(createStroke(w,
+                                 true));
+        for (Integer p : endPoints) {
+          drawEndPoint(g,
+                       dim,
+                       p);
+        }
+      } else {
+        drawSpecial(g,
+                    dim,
+                    symbolType.getButtonColor(),
+                    symbolType.getLabel());
       }
+      g.setStroke(createStroke(w,
+                               false));
       List<Integer> cp = cornerPoints.values().stream().
               flatMap((s) -> s.stream()).
               collect(Collectors.toList());
@@ -738,6 +940,37 @@ public final class SymbolPanel extends JPanel
     }
   }
 
+  private void drawSpecial(Graphics2D graphics,
+                           Dimension dim,
+                           Color color,
+                           String label)
+  {
+    final double scale = 1d / 20d;
+    Graphics2D g = (Graphics2D) graphics.create();
+    try {
+      g.setColor(color);
+      g.setFont(getFont());
+      g.fill(new Rectangle(dim));
+      Rectangle r = getLedRect(9);
+      FontMetrics metrics = g.getFontMetrics();
+      final Rectangle2D textBounds = metrics.getStringBounds(label,
+                                                             g);
+      Rectangle2D textBox = new Rectangle.Double((r.getCenterX() - textBounds.getCenterX()) - textBounds.getWidth() * scale,
+                                                 r.getMaxY(),
+                                                 textBounds.getWidth() + textBounds.getWidth() * 2 * scale,
+                                                 textBounds.getHeight() + textBounds.getHeight() * scale);
+      g.setColor(Color.WHITE);
+      g.fill(textBox);
+      g.setColor(getForeground());
+      g.draw(textBox);
+      g.drawString(label,
+                   (int) (textBox.getX() + textBounds.getWidth() * scale),
+                   (int) (textBox.getMaxY() - textBounds.getHeight() - textBounds.getY()));
+    } finally {
+      g.dispose();
+    }
+  }
+
   private void fireAction()
   {
     ActionEvent e = new ActionEvent(this,
@@ -746,6 +979,25 @@ public final class SymbolPanel extends JPanel
     for (ActionListener l : actionListener) {
       l.actionPerformed(e);
     }
+    if (this.element != null) {
+      element.action();
+    }
+  }
+
+  @Override
+  public void setEnabled(boolean en)
+  {
+    super.setEnabled(en);
+    ledPanel1.setEnabled(en);
+    ledPanel2.setEnabled(en);
+    ledPanel3.setEnabled(en);
+    ledPanel4.setEnabled(en);
+    ledPanel5.setEnabled(en);
+    ledPanel6.setEnabled(en);
+    ledPanel7.setEnabled(en);
+    ledPanel8.setEnabled(en);
+    ledPanel9.setEnabled(en);
+    background = null;
   }
 
   /**
@@ -757,6 +1009,7 @@ public final class SymbolPanel extends JPanel
   private void initComponents()
   {
 
+    setFont(new java.awt.Font("DINPro-Regular", 0, 12)); // NOI18N
     setMinimumSize(new java.awt.Dimension(50, 50));
     setPreferredSize(new java.awt.Dimension(75, 75));
     addMouseListener(new java.awt.event.MouseAdapter()

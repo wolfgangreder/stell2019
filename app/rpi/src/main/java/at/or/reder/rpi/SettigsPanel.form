@@ -30,6 +30,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cbSymbolType" min="-2" pref="173" max="-2" attributes="0"/>
                           <Component id="cbRotation" min="-2" pref="173" max="-2" attributes="0"/>
+                          <Component id="ckEnabled" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -52,6 +53,8 @@
                       <Component id="cbSymbolType" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cbRotation" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="ckEnabled" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace pref="97" max="32767" attributes="0"/>
@@ -201,5 +204,18 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JCheckBox" name="ckEnabled">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="at/or/reder/rpi/Bundle.properties" key="SettigsPanel.ckEnabled.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ckEnabledActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
+    </Component>
   </SubComponents>
 </Form>

@@ -15,30 +15,36 @@
  */
 package at.or.reder.rpi.model;
 
+import java.util.List;
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author Wolfgang Reder
  */
-public enum RouteElementState
+public interface Layout
 {
-  /**
-   * Weiche oder Gleis ist frei.
-   */
-  FREE,
-  /**
-   * Weiche ist gesperrt, aber nicht durch eine Fahrstraße belegt.
-   */
-  LOCKED,
-  /**
-   * Weiche ist durch eine Fahrstraße gesperrt, kann aber von einer anderen Fahrstraße belegt werden (Schutzweiche).
-   */
-  PROTECTED,
-  /**
-   * Weiche oder Gleis ist durch eine Fahrstraße exklusiv belegt.
-   */
-  OCCUPIED,
-  /**
-   * Wird bei special elements verwendet
-   */
-  ARMED;
+
+  public LayoutState getLayoutState();
+
+  public void addChangeListener(ChangeListener l);
+
+  public void removeChangeListener(ChangeListener l);
+
+  public TrackElement getWGT();
+
+  public TrackElement getFHT();
+
+  public TrackElement getHAGT();
+
+  public TrackElement getSGT();
+
+  public String getName();
+
+  public List<TrackElement> getElements();
+
+  public List<Route> getRoutes();
+
+  public void action(TrackElement element);
+
 }

@@ -19,26 +19,11 @@ package at.or.reder.rpi.model;
  *
  * @author Wolfgang Reder
  */
-public enum RouteElementState
+public enum LayoutState
 {
-  /**
-   * Weiche oder Gleis ist frei.
-   */
-  FREE,
-  /**
-   * Weiche ist gesperrt, aber nicht durch eine Fahrstraße belegt.
-   */
-  LOCKED,
-  /**
-   * Weiche ist durch eine Fahrstraße gesperrt, kann aber von einer anderen Fahrstraße belegt werden (Schutzweiche).
-   */
-  PROTECTED,
-  /**
-   * Weiche oder Gleis ist durch eine Fahrstraße exklusiv belegt.
-   */
-  OCCUPIED,
-  /**
-   * Wird bei special elements verwendet
-   */
-  ARMED;
+  DISCONNECTED,
+  NORMAL,
+  WGT_ARMED,
+  FHT_ARMED,
+  ROUTE_LOCKED;
 }

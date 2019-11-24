@@ -239,6 +239,15 @@ public class SettigsPanel extends DevicePanel
     symbolPanel9.setName("8"); // NOI18N
     jPanel1.add(symbolPanel9);
 
+    ckEnabled.setText(org.openide.util.NbBundle.getMessage(SettigsPanel.class, "SettigsPanel.ckEnabled.text")); // NOI18N
+    ckEnabled.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        ckEnabledActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
@@ -255,7 +264,8 @@ public class SettigsPanel extends DevicePanel
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(cbSymbolType, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(cbRotation, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))))
+              .addComponent(cbRotation, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(ckEnabled))))
         .addContainerGap(97, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
@@ -271,7 +281,9 @@ public class SettigsPanel extends DevicePanel
           .addGroup(layout.createSequentialGroup()
             .addComponent(cbSymbolType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(cbRotation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(cbRotation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(ckEnabled)))
         .addContainerGap(97, Short.MAX_VALUE))
     );
   }// </editor-fold>//GEN-END:initComponents
@@ -286,9 +298,24 @@ public class SettigsPanel extends DevicePanel
     Runtime.getRuntime().exit(125);
   }//GEN-LAST:event_jButton2ActionPerformed
 
+  private void ckEnabledActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ckEnabledActionPerformed
+  {//GEN-HEADEREND:event_ckEnabledActionPerformed
+    boolean en = ckEnabled.isSelected();
+    symbolPanel1.setEnabled(en);
+    symbolPanel2.setEnabled(en);
+    symbolPanel3.setEnabled(en);
+    symbolPanel4.setEnabled(en);
+    symbolPanel5.setEnabled(en);
+    symbolPanel6.setEnabled(en);
+    symbolPanel7.setEnabled(en);
+    symbolPanel8.setEnabled(en);
+    symbolPanel9.setEnabled(en);
+  }//GEN-LAST:event_ckEnabledActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private final javax.swing.JComboBox<SymbolRotation> cbRotation = new javax.swing.JComboBox<>();
   private final javax.swing.JComboBox<SymbolType> cbSymbolType = new javax.swing.JComboBox<>();
+  private final javax.swing.JCheckBox ckEnabled = new javax.swing.JCheckBox();
   private javax.swing.JButton jButton1;
   private javax.swing.JButton jButton2;
   private javax.swing.JPanel jPanel1;

@@ -19,7 +19,7 @@ import at.or.reder.rpi.LedPanel;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -29,6 +29,8 @@ public interface TrackElement
 {
 
   public UUID getId();
+
+  public Layout getLayout();
 
   public String getLabel();
 
@@ -40,10 +42,14 @@ public interface TrackElement
 
   public List<DecoderState> switchState();
 
+  public int getTWIAddress();
+
   public Map<Integer, LedPanel.LedState> getCurrentLedStates();
 
-  public void addChangeEventListener(ChangeEvent evt);
+  public void addChangeListener(ChangeListener evt);
 
-  public void removeChangeEventListener(ChangeEvent evt);
+  public void removeChangeListener(ChangeListener evt);
+
+  public void action();
 
 }
