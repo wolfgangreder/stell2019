@@ -15,6 +15,7 @@
  */
 package at.or.reder.rpi.model;
 
+import at.or.reder.dcc.Controller;
 import java.util.List;
 import javax.swing.event.ChangeListener;
 
@@ -24,6 +25,10 @@ import javax.swing.event.ChangeListener;
  */
 public interface Layout
 {
+
+  public Controller getController();
+
+  public void setController(Controller newController);
 
   public LayoutState getLayoutState();
 
@@ -42,6 +47,11 @@ public interface Layout
   public String getName();
 
   public List<TrackElement> getElements();
+
+  public default TrackElement getTrackElementByLabel(String label)
+  {
+    return getElements().stream().filter((e) -> e.getLabel().equals(label)).findFirst().orElse(null);
+  }
 
   public List<Route> getRoutes();
 

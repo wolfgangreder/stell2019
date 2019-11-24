@@ -15,6 +15,7 @@
  */
 package at.or.reder.rpi.model;
 
+import at.or.reder.dcc.Controller;
 import at.or.reder.rpi.LedPanel;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,14 @@ public interface TrackElement
 
   public UUID getId();
 
+  public Controller getController();
+
+  public void setController(Controller controler);
+
+  public default void queryState()
+  {
+  }
+
   public Layout getLayout();
 
   public String getLabel();
@@ -39,8 +48,6 @@ public interface TrackElement
   public RouteElementState getRouteState();
 
   public List<DecoderState> getCurrentDecoderStates();
-
-  public List<DecoderState> switchState();
 
   public int getTWIAddress();
 

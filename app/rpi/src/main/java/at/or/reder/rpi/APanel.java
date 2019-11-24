@@ -15,9 +15,15 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.rpi.model.TrackElement;
+import at.or.reder.dcc.Controller;
+import at.or.reder.rpi.model.Layout;
+import at.or.reder.rpi.model.SymbolType;
+import at.or.reder.rpi.model.TurnoutElement.Path;
+import at.or.reder.rpi.model.impl.DefaultLayout;
+import at.or.reder.rpi.model.impl.SimpleTurnout;
 import at.or.reder.rpi.model.impl.SpecialTrackElement;
 import java.awt.Component;
+import java.util.UUID;
 
 /**
  *
@@ -26,22 +32,54 @@ import java.awt.Component;
 public final class APanel extends javax.swing.JPanel
 {
 
-  private final TrackElement teWGT = SpecialTrackElement.getWGT(null,
-                                                                0);
-  private final TrackElement teFHT = SpecialTrackElement.getFHT(null,
-                                                                1);
-  private final TrackElement teHAGT = SpecialTrackElement.getHAGT(null,
-                                                                  2);
-  private final TrackElement teSGT = SpecialTrackElement.getSGT(null,
-                                                                2);
+  private final Layout myLayout;
 
   public APanel()
   {
+    myLayout = new DefaultLayout.Builder().
+            fht(SpecialTrackElement.getFHT(0)).
+            hagt(SpecialTrackElement.getHAGT(1)).
+            sgt(SpecialTrackElement.getSGT(2)).
+            wgt(SpecialTrackElement.getWGT(3)).
+            trackElement(new SimpleTurnout.Builder().
+                    addPathMapping(Path.A,
+                                   0).
+                    addPathMapping(Path.B,
+                                   1).
+                    decoderAddress((short) 10).
+                    id(UUID.randomUUID()).
+                    label("W9").
+                    port((byte) 0).
+                    symbolType(SymbolType.W2)).
+            trackElement(new SimpleTurnout.Builder().
+                    addPathMapping(Path.A,
+                                   0).
+                    addPathMapping(Path.B,
+                                   1).
+                    decoderAddress((short) 10).
+                    id(UUID.randomUUID()).
+                    label("W10").
+                    port((byte) 2).
+                    symbolType(SymbolType.W3)).
+            build();
     initComponents();
-    wgt.setElement(teWGT);
-    fht.setElement(teFHT);
-    hagt.setElement(teHAGT);
-    sgt.setElement(teSGT);
+    for (int i = 0; i < getComponentCount(); ++i) {
+      Component c = getComponent(i);
+      if (c instanceof SymbolPanel) {
+        ((SymbolPanel) c).setBlinkTimer(blinkTimer1);
+      }
+    }
+    wgt.setElement(myLayout.getWGT());
+    fht.setElement(myLayout.getFHT());
+    hagt.setElement(myLayout.getHAGT());
+    sgt.setElement(myLayout.getSGT());
+    w9.setElement(myLayout.getTrackElementByLabel("W9"));
+    w10.setElement(myLayout.getTrackElementByLabel("W10"));
+  }
+
+  public void setController(Controller controller)
+  {
+    myLayout.setController(controller);
   }
 
   private void fixCornerPoints()
@@ -361,6 +399,7 @@ public final class APanel extends javax.swing.JPanel
     gridBagConstraints.weighty = 0.1428;
     add(g2_1, gridBagConstraints);
 
+    w9.setBlinkTimer(blinkTimer1);
     w9.setName("W9"); // NOI18N
     w9.setSouthNeighbour(e6);
     w9.setSymbolType(at.or.reder.rpi.model.SymbolType.W2);

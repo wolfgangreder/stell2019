@@ -15,11 +15,16 @@
  */
 package at.or.reder.rpi.model.impl;
 
+import at.or.reder.dcc.Controller;
 import at.or.reder.rpi.model.Layout;
 import at.or.reder.rpi.model.LayoutState;
 import at.or.reder.rpi.model.Route;
 import at.or.reder.rpi.model.TrackElement;
+import at.or.reder.rpi.model.TrackElementBuilder;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
 
@@ -30,12 +35,123 @@ import org.openide.util.ChangeSupport;
 public class DefaultLayout implements Layout
 {
 
+  public static final class Builder
+  {
+
+    private Controller controller;
+    private TrackElementBuilder wgt;
+    private TrackElementBuilder fht;
+    private TrackElementBuilder hagt;
+    private TrackElementBuilder sgt;
+    private final List<TrackElementBuilder> elements = new ArrayList<>();
+    private String name;
+
+    public Builder controller(Controller controller)
+    {
+      this.controller = controller;
+      return this;
+    }
+
+    public Builder wgt(TrackElementBuilder wgt)
+    {
+      this.wgt = wgt;
+      return this;
+    }
+
+    public Builder fht(TrackElementBuilder fht)
+    {
+      this.fht = fht;
+      return this;
+    }
+
+    public Builder hagt(TrackElementBuilder hagt)
+    {
+      this.hagt = hagt;
+      return this;
+    }
+
+    public Builder sgt(TrackElementBuilder sgt)
+    {
+      this.sgt = sgt;
+      return this;
+    }
+
+    public Builder trackElement(TrackElementBuilder element)
+    {
+      if (element != null) {
+        elements.add(element);
+      }
+      return this;
+    }
+
+    public Builder name(String name)
+    {
+      this.name = name;
+      return this;
+    }
+
+    public Layout build()
+    {
+      return new DefaultLayout(controller,
+                               name,
+                               wgt,
+                               fht,
+                               hagt,
+                               sgt,
+                               elements);
+    }
+
+  }
+  private Controller controller;
   private LayoutState state;
   private final ChangeSupport changeSupport = new ChangeSupport(this);
-  private final TrackElement wgt = null;
-  private final TrackElement fht = null;
-  private final TrackElement hagt = null;
-  private final TrackElement sgt = null;
+  private final TrackElement wgt;
+  private final TrackElement fht;
+  private final TrackElement hagt;
+  private final TrackElement sgt;
+  private final List<TrackElement> elements;
+  private final String name;
+
+  @SuppressWarnings("LeakingThisInConstructor")
+  public DefaultLayout(Controller controller,
+                       String name,
+                       TrackElementBuilder wgt,
+                       TrackElementBuilder fht,
+                       TrackElementBuilder hagt,
+                       TrackElementBuilder sgt,
+                       Collection<? extends TrackElementBuilder> elements)
+  {
+    this.controller = controller;
+    this.name = name;
+    state = LayoutState.NORMAL;
+    this.wgt = wgt.layout(this).build();
+    this.fht = fht.layout(this).build();
+    this.hagt = hagt.layout(this).build();
+    this.sgt = sgt.layout(this).build();
+    this.elements = elements.stream().
+            filter((e) -> e != null).
+            map((b) -> b.layout(this).build()).
+            collect(Collectors.toUnmodifiableList());
+  }
+
+  @Override
+  public Controller getController()
+  {
+    synchronized (this) {
+      return controller;
+    }
+  }
+
+  @Override
+  public void setController(Controller newController)
+  {
+    synchronized (this) {
+      controller = newController;
+      for (TrackElement e : elements) {
+        e.setController(controller);
+      }
+    }
+  }
 
   @Override
   public LayoutState getLayoutState()
@@ -58,37 +174,37 @@ public class DefaultLayout implements Layout
   @Override
   public TrackElement getWGT()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return wgt;
   }
 
   @Override
   public TrackElement getFHT()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return fht;
   }
 
   @Override
   public TrackElement getHAGT()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return hagt;
   }
 
   @Override
   public TrackElement getSGT()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return sgt;
   }
 
   @Override
   public String getName()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return name;
   }
 
   @Override
   public List<TrackElement> getElements()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return elements;
   }
 
   @Override
@@ -100,7 +216,9 @@ public class DefaultLayout implements Layout
   @Override
   public void action(TrackElement element)
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    if (elements.contains(element)) {
+      element.action();
+    }
   }
 
 }

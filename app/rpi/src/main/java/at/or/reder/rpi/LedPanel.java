@@ -68,17 +68,20 @@ public final class LedPanel extends JPanel
     if (this.ledState != ledState && ledState != null) {
       this.ledState = ledState;
       led1.setLedOn(false);
-      led1.setLedBlinking(false);
+      led1.setLedBlinking(false,
+                          false);
       switch (ledState) {
         case ON:
           led1.setLedOn(true);
-          led1.setLedBlinking(false);
+          led1.setLedBlinking(false,
+                              true);
           break;
         case BLINK:
           led1.setLedOn(true);
           led1.setLedBlinking(true);
           break;
       }
+      repaint();
     }
   }
 

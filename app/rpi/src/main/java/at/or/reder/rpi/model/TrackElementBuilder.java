@@ -19,10 +19,11 @@ package at.or.reder.rpi.model;
  *
  * @author Wolfgang Reder
  */
-public enum SymbolRotation
+public interface TrackElementBuilder
 {
-  NONE,
-  CW90,
-  CW180,
-  CW270;
+
+  public TrackElementBuilder layout(Layout layout);
+
+  public TrackElement build();
+
 }

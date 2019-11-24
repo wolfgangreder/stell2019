@@ -19,10 +19,16 @@ package at.or.reder.rpi.model;
  *
  * @author Wolfgang Reder
  */
-public enum SymbolRotation
+public interface TurnoutElement extends TrackElement
 {
-  NONE,
-  CW90,
-  CW180,
-  CW270;
+
+  public static enum Path
+  {
+    A, B, C, D;
+  }
+
+  public Path getCurrentPath();
+
+  public void setCurrentPath(Path path);
+
 }

@@ -15,108 +15,116 @@
  */
 package at.or.reder.rpi.model.impl;
 
+import at.or.reder.dcc.Controller;
 import at.or.reder.rpi.LedPanel;
 import at.or.reder.rpi.model.DecoderState;
 import at.or.reder.rpi.model.Layout;
 import at.or.reder.rpi.model.RouteElementState;
 import at.or.reder.rpi.model.SymbolType;
 import at.or.reder.rpi.model.TrackElement;
+import at.or.reder.rpi.model.TrackElementBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.swing.event.ChangeListener;
-import org.openide.util.ChangeSupport;
 
 /**
  *
  * @author Wolfgang Reder
  */
-public class SpecialTrackElement implements TrackElement
+public class SpecialTrackElement extends AbstractTrackElement
 {
 
-  public static TrackElement getWGT(Layout layout,
-                                    int twiAddress)
+  private static final class Builder implements TrackElementBuilder
   {
-    return new SpecialTrackElement(layout,
-                                   SymbolType.WGT,
-                                   twiAddress,
-                                   true);
+
+    private int twiAddress;
+    private SymbolType type;
+    private boolean stateful;
+    private Layout layout;
+
+    public Builder twiAddress(int address)
+    {
+      twiAddress = address;
+      return this;
+    }
+
+    public Builder symbolType(SymbolType type)
+    {
+      this.type = type;
+      return this;
+    }
+
+    public Builder stateful(boolean s)
+    {
+      stateful = s;
+      return this;
+    }
+
+    @Override
+    public Builder layout(Layout layout)
+    {
+      this.layout = layout;
+      return this;
+    }
+
+    @Override
+    public TrackElement build()
+    {
+      return new SpecialTrackElement(UUID.randomUUID(),
+                                     layout,
+                                     type,
+                                     twiAddress,
+                                     stateful);
+    }
+
   }
 
-  public static TrackElement getFHT(Layout layout,
-                                    int twiAddress)
+  public static TrackElementBuilder getWGT(int twiAddress)
   {
-    return new SpecialTrackElement(layout,
-                                   SymbolType.FHT,
-                                   twiAddress,
-                                   true);
+    return new Builder().stateful(true).symbolType(SymbolType.WGT).twiAddress(twiAddress);
   }
 
-  public static TrackElement getHAGT(Layout layout,
-                                     int twiAddress)
+  public static TrackElementBuilder getFHT(int twiAddress)
   {
-    return new SpecialTrackElement(layout,
-                                   SymbolType.HAGT,
-                                   twiAddress,
-                                   false);
+    return new Builder().stateful(true).symbolType(SymbolType.FHT).twiAddress(twiAddress);
   }
 
-  public static TrackElement getSGT(Layout layout,
-                                    int twiAddress)
+  public static TrackElementBuilder getHAGT(int twiAddress)
   {
-    return new SpecialTrackElement(layout,
-                                   SymbolType.SGT,
-                                   twiAddress,
-                                   false);
+    return new Builder().stateful(false).symbolType(SymbolType.HAGT).twiAddress(twiAddress);
   }
 
-  private final Layout layout;
-  private final SymbolType symbolType;
-  private final int twiAddress;
-  private final ChangeSupport changeSupport = new ChangeSupport(this);
-  private RouteElementState state = RouteElementState.FREE;
+  public static TrackElementBuilder getSGT(int twiAddress)
+  {
+    return new Builder().stateful(false).symbolType(SymbolType.SGT).twiAddress(twiAddress);
+  }
+
   private final boolean stateful;
 
-  private SpecialTrackElement(Layout layout,
+  private SpecialTrackElement(UUID id,
+                              Layout layout,
                               SymbolType symbolType,
                               int twiAddress,
                               boolean stateful)
   {
-    this.layout = layout;
-    this.symbolType = symbolType;
-    this.twiAddress = twiAddress;
+    super(id,
+          layout,
+          symbolType.getLabel(),
+          symbolType,
+          twiAddress);
     this.stateful = stateful;
   }
 
   @Override
-  public UUID getId()
+  public Controller getController()
   {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return null;
   }
 
   @Override
-  public Layout getLayout()
+  public void setController(Controller controler)
   {
-    return layout;
-  }
-
-  @Override
-  public String getLabel()
-  {
-    return symbolType.getLabel();
-  }
-
-  @Override
-  public SymbolType getSymbolType()
-  {
-    return symbolType;
-  }
-
-  @Override
-  public RouteElementState getRouteState()
-  {
-    return state;
   }
 
   @Override
@@ -126,21 +134,9 @@ public class SpecialTrackElement implements TrackElement
   }
 
   @Override
-  public List<DecoderState> switchState()
-  {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public int getTWIAddress()
-  {
-    return twiAddress;
-  }
-
-  @Override
   public Map<Integer, LedPanel.LedState> getCurrentLedStates()
   {
-    switch (state) {
+    switch (getRouteState()) {
       case ARMED:
         return Map.of(2,
                       LedPanel.LedState.BLINK);
@@ -150,29 +146,15 @@ public class SpecialTrackElement implements TrackElement
   }
 
   @Override
-  public void addChangeListener(ChangeListener listener)
-  {
-    changeSupport.addChangeListener(listener);
-  }
-
-  @Override
-  public void removeChangeListener(ChangeListener listener
-  )
-  {
-    changeSupport.removeChangeListener(listener);
-  }
-
-  @Override
   public void action()
   {
     if (stateful) {
-      if (state == RouteElementState.ARMED) {
-        state = RouteElementState.FREE;
+      if (getRouteState() == RouteElementState.ARMED) {
+        setRouteState(RouteElementState.FREE);
       } else {
-        state = RouteElementState.ARMED;
+        setRouteState(RouteElementState.ARMED);
       }
     }
-    changeSupport.fireChange();
   }
 
 }

@@ -55,6 +55,73 @@ import org.openide.util.Exceptions;
 
 public final class SymbolPanel extends JPanel
 {
+//  6  4  1
+//  7  9  2
+//  8  5  3
+
+  private static final Map<Integer, Integer> TRANSLATION_CW90 = Map.of(1,
+                                                                       6,
+                                                                       2,
+                                                                       4,
+                                                                       3,
+                                                                       1,
+                                                                       4,
+                                                                       7,
+                                                                       5,
+                                                                       2,
+                                                                       6,
+                                                                       8,
+                                                                       7,
+                                                                       5,
+                                                                       8,
+                                                                       3,
+                                                                       9,
+                                                                       9);
+//  8  7  6
+//  5  9  4
+//  3  2  1
+  private static final Map<Integer, Integer> TRANSLATION_CW180 = Map.of(1,
+                                                                        8,
+                                                                        2,
+                                                                        7,
+                                                                        3,
+                                                                        6,
+                                                                        4,
+                                                                        5,
+                                                                        5,
+                                                                        4,
+                                                                        6,
+                                                                        3,
+                                                                        7,
+                                                                        2,
+                                                                        8,
+                                                                        1,
+                                                                        9,
+                                                                        9);
+//  1  2  3
+//  4  9  5
+//  6  7  8
+//  3  5  8
+//  2  9  7
+//  1  4  6
+  private static final Map<Integer, Integer> TRANSLATION_CW270 = Map.of(1,
+                                                                        3,
+                                                                        2,
+                                                                        5,
+                                                                        3,
+                                                                        8,
+                                                                        4,
+                                                                        2,
+                                                                        5,
+                                                                        7,
+                                                                        6,
+                                                                        1,
+                                                                        7,
+                                                                        4,
+                                                                        8,
+                                                                        6,
+                                                                        9,
+                                                                        9);
 
   static {
     try (InputStream is = SwitchPanel.class.getResourceAsStream("/font/DINPro-Regular.ttf")) {
@@ -314,9 +381,11 @@ public final class SymbolPanel extends JPanel
         getLedPanel(i).setLedState(LedPanel.LedState.OFF);
       }
       for (Map.Entry<Integer, LedPanel.LedState> e : states.entrySet()) {
-        LedPanel pnl = getLedPanel(e.getKey());
+        LedPanel pnl = getLedPanel(translateLeds(rotation,
+                                                 e.getKey()));
         pnl.setLedState(e.getValue());
       }
+      repaint();
     }
   }
 
@@ -364,224 +433,59 @@ public final class SymbolPanel extends JPanel
   {
     return symbolType;
   }
-//  1  2  3
-//  4  9  5
-//  6  7  8
 
-  private void setLedsNone()
+  private static int translateLeds(SymbolRotation rot,
+                                   int led)
   {
-    ledPanel1.setState(symbolType.getVisibleLeds().get(1),
-                       null);
-    ledPanel2.setState(symbolType.getVisibleLeds().get(2),
-                       null);
-    ledPanel3.setState(symbolType.getVisibleLeds().get(3),
-                       null);
-    ledPanel4.setState(symbolType.getVisibleLeds().get(4),
-                       null);
-    ledPanel5.setState(symbolType.getVisibleLeds().get(5),
-                       null);
-    ledPanel6.setState(symbolType.getVisibleLeds().get(6),
-                       null);
-    ledPanel7.setState(symbolType.getVisibleLeds().get(7),
-                       null);
-    ledPanel8.setState(symbolType.getVisibleLeds().get(8),
-                       null);
-    ledPanel9.setState(symbolType.getVisibleLeds().get(9),
-                       symbolType.getButtonColor());
-    endPoints.clear();
-    endPoints.addAll(symbolType.getLines());
-  }
-//  1  2  3
-//  4  9  5
-//  6  7  8
-
-//  6  4  1
-//  7  9  2
-//  8  5  3
-  private void setLedsCW90()
-  {
-    ledPanel1.setState(symbolType.getVisibleLeds().get(6),
-                       null);
-    ledPanel2.setState(symbolType.getVisibleLeds().get(4),
-                       null);
-    ledPanel3.setState(symbolType.getVisibleLeds().get(1),
-                       null);
-    ledPanel4.setState(symbolType.getVisibleLeds().get(7),
-                       null);
-    ledPanel5.setState(symbolType.getVisibleLeds().get(2),
-                       null);
-    ledPanel6.setState(symbolType.getVisibleLeds().get(8),
-                       null);
-    ledPanel7.setState(symbolType.getVisibleLeds().get(5),
-                       null);
-    ledPanel8.setState(symbolType.getVisibleLeds().get(3),
-                       null);
-    ledPanel9.setState(symbolType.getVisibleLeds().get(9),
-                       symbolType.getButtonColor());
-    endPoints.clear();
-    for (Integer l : symbolType.getLines()) {
-      switch (l) {
-        case 6:
-          endPoints.add(1);
-          break;
-        case 4:
-          endPoints.add(2);
-          break;
-        case 1:
-          endPoints.add(3);
-          break;
-        case 7:
-          endPoints.add(4);
-          break;
-        case 2:
-          endPoints.add(5);
-          break;
-        case 8:
-          endPoints.add(6);
-          break;
-        case 5:
-          endPoints.add(7);
-          break;
-        case 3:
-          endPoints.add(8);
-          break;
-      }
-    }
-  }
-//  1  2  3
-//  4  9  5
-//  6  7  8
-
-//  8  7  6
-//  5  9  4
-//  3  2  1
-  private void setLedsCW180()
-  {
-    ledPanel1.setState(symbolType.getVisibleLeds().get(8),
-                       null);
-    ledPanel2.setState(symbolType.getVisibleLeds().get(7),
-                       null);
-    ledPanel3.setState(symbolType.getVisibleLeds().get(6),
-                       null);
-    ledPanel4.setState(symbolType.getVisibleLeds().get(5),
-                       null);
-    ledPanel5.setState(symbolType.getVisibleLeds().get(4),
-                       null);
-    ledPanel6.setState(symbolType.getVisibleLeds().get(3),
-                       null);
-    ledPanel7.setState(symbolType.getVisibleLeds().get(2),
-                       null);
-    ledPanel8.setState(symbolType.getVisibleLeds().get(1),
-                       null);
-    ledPanel9.setState(symbolType.getVisibleLeds().get(9),
-                       symbolType.getButtonColor());
-    endPoints.clear();
-    for (Integer l : symbolType.getLines()) {
-      switch (l) {
-        case 8:
-          endPoints.add(1);
-          break;
-        case 7:
-          endPoints.add(2);
-          break;
-        case 6:
-          endPoints.add(3);
-          break;
-        case 5:
-          endPoints.add(4);
-          break;
-        case 4:
-          endPoints.add(5);
-          break;
-        case 3:
-          endPoints.add(6);
-          break;
-        case 2:
-          endPoints.add(7);
-          break;
-        case 1:
-          endPoints.add(8);
-          break;
-      }
-    }
-  }
-
-//  1  2  3
-//  4  9  5
-//  6  7  8
-//  3  5  8
-//  2  9  7
-//  1  4  6
-  private void setLedsCW270()
-  {
-    ledPanel1.setState(symbolType.getVisibleLeds().get(3),
-                       null);
-    ledPanel2.setState(symbolType.getVisibleLeds().get(5),
-                       null);
-    ledPanel3.setState(symbolType.getVisibleLeds().get(8),
-                       null);
-    ledPanel4.setState(symbolType.getVisibleLeds().get(2),
-                       null);
-    ledPanel5.setState(symbolType.getVisibleLeds().get(7),
-                       null);
-    ledPanel6.setState(symbolType.getVisibleLeds().get(1),
-                       null);
-    ledPanel7.setState(symbolType.getVisibleLeds().get(4),
-                       null);
-    ledPanel8.setState(symbolType.getVisibleLeds().get(6),
-                       null);
-    ledPanel9.setState(symbolType.getVisibleLeds().get(9),
-                       symbolType.getButtonColor());
-    endPoints.clear();
-    for (Integer l : symbolType.getLines()) {
-      switch (l) {
-        case 3:
-          endPoints.add(1);
-          break;
-        case 5:
-          endPoints.add(2);
-          break;
-        case 8:
-          endPoints.add(3);
-          break;
-        case 2:
-          endPoints.add(4);
-          break;
-        case 7:
-          endPoints.add(5);
-          break;
-        case 1:
-          endPoints.add(6);
-          break;
-        case 4:
-          endPoints.add(7);
-          break;
-        case 6:
-          endPoints.add(8);
-          break;
-      }
+    switch (rot) {
+      case CW180:
+        return TRANSLATION_CW180.getOrDefault(led,
+                                              led);
+      case CW90:
+        return TRANSLATION_CW90.getOrDefault(led,
+                                             led);
+      case CW270:
+        return TRANSLATION_CW270.getOrDefault(led,
+                                              led);
+      default:
+        return led;
     }
   }
 
   private void updateLeds()
   {
-    switch (rotation) {
-      case NONE:
-        setLedsNone();
-        break;
-      case CW90:
-      case CCW270:
-        setLedsCW90();
-        break;
-      case CW180:
-      case CCW180:
-        setLedsCW180();
-        break;
-      case CW270:
-      case CCW90:
-        setLedsCW270();
-        break;
-    }
+    ledPanel1.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     1)),
+                       null);
+    ledPanel2.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     2)),
+                       null);
+    ledPanel3.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     3)),
+                       null);
+    ledPanel4.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     4)),
+                       null);
+    ledPanel5.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     5)),
+                       null);
+    ledPanel6.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     6)),
+                       null);
+    ledPanel7.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     7)),
+                       null);
+    ledPanel8.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     8)),
+                       null);
+    ledPanel9.setState(symbolType.getVisibleLeds().get(translateLeds(rotation,
+                                                                     9)),
+                       symbolType.getButtonColor());
+    endPoints.clear();
+    symbolType.getLines().stream().
+            map((i) -> translateLeds(rotation,
+                                     i)).
+            forEach(endPoints::add);
     background = null;
   }
 
@@ -751,15 +655,12 @@ public final class SymbolPanel extends JPanel
   {
     switch (rotation) {
       case NONE:
-      case CCW180:
       case CW180:
         g.scale(-1,
                 1);
         g.translate(-dim.getWidth(),
                     0);
         break;
-      case CCW270:
-      case CCW90:
       case CW270:
       case CW90:
         g.scale(1,
@@ -809,14 +710,11 @@ public final class SymbolPanel extends JPanel
         rot = 0;
         break;
       case CW90:
-      case CCW270:
         rot = Math.PI / 2;
         break;
-      case CCW180:
       case CW180:
         rot = Math.PI;
         break;
-      case CCW90:
       case CW270:
         rot = 3 * Math.PI / 2;
         break;
@@ -882,6 +780,11 @@ public final class SymbolPanel extends JPanel
                                    dim.height,
                                    BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = background.createGraphics();
+    g.setColor(getBackground());
+    g.fillRect(0,
+               0,
+               dim.width,
+               dim.height);
     double w = (dim.getHeight() / 2 - 1) / 3;
     try {
       if (isEnabled()) {
@@ -891,10 +794,6 @@ public final class SymbolPanel extends JPanel
       }
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
-//      g.drawRect(0,
-//                 0,
-//                 dim.width - 1,
-//                 dim.height - 1);
       if (!symbolType.isSpecialPainting()) {
         Graphics2D gs = null;
         try {
@@ -998,6 +897,9 @@ public final class SymbolPanel extends JPanel
     ledPanel8.setEnabled(en);
     ledPanel9.setEnabled(en);
     background = null;
+    if (element != null) {
+      element.queryState();
+    }
   }
 
   /**

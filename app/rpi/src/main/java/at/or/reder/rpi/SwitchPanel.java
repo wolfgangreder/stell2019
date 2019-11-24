@@ -15,12 +15,7 @@
  */
 package at.or.reder.rpi;
 
-import at.or.reder.dcc.AccessoryEvent;
-import at.or.reder.dcc.AccessoryEventListener;
 import at.or.reder.dcc.LinkState;
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -28,9 +23,6 @@ import org.openide.util.Exceptions;
  */
 public class SwitchPanel extends DevicePanel
 {
-
-  private AccessoryEventListener eventListener;
-  private int state;
 
   /**
    * Creates new form SwitchPanel
@@ -40,29 +32,12 @@ public class SwitchPanel extends DevicePanel
     initComponents();
   }
 
-  private short getDecoder()
-  {
-    return 10;
-  }
-
-  private byte getPort()
-  {
-    return 0;
-  }
-
   @Override
 
   protected void doLinkStateChanged(LinkState linkState)
   {
     if (linkState == LinkState.OPEN && device != null) {
       marchtrenkPanel1.setEnabled(true);
-      try {
-        device.getAccessoryState(getDecoder(),
-                                 getPort(),
-                                 500);
-      } catch (IOException | TimeoutException ex) {
-        Exceptions.printStackTrace(ex);
-      }
     } else {
       marchtrenkPanel1.setEnabled(false);
     }
@@ -71,14 +46,7 @@ public class SwitchPanel extends DevicePanel
   @Override
   protected void connectListener()
   {
-    if (device != null && eventListener == null) {
-      eventListener = this::onAccessoryEvent;
-      device.addAccessoryEventListener(eventListener);
-    }
-  }
-
-  private void onAccessoryEvent(AccessoryEvent evt)
-  {
+    marchtrenkPanel1.setController(device);
   }
 
   /**
