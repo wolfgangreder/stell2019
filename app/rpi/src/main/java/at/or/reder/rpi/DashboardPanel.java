@@ -37,14 +37,14 @@ public class DashboardPanel extends DevicePanel
   @Override
   protected void doLinkStateChanged(LinkState linkState)
   {
-    SwingUtilities.invokeLater(() -> ledConnection.setLedOn(linkState == LinkState.OPEN));
+    SwingUtilities.invokeLater(() -> ledConnection.setLedOn(linkState == LinkState.CONNECTED));
   }
 
   @Override
   public void setDevice(Controller device)
   {
     super.setDevice(device);
-    ledConnection.setLedOn(device != null && device.getLinkState() == LinkState.OPEN);
+    ledConnection.setLedOn(device != null && device.getLinkState() == LinkState.CONNECTED);
   }
 
   /**

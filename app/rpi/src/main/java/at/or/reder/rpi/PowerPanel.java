@@ -58,10 +58,10 @@ public final class PowerPanel extends DevicePanel
 
   private void setControlState()
   {
-    lnCurrent.setEnabled(device != null && device.getLinkState() == LinkState.OPEN);
-    lnVoltage.setEnabled(device != null && device.getLinkState() == LinkState.OPEN);
-    lbCaption.setEnabled(device != null && device.getLinkState() == LinkState.OPEN);
-    lbState.setEnabled(device != null && device.getLinkState() == LinkState.OPEN);
+    lnCurrent.setEnabled(device != null && device.getLinkState() == LinkState.CONNECTED);
+    lnVoltage.setEnabled(device != null && device.getLinkState() == LinkState.CONNECTED);
+    lbCaption.setEnabled(device != null && device.getLinkState() == LinkState.CONNECTED);
+    lbState.setEnabled(device != null && device.getLinkState() == LinkState.CONNECTED);
 
   }
 

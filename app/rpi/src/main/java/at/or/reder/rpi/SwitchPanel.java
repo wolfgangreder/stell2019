@@ -36,7 +36,7 @@ public class SwitchPanel extends DevicePanel
 
   protected void doLinkStateChanged(LinkState linkState)
   {
-    if (linkState == LinkState.OPEN && device != null) {
+    if (linkState == LinkState.CONNECTED && device != null) {
       marchtrenkPanel1.setEnabled(true);
     } else {
       marchtrenkPanel1.setEnabled(false);

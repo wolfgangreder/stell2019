@@ -262,7 +262,7 @@ public class SimpleTurnout extends AbstractTrackElement implements TurnoutElemen
   @Override
   public void queryState()
   {
-    if (control != null && control.getLinkState() == LinkState.OPEN) {
+    if (control != null && control.getLinkState() == LinkState.CONNECTED) {
       try {
         control.getAccessoryState(decoderAddress,
                                   port);

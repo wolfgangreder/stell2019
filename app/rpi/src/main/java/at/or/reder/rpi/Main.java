@@ -89,7 +89,7 @@ public final class Main extends JFrame implements ContainerListener
   private void tryReconnect()
   {
     doReconnect();
-    if (device.getLinkState() != LinkState.OPEN) {
+    if (device.getLinkState() != LinkState.CONNECTED) {
       RequestProcessor.getDefault().schedule(this::tryReconnect,
                                              5000,
                                              TimeUnit.MILLISECONDS);

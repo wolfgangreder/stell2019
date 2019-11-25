@@ -71,7 +71,7 @@ public class PowerControlPanel extends DevicePanel
                             Color colorEn,
                             Color colorDis)
   {
-    boolean e = enable && device != null && device.getLinkState() == LinkState.OPEN;
+    boolean e = enable && device != null && device.getLinkState() == LinkState.CONNECTED;
     button.setEnabled(e);
     if (e) {
       button.setBackground(colorEn);

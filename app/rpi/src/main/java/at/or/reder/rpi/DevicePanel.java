@@ -46,7 +46,7 @@ public abstract class DevicePanel extends JPanel implements ContainerListener
 
   public boolean isLinkedOpen()
   {
-    return device != null && device.getLinkState() == LinkState.OPEN;
+    return device != null && device.getLinkState() == LinkState.CONNECTED;
   }
 
   protected void doLinkStateChanged(LinkState linkState)
