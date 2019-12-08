@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=sw
+PROJECTNAME=twi2uart.X
 
 # Active Configuration
 DEFAULTCONF=default

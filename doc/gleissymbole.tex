@@ -550,7 +550,7 @@ Dieses Kommando dient zum Abfragen des aktuellen Zustands des Moduls.
 
 \subsubsection{Hello}
 \label{sec:Hello}
-Dieses Kommando aktiviert das Modul. Ohne Aktivierung muss sich ein Modul passiv verhalten (vor allem darf es nicht mehr Strom als notwendig.
+Dieses Kommando aktiviert das Modul. Ohne Aktivierung muss sich ein Modul passiv verhalten (vor allem darf es nicht mehr Strom als notwendig verbrauche).
 \begin{table}[H]
 \centering
 \begin{tabular}{c|c|l|l}
@@ -560,6 +560,29 @@ Dieses Kommando aktiviert das Modul. Ohne Aktivierung muss sich ein Modul passiv
 \caption{Hello Request}
 \end{table}
 Antwort wie unter \ref{QUERYSTATE_RESP} QueryState.
+
+\subsubsection{Ok}
+\label{sec:Ok}
+Quittierung von Befehlen.
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|l|l}
+\textbf{Offset} & \textbf{Länge} & \textbf{Wert} & \textbf{Beschreibung} \\ \hline
+0 & 1 & 0xff & Response Ok
+\end{tabular}
+\caption{Ok Response}
+\end{table}
+\subsubsection{Error}
+\label{sec:Error}
+Quittierung von Befehlen.
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|l|l}
+\textbf{Offset} & \textbf{Länge} & \textbf{Wert} & \textbf{Beschreibung} \\ \hline
+0 & 1 & 0xfe & Response Error
+\end{tabular}
+\caption{Error Response}
+\end{table}
 
 \subsubsection{Lamptest}
 \label{sec:Lamptest}
@@ -670,7 +693,19 @@ Es gibt zwei Wege wie der Bootloader aktiviert wird:
 \begin{tabular}{c|c|c|l}
 \textbf{Offset} & \textbf{Länge} & \textbf{Wert} & \textbf{Beschreibung} \\ \hline
 0 & 1 & 0x07 & Kommando PageProgram\\
-1 & 2 & o & Page Address
+1 & 4 & o & Page Address
+\end{tabular}
+\caption{PageProgram Request}
+\end{table}
+
+\subsubsection{Restart}
+\label{sec:Restart}
+Neustart.
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c|l}
+\textbf{Offset} & \textbf{Länge} & \textbf{Wert} & \textbf{Beschreibung} \\ \hline
+0 & 1 & 0x0d & Kommando Restart\\
 \end{tabular}
 \caption{PageProgram Request}
 \end{table}
@@ -851,7 +886,10 @@ end
 0x09 & Lamp & \ref{sec:Lamp}\\
 0x0a & KeyQuery & \ref{sec:KeyQuery}\\
 0x0b & KeyEvent & \ref{sec:KeyEvent}\\
-0x0c & Healthcheck & \ref{sec:Healthcheck}
+0x0c & Healthcheck & \ref{sec:Healthcheck}\\
+0x0d & Restart & \ref{sec:Restart}\\
+0xfe & Error & \ref{sec:Error}\\
+0xff & Ok & \ref{sec:Ok}
 \end{tabular}
 \caption{Kommandocodes}
 \end{table}

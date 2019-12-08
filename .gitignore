@@ -13,3 +13,9 @@
 /rpi/rpi/target/
 /app/rpi/target/
 /app/mcan/target/
+/feld/sw/fwfield.X/build/
+/feld/sw/fwfield.X/dist/
+/feld/sw/bl_m8535_uart.X/build/
+/feld/sw/bl_m8535_uart.X/dist/
+/tools/twi2uart.X/build/
+/tools/twi2uart.X/dist/
