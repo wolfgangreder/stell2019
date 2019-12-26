@@ -54,7 +54,7 @@ int main()
         sendTWI((buffer_head_t*) getCommandDataBuffer());
       }
       if (isEventAvailable()) {
-        sendUARTData((buffer_head_t*) getCommandEventBuffer(), sizeof (command_buffer_t));
+        sendUARTData((buffer_head_t*) getCommandEventBuffer());
       }
     }
   };

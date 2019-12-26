@@ -17,7 +17,7 @@ extern "C" {
 
   extern void initUART();
   extern uint8_t isUARTReadyToSend();
-  extern uint8_t sendUARTData(void* buffer, uint8_t bytesToSend);
+  extern uint8_t sendUARTData(buffer_head_t* buffer);
 
 
 #ifdef	__cplusplus

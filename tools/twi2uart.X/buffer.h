@@ -18,6 +18,8 @@ extern "C" {
 #define DLE 10 // STX und EOT müssen in den daten mit DLE markiert werden
 #define ACK 6
 
+#define CMD_PROGRAM (0xff)
+
   typedef struct {
     uint16_t receiver;
     uint8_t crc8;
@@ -38,15 +40,23 @@ extern "C" {
   typedef struct {
 
     union {
-      program_buffer_t programBuffer;
 
-      struct {
-        command_buffer_t inBuffer;
-        command_buffer_t outBuffer;
+      union {
+        program_buffer_t programBuffer;
+
+        struct {
+          command_buffer_t inBuffer;
+          command_buffer_t outBuffer;
+        };
       };
+      uint8_t rawData[sizeof (program_buffer_t)];
     };
   } buffer_t;
 
+  extern buffer_t* getBuffer();
+  extern void enterProgramMode();
+  extern void publishEvent();
+  extern void publishCommand();
   extern uint8_t isInProgramMode();
   extern command_buffer_t* getCommandDataBuffer();
   extern uint8_t isCommandAvailable();
