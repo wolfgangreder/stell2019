@@ -4,9 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>include/comm.h</itemPath>
       <itemPath>include/hw.h</itemPath>
-      <itemPath>source/protocol.h</itemPath>
+      <itemPath>include/TWI_slave.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -16,8 +15,8 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>source/main.c</itemPath>
-      <itemPath>source/comm.c</itemPath>
-      <itemPath>source/protocol.c</itemPath>
+      <itemPath>source/TWI_slave.c</itemPath>
+      <itemPath>source/hw.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -27,6 +26,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>source</Elem>
+    <Elem>include</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -53,7 +53,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -145,16 +145,17 @@
         <property key="lss" value="true"/>
         <property key="omit-pack-options" value="false"/>
         <property key="relax-branches" value="false"/>
-        <property key="srec" value="true"/>
+        <property key="srec" value="false"/>
         <property key="user-pack-device-support" value=""/>
         <property key="user-pack-include" value=""/>
         <property key="usersig" value="true"/>
+        <appendMe value="-DFW_MINOR=0 -DFW_MAJOR=0 -DFW_BUILD=1 -DTWI_ADDRESS=3"/>
       </AVR-Global>
       <AVR-LD>
         <property key="eeprom-segment" value=""/>
         <property key="exclude-standard-libraries" value="false"/>
         <property key="extra-lib-directories" value=""/>
-        <property key="flash-segment" value=".text=0xc00"/>
+        <property key="flash-segment" value=""/>
         <property key="generate-map-file" value="true"/>
         <property key="initial-stack-address" value=""/>
         <property key="input-libraries" value="libm"/>

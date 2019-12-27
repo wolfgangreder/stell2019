@@ -49,7 +49,7 @@ CP=cp
 CCADMIN=CCadmin
 RANLIB=ranlib
 OBJDUMP=/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-objdump
-AVRSIZE=/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-size
+#AVRSIZE=/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-size
 
 # build
 build: .build-post
@@ -59,8 +59,8 @@ build: .build-post
 
 .build-post: .build-impl
 #	${OBJDUMP} -h -S -j .fuse -j .text -j .bootloader ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.elf > ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.lss
-	${AVRSIZE} --mcu=atmega8535 --format avr ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.elf  > ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.usg
-	${AVRSIZE} --mcu=atmega8535 --format avr ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.elf
+#	${AVRSIZE} --mcu=atmega8535 --format avr ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.elf  > ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.usg
+#	${AVRSIZE} --mcu=atmega8535 --format avr ${CND_ARTIFACT_DIR_${CONF}}/${basename ${CND_ARTIFACT_NAME_${CONF}}}.elf
 
 
 # clean
