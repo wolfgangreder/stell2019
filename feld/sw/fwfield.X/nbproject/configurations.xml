@@ -136,6 +136,7 @@
         <property key="syntax-only" value="false"/>
         <property key="undefined-identifier" value="false"/>
         <property key="verbose" value="false"/>
+        <appendMe value="-gdwarf"/>
       </AVR-GCC>
       <AVR-Global>
         <property key="common-include-directories" value="include"/>

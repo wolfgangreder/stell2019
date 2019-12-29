@@ -45,25 +45,25 @@
  */
 /****************************************************************************
   TWI Status/Control register definitions
-****************************************************************************/
+ ****************************************************************************/
 #include "hw.h"
-#define TWI_BUFFER_SIZE sizeof(TCommandBuffer)      // Reserves memory for the drivers transceiver buffer. 
-                               // Set this to the largest message size that will be sent including address byte.
+#define TWI_BUFFER_SIZE sizeof(TCommandBuffer)      // Reserves memory for the drivers transceiver buffer.
+// Set this to the largest message size that will be sent including address byte.
 
 /****************************************************************************
   Global definitions
-****************************************************************************/
-  
-union TWI_statusReg_t                       // Status byte holding flags.
+ ****************************************************************************/
+
+union TWI_statusReg_t // Status byte holding flags.
 {
-    unsigned char all;
-    struct
-    {
-        unsigned char lastTransOK:1;      
-        unsigned char RxDataInBuf:1;
-        unsigned char genAddressCall:1;                        // TRUE = General call, FALSE = TWI Address;
-        unsigned char unusedBits:5;
-    };
+  unsigned char all;
+
+  struct {
+    unsigned char lastTransOK : 1;
+    unsigned char RxDataInBuf : 1;
+    unsigned char genAddressCall : 1; // TRUE = General call, FALSE = TWI Address;
+    unsigned char unusedBits : 5;
+  };
 };
 
 extern union TWI_statusReg_t TWI_statusReg;
@@ -72,18 +72,18 @@ extern union TWI_statusReg_t TWI_statusReg;
 
 /****************************************************************************
   Function definitions
-****************************************************************************/
-void TWI_Slave_Initialise( unsigned char );
-unsigned char TWI_Transceiver_Busy( void );
-unsigned char TWI_Get_State_Info( void );
-void TWI_Start_Transceiver_With_Data( unsigned char* , unsigned char );
-void TWI_Start_Transceiver( void );
-unsigned char TWI_Get_Data_From_Transceiver( unsigned char*, unsigned char );
+ ****************************************************************************/
+void TWI_Slave_Initialise(unsigned char);
+unsigned char TWI_Transceiver_Busy(void);
+unsigned char TWI_Get_State_Info(void);
+void TWI_Start_Transceiver_With_Data(unsigned char*, unsigned char);
+void TWI_Start_Transceiver(void);
+unsigned char TWI_Get_Data_From_Transceiver(unsigned char*, unsigned char);
 
 
 /****************************************************************************
   Bit and byte definitions
-****************************************************************************/
+ ****************************************************************************/
 #define TWI_READ_BIT  0   // Bit position for R/W bit in "address byte".
 #define TWI_ADR_BITS  1   // Bit position for LSB of the slave address bits in the init byte.
 #define TWI_GEN_BIT   0   // Bit position for LSB of the general call bit in the init byte.
@@ -93,19 +93,19 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char*, unsigned char );
 
 /****************************************************************************
   TWI State codes
-****************************************************************************/
-// General TWI Master status codes                      
-#define TWI_START                  0x08  // START has been transmitted  
+ ****************************************************************************/
+// General TWI Master status codes
+#define TWI_START                  0x08  // START has been transmitted
 #define TWI_REP_START              0x10  // Repeated START has been transmitted
 #define TWI_ARB_LOST               0x38  // Arbitration lost
 
-// TWI Master Transmitter status codes                      
+// TWI Master Transmitter status codes
 #define TWI_MTX_ADR_ACK            0x18  // SLA+W has been transmitted and ACK received
-#define TWI_MTX_ADR_NACK           0x20  // SLA+W has been transmitted and NACK received 
+#define TWI_MTX_ADR_NACK           0x20  // SLA+W has been transmitted and NACK received
 #define TWI_MTX_DATA_ACK           0x28  // Data byte has been transmitted and ACK received
-#define TWI_MTX_DATA_NACK          0x30  // Data byte has been transmitted and NACK received 
+#define TWI_MTX_DATA_NACK          0x30  // Data byte has been transmitted and NACK received
 
-// TWI Master Receiver status codes  
+// TWI Master Receiver status codes
 #define TWI_MRX_ADR_ACK            0x40  // SLA+R has been transmitted and ACK received
 #define TWI_MRX_ADR_NACK           0x48  // SLA+R has been transmitted and NACK received
 #define TWI_MRX_DATA_ACK           0x50  // Data byte has been received and ACK transmitted

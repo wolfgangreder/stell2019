@@ -10,6 +10,8 @@
 #include <avr/io.h>
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -18,27 +20,33 @@ extern "C" {
 #ifdef _AVR_IOM8535_H_
 #define FREQ 14745600
 #define DEVICE 8535
-#define PORT_LED PORTC
-#define DDR_LED DDRC
-#define PIN_LED PINC
-#define LED_1 PC0
-#define LED_2 PC1
-#define LED_3 PC2
-#define LED_4 PC3
-#define LED_5 PC4
-#define LED_6 PC5
-#define LED_8 PC6
-#define LED_9 PC7
+#define PORT_LED PORTB
+#define DDR_LED DDRB
+#define PIN_LED PINB
+#define LED_1 0
+#define LED_2 1
+#define LED_3 2
+#define LED_4 3
+#define LED_5 4
+#define LED_6 5
+#define LED_8 6
+#define LED_9 7
 #define SWITCH_PORT PORTD
 #define SWITCH_DIR DDRD
 #define SWITCH_PIN PIND
-#define SWITCH_BIT PD2
+#define SWITCH 2
+#define SWITCH_INT_vect INT0_vect
+#define PORT_BLINK PORTD
+#define DDR_BLINK DDRD
+#define PIN_BLINK PIND
+#define BLINK 3
+#define BLINK_INT_vect INT1_vect
+#define BLINK_MCU_OR _BV(ISC11)
+#define BLINK_MCU_AND (~_BV(ISC10))
 #else
 #error device not supported
 #endif
 
-  
-  
   typedef struct {
 
     union {
@@ -107,11 +115,13 @@ extern "C" {
     uint16_t fw_build;
   } TFlashFile;
 
-  typedef enum {OP_READ=0,
-        OP_WRITE=1,
-        OP_INCREMENT=2,
-        OP_DECREMENT=3,
-        OP_COMPLEMENT=4} operation_t;
+  typedef enum {
+    OP_READ = 0,
+    OP_WRITE = 1,
+    OP_INCREMENT = 2,
+    OP_DECREMENT = 3,
+    OP_COMPLEMENT = 4
+  } operation_t;
 
   typedef struct {
     uint8_t registerAddress;
@@ -123,12 +133,12 @@ extern "C" {
     };
   } TCommandBuffer;
 
-extern TRegisterFile registerFile;
-extern EEMEM TEEPromFile ee_eepromFile;
-extern TEEPromFile eepromFile;
-extern const PROGMEM TFlashFile fl_flashFile;
-extern TFlashFile flashFile;
-  
+  extern TRegisterFile registerFile;
+  extern EEMEM TEEPromFile ee_eepromFile;
+  extern TEEPromFile eepromFile;
+  extern const PROGMEM TFlashFile fl_flashFile;
+  extern TFlashFile flashFile;
+
   extern void initHW();
   extern uint16_t processLed(uint8_t led, operation_t operation);
   extern uint16_t processBlinkMask(uint8_t led, operation_t operation);

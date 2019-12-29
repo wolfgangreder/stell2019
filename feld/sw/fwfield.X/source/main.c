@@ -56,116 +56,119 @@
 unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg);
 
 
- TRegisterFile registerFile;
- EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0};
- TEEPromFile eepromFile;
- const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR, .fw_build = FW_BUILD};
- TFlashFile flashFile;
+TRegisterFile registerFile;
+EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0};
+TEEPromFile eepromFile;
+const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR, .fw_build = FW_BUILD};
+TFlashFile flashFile;
 
-uint16_t processCommand(TCommandBuffer* cmd) {
-    switch (cmd->registerAddress) {
-        case REG_LED:
-            return processLed(cmd->data[0],cmd->registerOperation);
-        case REG_BLINKMASK:
-            return processBlinkMask(cmd->data[0],cmd->registerOperation);
-        case REG_BLINKPHASE:
-            return processBlinkPhase(cmd->data[0],cmd->registerOperation);
-        case REG_PWM:
-            return processPWM(cmd->data[0],cmd->registerOperation);
-        case REG_VCC:
-            return processVCC();
-    }
-    return -1;
+uint16_t processCommand(TCommandBuffer* cmd)
+{
+  switch (cmd->registerAddress) {
+    case REG_LED:
+      return processLed(cmd->data[0], cmd->registerOperation);
+    case REG_BLINKMASK:
+      return processBlinkMask(cmd->data[0], cmd->registerOperation);
+    case REG_BLINKPHASE:
+      return processBlinkPhase(cmd->data[0], cmd->registerOperation);
+    case REG_PWM:
+      return processPWM(cmd->data[0], cmd->registerOperation);
+    case REG_VCC:
+      return processVCC();
+  }
+  return -1;
 }
 
-int main(void) {
-    TCommandBuffer commandBuf;
+int main(void)
+{
+  TCommandBuffer commandBuf;
 
-    initHW(&registerFile, &eepromFile);
+  initHW(&registerFile, &eepromFile);
 
 
-    // Initialize TWI module for slave operation. Include address and/or enable General Call.
-    TWI_Slave_Initialise((unsigned char) ((eepromFile.address_lsb << TWI_ADR_BITS) | (TRUE << TWI_GEN_BIT)));
+  // Initialize TWI module for slave operation. Include address and/or enable General Call.
+  TWI_Slave_Initialise((unsigned char) ((eepromFile.address_lsb << TWI_ADR_BITS) | (TRUE << TWI_GEN_BIT)));
 
-    sei(); //set global interrupt enable
+  sei(); //set global interrupt enable
 
-    // Start the TWI transceiver to enable reception of the first command from the TWI Master.
-    TWI_Start_Transceiver();
+  // Start the TWI transceiver to enable reception of the first command from the TWI Master.
+  TWI_Start_Transceiver();
 
-    // This example is made to work together with the AVR315 TWI Master application note. In addition to connecting the TWI
-    // pins, also connect PORTB to the LEDS. The code reads a message as a TWI slave and acts according to if it is a 
-    // general call, or an address call. If it is an address call, then the first byte is considered a command byte and
-    // it then responds differently according to the commands.
+  // This example is made to work together with the AVR315 TWI Master application note. In addition to connecting the TWI
+  // pins, also connect PORTB to the LEDS. The code reads a message as a TWI slave and acts according to if it is a
+  // general call, or an address call. If it is an address call, then the first byte is considered a command byte and
+  // it then responds differently according to the commands.
 
-    // This loop runs forever. If the TWI is busy the execution will just continue doing other operations.
-    for (;;) {
-        asm("nop"); // Put own code here.
-        // Check if the TWI Transceiver has completed an operation.
-        if (!TWI_Transceiver_Busy()) {
-            // Check if the last operation was successful
-            if (TWI_statusReg.lastTransOK) {
-                // Check if the last operation was a reception
-                if (TWI_statusReg.RxDataInBuf) {
-                    TWI_Get_Data_From_Transceiver((uint8_t*)&commandBuf, sizeof (commandBuf));
-                    // Check if the last operation was a reception as General Call        
-                    if (TWI_statusReg.genAddressCall) {
-                        // Put data received out to PORTB as an example.        
-                        // PORTB = messageBuf[0];
-                    } else // Ends up here if the last operation was a reception as Slave Address Match   
-                    {
-                        if (commandBuf.registerOperation == OP_READ) {
-                            uint16_t data = processCommand(&commandBuf);
-                            TWI_Start_Transceiver_With_Data((uint8_t*)&data, sizeof (data));
-                        } else {
-                            processCommand(&commandBuf);
-                        }
-                    }
-                } else // Ends up here if the last operation was a transmission  
-                {
-                    asm("nop"); // Put own code here.
-                }
-                // Check if the TWI Transceiver has already been started.
-                // If not then restart it to prepare it for new receptions.             
-                if (!TWI_Transceiver_Busy()) {
-                    TWI_Start_Transceiver();
-                }
-            } else // Ends up here if the last operation completed unsuccessfully
-            {
-                TWI_Act_On_Failure_In_Last_Transmission(TWI_Get_State_Info());
+  // This loop runs forever. If the TWI is busy the execution will just continue doing other operations.
+  for (;;) {
+    asm("nop"); // Put own code here.
+    // Check if the TWI Transceiver has completed an operation.
+    if (!TWI_Transceiver_Busy()) {
+      // Check if the last operation was successful
+      if (TWI_statusReg.lastTransOK) {
+        // Check if the last operation was a reception
+        if (TWI_statusReg.RxDataInBuf) {
+          TWI_Get_Data_From_Transceiver((uint8_t*) & commandBuf, sizeof (commandBuf));
+          // Check if the last operation was a reception as General Call
+          if (TWI_statusReg.genAddressCall) {
+            // Put data received out to PORTB as an example.
+            // PORTB = messageBuf[0];
+          } else // Ends up here if the last operation was a reception as Slave Address Match
+          {
+            if (commandBuf.registerOperation == OP_READ) {
+              uint16_t data = processCommand(&commandBuf);
+              TWI_Start_Transceiver_With_Data((uint8_t*) & data, sizeof (data));
+            } else {
+              processCommand(&commandBuf);
             }
+          }
+        } else // Ends up here if the last operation was a transmission
+        {
+          asm("nop"); // Put own code here.
         }
+        // Check if the TWI Transceiver has already been started.
+        // If not then restart it to prepare it for new receptions.
+        if (!TWI_Transceiver_Busy()) {
+          TWI_Start_Transceiver();
+        }
+      } else // Ends up here if the last operation completed unsuccessfully
+      {
+        TWI_Act_On_Failure_In_Last_Transmission(TWI_Get_State_Info());
+      }
     }
+  }
 }
 
-unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg) {
-    // A failure has occurred, use TWIerrorMsg to determine the nature of the failure
-    // and take appropriate actions.
-    // Se header file for a list of possible failures messages.
+unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg)
+{
+  // A failure has occurred, use TWIerrorMsg to determine the nature of the failure
+  // and take appropriate actions.
+  // Se header file for a list of possible failures messages.
 
-    // This very simple example puts the error code on PORTB and restarts the transceiver with
-    // all the same data in the transmission buffers.
-    TWI_Start_Transceiver();
+  // This very simple example puts the error code on PORTB and restarts the transceiver with
+  // all the same data in the transmission buffers.
+  TWI_Start_Transceiver();
 
-    return TWIerrorMsg;
+  return TWIerrorMsg;
 }
 
 /*
  // A simplified example.
  // This will store data received on PORTB, and increment it before sending it back.
 
- TWI_Start_Transceiver( );    
-         
+ TWI_Start_Transceiver( );
+
  for(;;)
  {
-   if ( ! TWI_Transceiver_Busy() )                              
+   if ( ! TWI_Transceiver_Busy() )
    {
      if ( TWI_statusReg.RxDataInBuf )
      {
-       TWI_Get_Data_From_Transceiver(&temp, 1);  
+       TWI_Get_Data_From_Transceiver(&temp, 1);
        PORTB = temp;
      }
      temp = PORTB + 1;
-     TWI_Start_Transceiver_With_Data(&temp, 1); 
+     TWI_Start_Transceiver_With_Data(&temp, 1);
    }
    asm("nop");   // Do something else while waiting
  }
