@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -Djna.library.path=./ -Djna.debug_load=true -classpath %classpath at.or.reder.tools.fieldtest.Main</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -Djna.library.path=./ -Djna.debug_load=true -Djava.library.path=./ -classpath %classpath at.or.reder.tools.fieldtest.Main</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir>/home/wolfi/eagle/stell2019/app/fieldtest</exec.workingdir>
@@ -26,7 +26,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Djna.library.path=./ -Djna.debug_load=true -classpath %classpath at.or.reder.tools.fieldtest.Main</exec.args>
+                <exec.args>-Djna.library.path=./ -Djna.debug_load=true -Djava.library.path=./ -classpath %classpath at.or.reder.tools.fieldtest.Main</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>/home/wolfi/eagle/stell2019/app/fieldtest</exec.workingdir>
             </properties>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Djna.library.path=./ -Djna.debug_load=true -classpath %classpath at.or.reder.tools.fieldtest.Main</exec.args>
+                <exec.args>-Djna.library.path=./ -Djna.debug_load=true -Djava.library.path=./ -classpath %classpath at.or.reder.tools.fieldtest.Main</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>/home/wolfi/eagle/stell2019/app/fieldtest</exec.workingdir>
             </properties>

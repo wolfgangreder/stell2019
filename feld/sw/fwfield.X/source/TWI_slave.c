@@ -43,10 +43,12 @@
 /*
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include "TWI_slave.h"
-#include "avr/sleep.h"
+
+#ifndef COMM_USART
+#  include <avr/io.h>
+#  include <avr/interrupt.h>
+#  include "TWI_slave.h"
+#  include "avr/sleep.h"
 static unsigned char TWI_buf[TWI_BUFFER_SIZE]; // Transceiver buffer. Set the size in the header file
 static unsigned char TWI_msgSize = 0; // Number of bytes to be transmitted.
 static unsigned char TWI_state = TWI_NO_STATE; // State byte. Default set to TWI_NO_STATE.
@@ -69,6 +71,7 @@ start the TWI.
  ****************************************************************************/
 void TWI_Slave_Initialise(unsigned char TWI_ownAddress)
 {
+  PORTC |= _BV(PC0) + _BV(PC1); // enable pullups
   TWAR = TWI_ownAddress; // Set own TWI slave address. Accept TWI General Calls.
   TWCR = (1 << TWEN) | // Enable TWI-interface and release TWI pins.
       (0 << TWIE) | (0 << TWINT) | // Disable TWI Interrupt.
@@ -264,3 +267,4 @@ ISR(TWI_vect)
       TWI_busy = 0; // Unknown status, so we wait for a new address match that might be something we can handle
   }
 }
+#endif

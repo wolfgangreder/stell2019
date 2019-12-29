@@ -11,25 +11,25 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#if COMM==COMM_USART
-#define initComm  initCommUsart
-#define readByte readByteUsart
-#define writeByte writeByteUsart
-#elif COMM==COMM_TWI
-#include "comm_twi.h"
-#define initComm  initCommTwi
-#define readByte readByteTwi
-#define writeByte readByteUsart
-#else
-#error comminication not supported
-#endif
 
-  extern void initCommTwi();
-  extern uint8_t readByteTwi();
-  extern void writeByteTwi(uint8_t byte);
-  extern __attribute__((section(".bootloader"))) void initCommUsart();
-  extern uint8_t readByteUsart();
-  extern void writeByteUsart(uint8_t byte);
+
+  extern void initCommUsart(uint8_t ownAddress);
+  extern uint8_t getBytesAvailableUsart();
+  extern uint8_t readBytes(uint8_t* buffer, uint8_t bytesToRead);
+  extern uint8_t isTxReady();
+  extern void writeBytesUsart(uint8_t* buffer, uint8_t bytesToSend);
+
+  inline void writeByteUsart(uint8_t byte) {
+    writeBytesUsart(&byte, 1);
+  }
+
+  inline void sendACK() {
+    writeByteUsart(6);
+  }
+
+  inline void sendNACK() {
+    writeByteUsart(25);
+  }
 
 
 #ifdef	__cplusplus

@@ -15,7 +15,8 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
+#define IND_1 (PORTD&=~_BV(PD7))
+#define IND_0 (PORTD|=_BV(PD7))
 
 #ifdef _AVR_IOM8535_H_
 #define FREQ 14745600

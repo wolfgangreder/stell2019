@@ -48,13 +48,13 @@
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
-#include "TWI_slave.h"
+#ifdef COMM_USART
+#  include "comm.h"
+#else
+#  include "TWI_slave.h"
+#endif
 #include "avr/sleep.h"
 #include "hw.h"
-
-// When there has been an error, this function is run and takes care of it
-unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg);
-
 
 TRegisterFile registerFile;
 EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0};
@@ -78,6 +78,37 @@ uint16_t processCommand(TCommandBuffer* cmd)
   }
   return -1;
 }
+#ifdef COMM_USART
+
+int main(void)
+{
+  TCommandBuffer commandBuf;
+  DDRD |= _BV(PD7);
+  PORTD |= _BV(PD7);
+
+  initHW(&registerFile, &eepromFile);
+  initCommUsart(eepromFile.address_lsb);
+
+  sei(); //set global interrupt enable
+
+  for (;;) {
+    // Check if the last operation was a reception
+    if (getBytesAvailableUsart() == sizeof (commandBuf)) {
+      readBytes((uint8_t*) & commandBuf, sizeof (commandBuf));
+      sendACK();
+      if (commandBuf.registerOperation == OP_READ) {
+        uint16_t data = processCommand(&commandBuf);
+        writeBytesUsart((uint8_t*) & data, sizeof (data));
+      } else {
+        processCommand(&commandBuf);
+      }
+      IND_0;
+    }
+  }
+}
+#else
+// When there has been an error, this function is run and takes care of it
+unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg);
 
 int main(void)
 {
@@ -151,6 +182,9 @@ unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg)
 
   return TWIerrorMsg;
 }
+#endif
+
+
 
 /*
  // A simplified example.

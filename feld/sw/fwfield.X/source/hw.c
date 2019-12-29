@@ -15,8 +15,7 @@ void initHW()
   PORT_LED = 0xff; // alle leds aus
   registerFile.blinkdivider = 4;
   currentPWM = registerFile.pwm;
-  processPWM(registerFile.pwm, OP_WRITE);
-  TCCR0 = _BV(WGM00) + _BV(CS02); // fosc/256
+  TCCR0 = _BV(WGM01) + _BV(WGM00) + _BV(CS02); // fast PWM; fosc/256
   TIMSK |= _BV(OCIE0) + _BV(TOIE0);
   MCUCR |= BLINK_MCU_OR;
   MCUCR &= BLINK_MCU_AND;
@@ -25,12 +24,9 @@ void initHW()
 void ledOn()
 {
   uint8_t bm;
-
   bm = registerFile.blinkmask;
   uint8_t tmp = registerFile.led & (~bm | (bm & (registerFile.blinkphase^currentBlinkPhase)));
-
   PORT_LED = ~tmp;
-
 }
 
 ISR(BLINK_INT_vect)
@@ -46,9 +42,7 @@ ISR(BLINK_INT_vect)
 
 ISR(TIMER0_OVF_vect)
 {
-  if (OCR0 != 0xff) {
-    PORT_LED = 0xff; // alle Leds aus
-  }
+  ledOn();
 }
 
 /*
@@ -56,7 +50,7 @@ ISR(TIMER0_OVF_vect)
  */
 ISR(TIMER0_COMP_vect)
 {
-  ledOn();
+  PORT_LED = 0xff;
 }
 
 uint16_t processLed(uint8_t led, operation_t operation)
