@@ -139,11 +139,11 @@ public final class FieldImpl implements Field
     synchronized (lock) {
       while (this.state != expectendState && state != State.ERROR) {
         lock.wait(1000L);
-        if (this.state != expectendState && state != State.ERROR) {
-          throw new TimeoutException();
-        } else {
-          result = returnValue.getShort() & 0xffff;
-        }
+      }
+      if (this.state != expectendState && state != State.ERROR) {
+        throw new TimeoutException();
+      } else {
+        result = returnValue.getShort() & 0xffff;
       }
     }
     return result;
