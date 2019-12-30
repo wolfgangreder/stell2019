@@ -101,13 +101,6 @@ void writeBytesUsart(uint8_t* buffer, uint8_t bytesToSend)
     enableUDRIE();
     txAvail = toCopy;
     txOffset = 0;
-    //    if (UCSRA & _BV(UDRE)) {
-    //      txOffset = 1;
-    //      txAvail = toCopy - 1;
-    //      UDR = txBuf[0];
-    //    } else {
-    //    }
-
   }
 }
 

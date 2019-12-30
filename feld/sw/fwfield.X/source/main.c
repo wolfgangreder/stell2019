@@ -57,7 +57,7 @@
 #include "hw.h"
 
 TRegisterFile registerFile;
-EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0};
+EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0, .vcc_calibration = 0};
 TEEPromFile eepromFile;
 const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR, .fw_build = FW_BUILD};
 TFlashFile flashFile;
@@ -75,6 +75,8 @@ uint16_t processCommand(TCommandBuffer* cmd)
       return processPWM(cmd->data[0], cmd->registerOperation);
     case REG_VCC:
       return processVCC();
+    case REG_VCC_CALIBRATION:
+      return processVCCCalibration(cmd->data[0], cmd->registerOperation);
   }
   return -1;
 }
@@ -92,7 +94,6 @@ int main(void)
   sei(); //set global interrupt enable
 
   for (;;) {
-    // Check if the last operation was a reception
     if (getBytesAvailableUsart() == sizeof (commandBuf)) {
       readBytes((uint8_t*) & commandBuf, sizeof (commandBuf));
       sendACK();
@@ -102,7 +103,6 @@ int main(void)
       } else {
         processCommand(&commandBuf);
       }
-      IND_0;
     }
   }
 }

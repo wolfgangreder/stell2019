@@ -44,6 +44,7 @@ extern "C" {
 #define BLINK_INT_vect INT1_vect
 #define BLINK_MCU_OR _BV(ISC11)
 #define BLINK_MCU_AND (~_BV(ISC10))
+#define BLINK_INT_ENABLE _BV(INT1)
 #else
 #error device not supported
 #endif
@@ -62,6 +63,8 @@ extern "C" {
     uint8_t debounce;
     uint8_t softstart;
     uint8_t softstop;
+    int8_t vcc_calibration;
+
   } TEEPromFile;
 
 #define OFFSET_RAM (0)
@@ -84,6 +87,7 @@ extern "C" {
 #define REG_DEBOUNCE (OFFSET_EEPROM+offsetof(TEEPromFile,debounce))
 #define REG_SOFTSTART (OFFSET_EEPROM+offsetof(TEEPromFile,softstart))
 #define REG_SOFTSTOP (OFFSET_EEPROM+offsetof(TEEPromFile,softstop))
+#define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
 #define REG_VERSION_MAJOR (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
 #define REG_VERSION_MINOR (OFFSET_FLASH+offsetof(TFlashFile,fw_minor))
 #define REG_BUILD_MSB (OFFSET_FLASH+offsetof(TFlashFile,fw_build))
@@ -146,6 +150,8 @@ extern "C" {
   extern uint16_t processBlinkPhase(uint8_t lef, operation_t operation);
   extern uint16_t processPWM(uint8_t pwm, operation_t operation);
   extern uint16_t processVCC();
+  extern uint8_t processVCCCalibration(uint8_t cal, operation_t operation);
+
 #ifdef	__cplusplus
 }
 #endif
