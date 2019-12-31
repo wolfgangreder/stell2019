@@ -10,9 +10,12 @@ import gnu.io.RXTXPort;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
+import java.util.Set;
+import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -22,9 +25,11 @@ public class Main extends javax.swing.JFrame
 {
 
   private final Field field;
+  private final Timer timer;
 
   public Main() throws PortInUseException, UnsupportedCommOperationException
   {
+    this.timer = new Timer();
     SerialPort port = new RXTXPort("/dev/ttyS0");
     port.setSerialPortParams(57600,
                              SerialPort.DATABITS_8,
@@ -33,13 +38,85 @@ public class Main extends javax.swing.JFrame
     field = new FieldImpl(port,
                           3);
     initComponents();
+    readAll();
+//    timer.scheduleAtFixedRate(new TimerTask()
+//    {
+//      @Override
+//      public void run()
+//      {
+//        onTimer();
+//      }
+//
+//    },
+//                              50,
+//                              50);
+  }
+
+  private void onTimer()
+  {
     try {
-      ledPanel.setValue(field.getLeds());
-      blinkMask.setValue(field.getBlinkMask());
-      blinkPhase.setValue(field.getBlinkPhase());
-      spCalibration.setValue(field.getCalibration());
-      spPWM.setValue(field.getPWM());
-      edVCC.setValue(field.getVCC());
+      Set<State> state = field.getState();
+      SwingUtilities.invokeLater(() -> {
+        ckKeyPressed.setSelected(state.contains(State.KEY_PRESSED));
+      });
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }
+
+  private void readAll()
+  {
+    try {
+      Version version = field.getVersion();
+      int leds = field.getLeds();
+      int bMask = field.getBlinkMask();
+      int bPhase = field.getBlinkPhase();
+      int cal = field.getCalibration();
+      int pwm = field.getPWM();
+      float vcc = field.getVCC();
+      int div = field.getBlinkDivider();
+
+      lbVersion.setText(version.toString());
+      ledPanel.setValue(leds);
+      blinkMask.setValue(bMask);
+      blinkPhase.setValue(bPhase);
+      spCalibration.setValue(cal);
+      spPWM.setValue(pwm);
+      edVCC.setValue(vcc);
+      spDivider.setValue(div);
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }
+
+  private void writeAll()
+  {
+    try {
+      field.setLeds(ledPanel.getValue());
+      field.setBlinkMask(blinkMask.getValue());
+      field.setBlinkPhase(blinkPhase.getValue());
+      field.setBlinkDivider(((Number) spDivider.getValue()).intValue());
+      field.setCalibration(((Number) spCalibration.getValue()).intValue());
+      field.setPWM(((Number) spPWM.getValue()).intValue());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }
+
+  private void writeVolatile()
+  {
+    try {
+      field.setLeds(ledPanel.getValue());
+      field.setBlinkMask(blinkMask.getValue());
+      field.setBlinkPhase(blinkPhase.getValue());
+      field.setBlinkDivider(((Number) spDivider.getValue()).intValue());
+      field.setPWM(((Number) spPWM.getValue()).intValue());
     } catch (IOException | TimeoutException | InterruptedException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
                                                  null,
@@ -64,6 +141,16 @@ public class Main extends javax.swing.JFrame
     jLabel6 = new javax.swing.JLabel();
     jButton4 = new javax.swing.JButton();
     jButton5 = new javax.swing.JButton();
+    javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
+    jLabel8 = new javax.swing.JLabel();
+    jButton6 = new javax.swing.JButton();
+    jButton7 = new javax.swing.JButton();
+    jButton8 = new javax.swing.JButton();
+    jButton9 = new javax.swing.JButton();
+    jButton10 = new javax.swing.JButton();
+    jButton11 = new javax.swing.JButton();
+    jButton12 = new javax.swing.JButton();
+    jButton13 = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -100,7 +187,7 @@ public class Main extends javax.swing.JFrame
     jLabel4.setText("PWM");
 
     slPWM.setMajorTickSpacing(10);
-    slPWM.setMaximum(254);
+    slPWM.setMaximum(255);
     slPWM.setMinimum(1);
     slPWM.setPaintTicks(true);
     slPWM.setValue(0);
@@ -112,7 +199,7 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    spPWM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 254, 1));
+    spPWM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 255, 1));
     spPWM.addChangeListener(new javax.swing.event.ChangeListener()
     {
       public void stateChanged(javax.swing.event.ChangeEvent evt)
@@ -176,6 +263,97 @@ public class Main extends javax.swing.JFrame
       }
     });
 
+    jLabel7.setText("Version:");
+
+    lbVersion.setText("jLabel8");
+
+    jLabel8.setText("Blinkteiler");
+
+    spDivider.setModel(new javax.swing.SpinnerNumberModel());
+    spDivider.addChangeListener(new javax.swing.event.ChangeListener()
+    {
+      public void stateChanged(javax.swing.event.ChangeEvent evt)
+      {
+        spDividerStateChanged(evt);
+      }
+    });
+
+    jButton6.setText("Read");
+    jButton6.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton6ActionPerformed(evt);
+      }
+    });
+
+    jButton7.setText("Write");
+    jButton7.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton7ActionPerformed(evt);
+      }
+    });
+
+    jButton8.setText("Inc");
+    jButton8.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton8ActionPerformed(evt);
+      }
+    });
+
+    jButton9.setText("Dec");
+    jButton9.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton9ActionPerformed(evt);
+      }
+    });
+
+    jButton10.setText("Read All");
+    jButton10.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton10ActionPerformed(evt);
+      }
+    });
+
+    jButton11.setText("Write All");
+    jButton11.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton11ActionPerformed(evt);
+      }
+    });
+
+    jButton12.setText("Write volatile");
+    jButton12.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton12ActionPerformed(evt);
+      }
+    });
+
+    ckKeyPressed.setText("Taste gedrückt");
+
+    jButton13.setText("Read");
+    jButton13.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton13ActionPerformed(evt);
+      }
+    });
+
+    ckKeyError.setText("Tastenfehler");
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -185,43 +363,90 @@ public class Main extends javax.swing.JFrame
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(ledPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(jLabel1))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(blinkMask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(jLabel2))
-            .addGap(18, 18, 18)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(jLabel3)
-              .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(jLabel4)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(slPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(spPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(jButton2)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButton3))
-          .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(jLabel5)
-              .addComponent(jLabel6))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-              .addComponent(edVCC)
-              .addComponent(spCalibration))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(jButton1)
               .addGroup(layout.createSequentialGroup()
-                .addComponent(jButton4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jLabel5)
+                  .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                  .addComponent(edVCC)
+                  .addComponent(spCalibration))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)))))
-        .addContainerGap(96, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jButton1)
+                  .addGroup(layout.createSequentialGroup()
+                    .addComponent(jButton4)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButton5))))
+              .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addGroup(layout.createSequentialGroup()
+                    .addComponent(jLabel4)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(slPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                  .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addComponent(ledPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                      .addComponent(jLabel1))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addComponent(blinkMask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                      .addComponent(jLabel2))
+                    .addGap(18, 18, 18)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addComponent(jLabel3)
+                      .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addGroup(layout.createSequentialGroup()
+                    .addComponent(jLabel8)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(spDivider, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                      .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                      .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                      .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE))
+                      .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton7)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+                  .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                      .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbVersion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                      .addGroup(layout.createSequentialGroup()
+                        .addComponent(spPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(16, 16, 16)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)))
+                    .addGap(0, 0, Short.MAX_VALUE)))))
+            .addGap(33, 33, 33))
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(jButton10)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton11)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton12)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+          .addGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(ckKeyError)
+              .addGroup(layout.createSequentialGroup()
+                .addComponent(ckKeyPressed)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton13)))
+            .addGap(0, 0, Short.MAX_VALUE))))
     );
+
+    layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton7, jButton9});
+
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
@@ -229,12 +454,24 @@ public class Main extends javax.swing.JFrame
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel1)
           .addComponent(jLabel2)
-          .addComponent(jLabel3))
+          .addComponent(jLabel3)
+          .addComponent(jLabel7)
+          .addComponent(lbVersion))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(ledPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(blinkMask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(jLabel8)
+              .addComponent(spDivider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(jButton6)
+              .addComponent(jButton7))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(jButton8)
+              .addComponent(jButton9))))
         .addGap(18, 18, 18)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(slPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -254,7 +491,18 @@ public class Main extends javax.swing.JFrame
           .addComponent(spCalibration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jButton4)
           .addComponent(jButton5))
-        .addContainerGap(156, Short.MAX_VALUE))
+        .addGap(26, 26, 26)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(ckKeyPressed)
+          .addComponent(jButton13))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(ckKeyError)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jButton10)
+          .addComponent(jButton11)
+          .addComponent(jButton12))
+        .addContainerGap())
     );
 
     pack();
@@ -367,6 +615,83 @@ public class Main extends javax.swing.JFrame
     }
   }//GEN-LAST:event_blinkPhaseStateChanged
 
+  private void spDividerStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spDividerStateChanged
+  {//GEN-HEADEREND:event_spDividerStateChanged
+    try {
+      field.setBlinkDivider(((Number) spDivider.getValue()).intValue());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_spDividerStateChanged
+
+  private void jButton6ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton6ActionPerformed
+  {//GEN-HEADEREND:event_jButton6ActionPerformed
+    try {
+      spDivider.setValue(field.getBlinkDivider());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jButton6ActionPerformed
+
+  private void jButton7ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton7ActionPerformed
+  {//GEN-HEADEREND:event_jButton7ActionPerformed
+    try {
+      field.setBlinkDivider(((Number) spDivider.getValue()).intValue());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jButton7ActionPerformed
+
+  private void jButton8ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton8ActionPerformed
+  {//GEN-HEADEREND:event_jButton8ActionPerformed
+    int val = ((Number) spDivider.getValue()).intValue();
+    if (val < 255) {
+      spDivider.setValue(val + 1);
+    }
+  }//GEN-LAST:event_jButton8ActionPerformed
+
+  private void jButton9ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton9ActionPerformed
+  {//GEN-HEADEREND:event_jButton9ActionPerformed
+    int val = ((Number) spDivider.getValue()).intValue();
+    if (val > 1) {
+      spDivider.setValue(val - 1);
+    }
+  }//GEN-LAST:event_jButton9ActionPerformed
+
+  private void jButton10ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton10ActionPerformed
+  {//GEN-HEADEREND:event_jButton10ActionPerformed
+    readAll();
+  }//GEN-LAST:event_jButton10ActionPerformed
+
+  private void jButton11ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton11ActionPerformed
+  {//GEN-HEADEREND:event_jButton11ActionPerformed
+    writeAll();
+  }//GEN-LAST:event_jButton11ActionPerformed
+
+  private void jButton12ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton12ActionPerformed
+  {//GEN-HEADEREND:event_jButton12ActionPerformed
+    writeVolatile();
+  }//GEN-LAST:event_jButton12ActionPerformed
+
+  private void jButton13ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton13ActionPerformed
+  {//GEN-HEADEREND:event_jButton13ActionPerformed
+    try {
+      Set<State> state = field.getState();
+      ckKeyPressed.setSelected(state.contains(State.KEY_PRESSED));
+      ckKeyError.setSelected(state.contains(State.KEY_ERROR));
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jButton13ActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -419,16 +744,29 @@ public class Main extends javax.swing.JFrame
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private final at.or.reder.tools.fieldtest.LedPanel blinkMask = new at.or.reder.tools.fieldtest.LedPanel();
   private final at.or.reder.tools.fieldtest.LedPanel blinkPhase = new at.or.reder.tools.fieldtest.LedPanel();
+  private final javax.swing.JCheckBox ckKeyError = new javax.swing.JCheckBox();
+  private final javax.swing.JCheckBox ckKeyPressed = new javax.swing.JCheckBox();
   private final javax.swing.JFormattedTextField edVCC = new javax.swing.JFormattedTextField();
   private final javax.swing.JButton jButton1 = new javax.swing.JButton();
+  private javax.swing.JButton jButton10;
+  private javax.swing.JButton jButton11;
+  private javax.swing.JButton jButton12;
+  private javax.swing.JButton jButton13;
   private final javax.swing.JButton jButton2 = new javax.swing.JButton();
   private final javax.swing.JButton jButton3 = new javax.swing.JButton();
   private javax.swing.JButton jButton4;
   private javax.swing.JButton jButton5;
+  private javax.swing.JButton jButton6;
+  private javax.swing.JButton jButton7;
+  private javax.swing.JButton jButton8;
+  private javax.swing.JButton jButton9;
   private javax.swing.JLabel jLabel6;
+  private javax.swing.JLabel jLabel8;
+  private final javax.swing.JLabel lbVersion = new javax.swing.JLabel();
   private final at.or.reder.tools.fieldtest.LedPanel ledPanel = new at.or.reder.tools.fieldtest.LedPanel();
   private final javax.swing.JSlider slPWM = new javax.swing.JSlider();
   private final javax.swing.JSpinner spCalibration = new javax.swing.JSpinner();
+  private final javax.swing.JSpinner spDivider = new javax.swing.JSpinner();
   private final javax.swing.JSpinner spPWM = new javax.swing.JSpinner();
   // End of variables declaration//GEN-END:variables
 }

@@ -12,7 +12,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.TooManyListenersException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -22,7 +29,7 @@ import java.util.concurrent.TimeoutException;
 public final class FieldImpl implements Field
 {
 
-  private enum State
+  private enum ReaderState
   {
     IDLE,
     ACK_PENDING,
@@ -31,11 +38,12 @@ public final class FieldImpl implements Field
   }
   private final SerialPort port;
   private final short address;
-  private volatile State state;
-  private volatile State expectedState;
+  private volatile ReaderState state;
+  private volatile ReaderState expectedState;
   private volatile IOException error;
   private final Object lock = new Object();
   private final ByteBuffer returnValue = ByteBuffer.allocate(Short.BYTES).order(ByteOrder.LITTLE_ENDIAN);
+  private final ExecutorService exec = Executors.newSingleThreadExecutor();
 
   public FieldImpl(SerialPort port,
                    int address)
@@ -45,27 +53,27 @@ public final class FieldImpl implements Field
       this.address = (short) address;
       port.addEventListener(this::onSerialEvent);
       port.notifyOnDataAvailable(true);
-      state = State.IDLE;
+      state = ReaderState.IDLE;
     } catch (TooManyListenersException ex) {
       throw new IllegalStateException(ex);
     }
   }
 
-  private State doAckPending(int b)
+  private ReaderState doAckPending(int b)
   {
     if (b == 6) {
-      return State.ACK;
+      return ReaderState.ACK;
     } else {
-      return State.ERROR;
+      return ReaderState.ERROR;
     }
   }
 
-  private State doIdle(int b)
+  private ReaderState doIdle(int b)
   {
     return state;
   }
 
-  private State doAck(int b)
+  private ReaderState doAck(int b)
   {
     if (b == -1) {
       return state;
@@ -75,41 +83,45 @@ public final class FieldImpl implements Field
         returnValue.put((byte) b);
       }
       if (returnValue.hasRemaining()) {
-        return State.ACK;
+        return ReaderState.ACK;
       } else {
         returnValue.rewind();
-        return State.IDLE;
+        return ReaderState.IDLE;
       }
     }
   }
 
   private void onSerialEvent(SerialPortEvent evt)
   {
-    try (InputStream is = port.getInputStream()) {
-      int b;
-      do {
-        b = is.read();
-        switch (state) {
-          case ACK_PENDING:
-            state = doAckPending(b);
-            break;
-          case IDLE:
-            state = doIdle(b);
-            break;
-          case ACK:
-            state = doAck(b);
-            break;
-          case ERROR:
-            return;
-        }
-      } while (b != -1 && state != expectedState && state != State.ERROR);
-    } catch (IOException ex) {
-      error = ex;
-      state = State.ERROR;
+    ReaderState newState = state;
+    try {
+      try (InputStream is = port.getInputStream()) {
+        int b;
+        do {
+          b = is.read();
+          switch (newState) {
+            case ACK_PENDING:
+              newState = doAckPending(b);
+              break;
+            case IDLE:
+              newState = doIdle(b);
+              break;
+            case ACK:
+              newState = doAck(b);
+              break;
+            case ERROR:
+              return;
+          }
+        } while (b != -1 && newState != expectedState && newState != ReaderState.ERROR);
+      } catch (IOException ex) {
+        error = ex;
+        newState = ReaderState.ERROR;
+      }
     } finally {
       synchronized (lock) {
         lock.notifyAll();
       }
+      setState(newState);
     }
   }
 
@@ -121,26 +133,24 @@ public final class FieldImpl implements Field
 
   public boolean isIdle()
   {
-    return state == State.IDLE;
+    return state == ReaderState.IDLE;
   }
 
-  private void initState(State expectedState)
+  private void initState(ReaderState expectedState)
   {
-    synchronized (lock) {
-      state = State.ACK_PENDING;
-      returnValue.rewind();
-      this.expectedState = expectedState;
-    }
+    state = ReaderState.ACK_PENDING;
+    returnValue.rewind();
+    this.expectedState = expectedState;
   }
 
-  private int waitForState(State expectendState) throws InterruptedException, TimeoutException
+  private int waitForState(ReaderState expectendState) throws InterruptedException, TimeoutException
   {
     int result = -1;
     synchronized (lock) {
-      while (this.state != expectendState && state != State.ERROR) {
+      if (this.state != expectendState && state != ReaderState.ERROR) {
         lock.wait(1000L);
       }
-      if (this.state != expectendState && state != State.ERROR) {
+      if (this.state != expectendState && state != ReaderState.ERROR) {
         throw new TimeoutException();
       } else {
         result = returnValue.getShort() & 0xffff;
@@ -154,19 +164,37 @@ public final class FieldImpl implements Field
                     int a,
                     int b) throws IOException, InterruptedException, TimeoutException
   {
-    checkIdle();
-    initState(State.ACK);
+    Future<Void> result = exec.submit(() -> {
+      initState(ReaderState.ACK);
+      try {
+        try (OutputStream os = port.getOutputStream()) {
+          os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
+        }
+        waitForState(ReaderState.ACK);
+        if (error != null) {
+          throw error;
+        }
+      } finally {
+        error = null;
+        setState(ReaderState.IDLE);
+      }
+      return null;
+    });
     try {
-      try (OutputStream os = port.getOutputStream()) {
-        os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
+      result.get(2,
+                 TimeUnit.SECONDS);
+    } catch (ExecutionException ex) {
+      Throwable cause = ex.getCause();
+      if (cause instanceof IOException) {
+        throw (IOException) cause;
       }
-      waitForState(State.ACK);
-      if (error != null) {
-        throw error;
+      if (cause instanceof InterruptedException) {
+        throw (InterruptedException) cause;
       }
-    } finally {
-      error = null;
-      state = State.IDLE;
+      if (cause instanceof TimeoutException) {
+        throw (TimeoutException) cause;
+      }
+      throw new IOException(cause);
     }
   }
 
@@ -175,29 +203,65 @@ public final class FieldImpl implements Field
                           int a,
                           int b) throws IOException, InterruptedException, TimeoutException
   {
-    checkIdle();
-    initState(State.IDLE);
-    int result = -1;
+    Future<Integer> result = exec.submit(() -> {
+      initState(ReaderState.IDLE);
+      int r = -1;
+      try {
+        try (OutputStream os = port.getOutputStream()) {
+          os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
+        }
+        r = waitForState(ReaderState.IDLE);
+        if (error != null) {
+          throw error;
+        }
+      } finally {
+        error = null;
+        setState(ReaderState.IDLE);
+      }
+      return r;
+    });
     try {
-      try (OutputStream os = port.getOutputStream()) {
-        os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
+      return result.get(2,
+                        TimeUnit.SECONDS);
+    } catch (ExecutionException ex) {
+      Throwable cause = ex.getCause();
+      if (cause instanceof IOException) {
+        throw (IOException) cause;
       }
-      result = waitForState(State.IDLE);
-      if (error != null) {
-        throw error;
+      if (cause instanceof InterruptedException) {
+        throw (InterruptedException) cause;
       }
-    } finally {
-      error = null;
-      state = State.IDLE;
+      if (cause instanceof TimeoutException) {
+        throw (TimeoutException) cause;
+      }
+      throw new IOException(cause);
     }
-    return result;
   }
 
-  private void checkIdle()
+  private void setState(ReaderState s)
   {
-    if (!isIdle()) {
-      throw new IllegalStateException("Field is not idle");
+    synchronized (lock) {
+      state = s;
+      if (s == ReaderState.IDLE) {
+        lock.notifyAll();
+      }
     }
+  }
+
+  @Override
+  public Set<State> getState() throws IOException, TimeoutException, InterruptedException
+  {
+    int tmp = sendReceive(Register.STATE,
+                          Operation.READ,
+                          0,
+                          0);
+    EnumSet<State> result = EnumSet.noneOf(State.class);
+    for (State s : State.values()) {
+      if ((tmp & s.getMagic()) != 0) {
+        result.add(s);
+      }
+    }
+    return result;
   }
 
   @Override
@@ -255,6 +319,24 @@ public final class FieldImpl implements Field
   }
 
   @Override
+  public int getBlinkDivider() throws IOException, TimeoutException, InterruptedException
+  {
+    return sendReceive(Register.BLINK_DIVIDER,
+                       Operation.READ,
+                       0,
+                       0);
+  }
+
+  @Override
+  public void setBlinkDivider(int blinkDivider) throws IOException, TimeoutException, InterruptedException
+  {
+    send(Register.BLINK_DIVIDER,
+         Operation.WRITE,
+         blinkDivider,
+         0);
+  }
+
+  @Override
   public int getPWM() throws IOException, InterruptedException, TimeoutException
   {
     return sendReceive(Register.PWM,
@@ -286,20 +368,53 @@ public final class FieldImpl implements Field
   }
 
   @Override
-  public byte getCalibration() throws IOException, TimeoutException, InterruptedException
+  public int getCalibration() throws IOException, TimeoutException, InterruptedException
   {
-    return (byte) sendReceive(Register.VCC_CALIBRATION,
-                              Operation.READ,
-                              0,
-                              0);
+    return sendReceive(Register.VCC_CALIBRATION,
+                       Operation.READ,
+                       0,
+                       0) & 0xff;
   }
 
   @Override
-  public void setCalibration(byte cal) throws IOException, TimeoutException, InterruptedException
+  public void setCalibration(int cal) throws IOException, TimeoutException, InterruptedException
   {
     send(Register.VCC_CALIBRATION,
          Operation.WRITE,
          cal,
+         0);
+  }
+
+  @Override
+  public Version getVersion() throws IOException, TimeoutException, InterruptedException
+  {
+    int version = sendReceive(Register.FW_VERSION,
+                              Operation.READ,
+                              0,
+                              0) & 0xffff;
+    int build = sendReceive(Register.FW_BUILD,
+                            Operation.READ,
+                            0,
+                            0);
+    return new Version(version,
+                       build);
+  }
+
+  @Override
+  public int getDebounce() throws IOException, TimeoutException, InterruptedException
+  {
+    return sendReceive(Register.DEBOUNCE,
+                       Operation.READ,
+                       0,
+                       0);
+  }
+
+  @Override
+  public void setDebounce(int deb) throws IOException, TimeoutException, InterruptedException
+  {
+    send(Register.DEBOUNCE,
+         Operation.WRITE,
+         deb,
          0);
   }
 

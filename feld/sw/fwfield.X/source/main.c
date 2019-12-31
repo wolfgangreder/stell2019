@@ -57,7 +57,7 @@
 #include "hw.h"
 
 TRegisterFile registerFile;
-EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0, .vcc_calibration = 0};
+EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0, .vcc_calibration = 9};
 TEEPromFile eepromFile;
 const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR, .fw_build = FW_BUILD};
 TFlashFile flashFile;
@@ -65,18 +65,28 @@ TFlashFile flashFile;
 uint16_t processCommand(TCommandBuffer* cmd)
 {
   switch (cmd->registerAddress) {
+    case REG_STATE:
+      return processState();
     case REG_LED:
       return processLed(cmd->data[0], cmd->registerOperation);
     case REG_BLINKMASK:
       return processBlinkMask(cmd->data[0], cmd->registerOperation);
     case REG_BLINKPHASE:
       return processBlinkPhase(cmd->data[0], cmd->registerOperation);
+    case REG_BLINKDIVIDER:
+      return processBlinkDivider(cmd->data[0], cmd->registerOperation);
     case REG_PWM:
       return processPWM(cmd->data[0], cmd->registerOperation);
     case REG_VCC:
       return processVCC();
     case REG_VCC_CALIBRATION:
       return processVCCCalibration(cmd->data[0], cmd->registerOperation);
+    case REG_DEBOUNCE:
+      return processDebounce(cmd->data[0], cmd->registerOperation);
+    case REG_VERSION:
+      return processFirmwareVersion();
+    case REG_BUILD:
+      return processFirmwareBuild();
   }
   return -1;
 }
@@ -85,8 +95,7 @@ uint16_t processCommand(TCommandBuffer* cmd)
 int main(void)
 {
   TCommandBuffer commandBuf;
-  DDRD |= _BV(PD7);
-  PORTD |= _BV(PD7);
+  IND_INIT;
 
   initHW(&registerFile, &eepromFile);
   initCommUsart(eepromFile.address_lsb);

@@ -15,8 +15,27 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#define IND_1 (PORTD&=~_BV(PD7))
-#define IND_0 (PORTD|=_BV(PD7))
+#if 1
+#define IND_01 (PORTD&=~_BV(PD7))
+#define IND_00 (PORTD|=_BV(PD7))
+#define IND_11 (PORTD&=~_BV(PD6))
+#define IND_10 (PORTD|=_BV(PD6))
+#define IND_21 (PORTD&=~_BV(PD5))
+#define IND_20 (PORTD|=_BV(PD5))
+#define IND_31 (PORTD&=~_BV(PD4))
+#define IND_30 (PORTD|=_BV(PD4))
+#define IND_INIT   DDRD |= 0xf0; PORTD |= 0xf0;
+#else
+#define IND_01
+#define IND_00
+#define IND_11
+#define IND_10
+#define IND_21
+#define IND_20
+#define IND_31
+#define IND_30
+#define IND_INIT
+#endif
 
 #ifdef _AVR_IOM8535_H_
 #define FREQ 14745600
@@ -37,6 +56,9 @@ extern "C" {
 #define SWITCH_PIN PIND
 #define SWITCH 2
 #define SWITCH_INT_vect INT0_vect
+#define SWITCH_INT_ENABLE _BV(INT0)
+#define SWITCH_MCU_OR _BV(ISC00)
+#define SWITCH_MCU_AND (~_BV(ISC01))
 #define PORT_BLINK PORTD
 #define DDR_BLINK DDRD
 #define PIN_BLINK PIND
@@ -88,10 +110,8 @@ extern "C" {
 #define REG_SOFTSTART (OFFSET_EEPROM+offsetof(TEEPromFile,softstart))
 #define REG_SOFTSTOP (OFFSET_EEPROM+offsetof(TEEPromFile,softstop))
 #define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
-#define REG_VERSION_MAJOR (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
-#define REG_VERSION_MINOR (OFFSET_FLASH+offsetof(TFlashFile,fw_minor))
-#define REG_BUILD_MSB (OFFSET_FLASH+offsetof(TFlashFile,fw_build))
-#define REG_BUILD_LSB (OFFSET_FLASH+offsetof(TFlashFile,fw_build)+1)
+#define REG_VERSION (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
+#define REG_BUILD (OFFSET_FLASH+offsetof(TFlashFile,fw_build))
 
   typedef struct {
 
@@ -101,7 +121,7 @@ extern "C" {
       struct {
         uint8_t key_pressed : 1; // 1 wenn taste gedrückt
         uint8_t reserved : 6;
-        uint8_t key_missed : 1; // 1 wenn ein tastendruck nicht gelesen wurde
+        uint8_t key_error : 1; // 1 wenn ein tastendruck nicht gelesen wurde
       };
     };
     uint8_t led; // 1-> led an
@@ -115,8 +135,15 @@ extern "C" {
   } TRegisterFile;
 
   typedef struct {
-    uint8_t fw_major;
-    uint8_t fw_minor;
+
+    union {
+      uint16_t fw_Version;
+
+      struct {
+        uint8_t fw_major;
+        uint8_t fw_minor;
+      };
+    };
     uint16_t fw_build;
   } TFlashFile;
 
@@ -145,12 +172,17 @@ extern "C" {
   extern TFlashFile flashFile;
 
   extern void initHW();
+  extern uint16_t processState();
   extern uint16_t processLed(uint8_t led, operation_t operation);
   extern uint16_t processBlinkMask(uint8_t led, operation_t operation);
   extern uint16_t processBlinkPhase(uint8_t lef, operation_t operation);
+  extern uint16_t processBlinkDivider(uint8_t val, operation_t operation);
   extern uint16_t processPWM(uint8_t pwm, operation_t operation);
   extern uint16_t processVCC();
   extern uint8_t processVCCCalibration(uint8_t cal, operation_t operation);
+  extern uint16_t processDebounce(uint8_t val, operation_t operation);
+  extern uint16_t processFirmwareVersion();
+  extern uint16_t processFirmwareBuild();
 
 #ifdef	__cplusplus
 }

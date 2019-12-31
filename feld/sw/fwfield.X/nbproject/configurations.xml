@@ -152,7 +152,7 @@
         <property key="user-pack-device-support" value=""/>
         <property key="user-pack-include" value=""/>
         <property key="usersig" value="true"/>
-        <appendMe value="-DFW_MINOR=0 -DFW_MAJOR=0 -DFW_BUILD=1 -DTWI_ADDRESS=3 -DCOMM_USART"/>
+        <appendMe value="-DFW_MINOR=0 -DFW_MAJOR=0 -DFW_BUILD=0 -DTWI_ADDRESS=3 -DCOMM_USART"/>
       </AVR-Global>
       <AVR-LD>
         <property key="eeprom-segment" value=""/>
