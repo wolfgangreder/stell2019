@@ -8,6 +8,7 @@ package at.or.reder.tools.fieldtest;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -17,6 +18,12 @@ public interface Field extends AutoCloseable
 {
 
   public short getAddress();
+
+  public void addChangeListener(ChangeListener l);
+
+  public void removeChangeListener(ChangeListener l);
+
+  public boolean isKeyPressed();
 
   public Set<State> getState() throws IOException, TimeoutException, InterruptedException;
 

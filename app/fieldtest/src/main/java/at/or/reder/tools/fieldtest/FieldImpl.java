@@ -15,12 +15,20 @@ import java.nio.ByteOrder;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.TooManyListenersException;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -44,6 +52,10 @@ public final class FieldImpl implements Field
   private final Object lock = new Object();
   private final ByteBuffer returnValue = ByteBuffer.allocate(Short.BYTES).order(ByteOrder.LITTLE_ENDIAN);
   private final ExecutorService exec = Executors.newSingleThreadExecutor();
+  private final ScheduledExecutorService poll = Executors.newSingleThreadScheduledExecutor();
+  private final AtomicBoolean keyPressed = new AtomicBoolean();
+  private final Set<ChangeListener> keyChangeListener = new CopyOnWriteArraySet<>();
+  private final ChangeEvent event = new ChangeEvent(this);
 
   public FieldImpl(SerialPort port,
                    int address)
@@ -56,6 +68,52 @@ public final class FieldImpl implements Field
       state = ReaderState.IDLE;
     } catch (TooManyListenersException ex) {
       throw new IllegalStateException(ex);
+    }
+    poll.scheduleAtFixedRate(this::pollKey,
+                             50,
+                             50,
+                             TimeUnit.MILLISECONDS);
+  }
+
+  @Override
+  public boolean isKeyPressed()
+  {
+    return keyPressed.get();
+  }
+
+  @Override
+  public void addChangeListener(ChangeListener l)
+  {
+    if (l != null) {
+      keyChangeListener.add(l);
+    }
+  }
+
+  @Override
+  public void removeChangeListener(ChangeListener l)
+  {
+    keyChangeListener.remove(l);
+  }
+
+  private void pollKey()
+  {
+    try {
+      boolean kp = getState().contains(State.KEY_PRESSED);
+      if (keyPressed.compareAndSet(!kp,
+                                   kp)) {
+        SwingUtilities.invokeLater(this::fireChange);
+      }
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(FieldImpl.class.getName()).log(Level.SEVERE,
+                                                      null,
+                                                      ex);
+    }
+  }
+
+  private void fireChange()
+  {
+    for (ChangeListener l : keyChangeListener) {
+      l.stateChanged(event);
     }
   }
 
@@ -143,16 +201,14 @@ public final class FieldImpl implements Field
     this.expectedState = expectedState;
   }
 
-  private int waitForState(ReaderState expectendState) throws InterruptedException, TimeoutException
+  private int waitForState(ReaderState expectendState) throws InterruptedException
   {
     int result = -1;
     synchronized (lock) {
       if (this.state != expectendState && state != ReaderState.ERROR) {
-        lock.wait(1000L);
+        lock.wait(10000L);
       }
-      if (this.state != expectendState && state != ReaderState.ERROR) {
-        throw new TimeoutException();
-      } else {
+      if (this.state == expectendState || state == ReaderState.ERROR) {
         result = returnValue.getShort() & 0xffff;
       }
     }
@@ -421,6 +477,8 @@ public final class FieldImpl implements Field
   @Override
   public void close() throws IOException
   {
+    exec.shutdown();
+    poll.shutdown();
     port.close();
   }
 

@@ -11,11 +11,10 @@ import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
 
 /**
  *
@@ -25,11 +24,9 @@ public class Main extends javax.swing.JFrame
 {
 
   private final Field field;
-  private final Timer timer;
 
   public Main() throws PortInUseException, UnsupportedCommOperationException
   {
-    this.timer = new Timer();
     SerialPort port = new RXTXPort("/dev/ttyS0");
     port.setSerialPortParams(57600,
                              SerialPort.DATABITS_8,
@@ -39,31 +36,12 @@ public class Main extends javax.swing.JFrame
                           3);
     initComponents();
     readAll();
-//    timer.scheduleAtFixedRate(new TimerTask()
-//    {
-//      @Override
-//      public void run()
-//      {
-//        onTimer();
-//      }
-//
-//    },
-//                              50,
-//                              50);
+    field.addChangeListener(this::onKeyChanged);
   }
 
-  private void onTimer()
+  private void onKeyChanged(ChangeEvent evt)
   {
-    try {
-      Set<State> state = field.getState();
-      SwingUtilities.invokeLater(() -> {
-        ckKeyPressed.setSelected(state.contains(State.KEY_PRESSED));
-      });
-    } catch (IOException | TimeoutException | InterruptedException ex) {
-      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
-                                                 null,
-                                                 ex);
-    }
+    ckKeyPressed.setSelected(field.isKeyPressed());
   }
 
   private void readAll()
