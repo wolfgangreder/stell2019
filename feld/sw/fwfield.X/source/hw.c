@@ -286,7 +286,7 @@ uint16_t processBlinkDivider(uint8_t val, operation_t operation)
     }
     return registerFile.blinkdivider;
   case OP_INCREMENT:
-    if (registerFile.blinkdivider < 254) {
+    if (registerFile.blinkdivider < 255) {
       registerFile.blinkdivider++;
     }
     return registerFile.blinkdivider;
