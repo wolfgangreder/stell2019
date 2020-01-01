@@ -44,7 +44,8 @@ extern "C" {
   typedef enum {
     LED_OFF = 0x0,
     LED_BLINK = 0x01,
-    LED_ON = 0x02
+    LED_ON = 0x02,
+    LED_LAMPTEST = 0x3
   } state_led_t;
 
   typedef enum {
@@ -88,6 +89,7 @@ extern "C" {
 
 
   extern void initModule();
+  extern uint16_t processModuleType(uint8_t moduleType, operation_t op);
   extern uint16_t processModuleState(uint8_t moduleState, operation_t op);
 
   extern uint8_t applyStateTrack(module_t type, modulestate_t state);
@@ -99,26 +101,46 @@ extern "C" {
   inline uint8_t applyState(modulestate_t state) {
     module_t type = eepromFile.moduletype;
     switch (type) {
-      case G1:return applyStateTrack(type, state);
-      case D1:return applyStateTrack(type, state);
-      case B1:return applyStateTrack(type, state);
-      case B2:return applyStateTrack(type, state);
-      case F1:return applyStateTrack(type, state);
-      case F2:return applyStateTrack(type, state);
-      case F3:return applyStateTrack(type, state);
-      case F4:return applyStateTrack(type, state);
-      case W1:return applyStateTurnout(type, state);
-      case W2:return applyStateTurnout(type, state);
-      case W3:return applyStateTurnout(type, state);
-      case W4:return applyStateTurnout(type, state);
-      case K1:return applyStateCrossing(type, state);
-      case K2:return applyStateCrossing(type, state);
-      case DW1:return applyStateThreeway(type, state);
-      case DW2:return applyStateThreeway(type, state);
-      case DW3:return applyStateThreeway(type, state);
-      case SEM_E:return applyStateSemaphore(type, state);
-      case SEM_W:return applyStateSemaphore(type, state);
-      default: return -1;
+      case G1:
+        return applyStateTrack(type, state);
+      case D1:
+        return applyStateTrack(type, state);
+      case B1:
+        return applyStateTrack(type, state);
+      case B2:
+        return applyStateTrack(type, state);
+      case F1:
+        return applyStateTrack(type, state);
+      case F2:
+        return applyStateTrack(type, state);
+      case F3:
+        return applyStateTrack(type, state);
+      case F4:
+        return applyStateTrack(type, state);
+      case W1:
+        return applyStateTurnout(type, state);
+      case W2:
+        return applyStateTurnout(type, state);
+      case W3:
+        return applyStateTurnout(type, state);
+      case W4:
+        return applyStateTurnout(type, state);
+      case K1:
+        return applyStateCrossing(type, state);
+      case K2:
+        return applyStateCrossing(type, state);
+      case DW1:
+        return applyStateThreeway(type, state);
+      case DW2:
+        return applyStateThreeway(type, state);
+      case DW3:
+        return applyStateThreeway(type, state);
+      case SEM_E:
+        return applyStateSemaphore(type, state);
+      case SEM_W:
+        return applyStateSemaphore(type, state);
+      default:
+        return -1;
     }
   }
 #ifdef	__cplusplus

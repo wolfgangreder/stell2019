@@ -15,35 +15,37 @@
  */
 package at.or.reder.tools.fieldtest;
 
-public enum Register
+/**
+ *
+ * @author Wolfgang Reder
+ */
+public enum LedState
 {
-  STATE(0),
-  LED(1),
-  BLINK_MASK(2),
-  BLINK_PHASE(3),
-  PWM(4),
-  MODULE_STATE(5),
-  VCC(6),
-  BLINK_DIVIDER(8),
-  ADDRESS(96),
-  MODULE_TYPE(98),
-  DEBOUNCE(99),
-  SOFTSTART(100),
-  SOFTSTOP(101),
-  VCC_CALIBRATION(102),
-  DEFAULT_PWM(103),
-  FW_VERSION(120),
-  FW_BUILD(122);
-  private final byte index;
+  OFF(0),
+  BLINK(1),
+  ON(2),
+  LAMP_TEST(3),
+  UNKNOWN(0xff);
+  private final int magic;
 
-  private Register(int i)
+  private LedState(int magic)
   {
-    index = (byte) i;
+    this.magic = magic;
   }
 
-  public byte getIndex()
+  public int getMagic()
   {
-    return index;
+    return magic;
+  }
+
+  public static LedState valueOfMagic(int magic)
+  {
+    for (LedState s : values()) {
+      if (s.magic == (magic & 0xff)) {
+        return s;
+      }
+    }
+    return LedState.UNKNOWN;
   }
 
 }

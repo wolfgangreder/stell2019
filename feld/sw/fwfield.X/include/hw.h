@@ -86,7 +86,7 @@ extern "C" {
     uint8_t softstart;
     uint8_t softstop;
     int8_t vcc_calibration;
-
+    uint8_t defaultPWM;
   } TEEPromFile;
 
 #define OFFSET_RAM (0)
@@ -110,6 +110,7 @@ extern "C" {
 #define REG_SOFTSTART (OFFSET_EEPROM+offsetof(TEEPromFile,softstart))
 #define REG_SOFTSTOP (OFFSET_EEPROM+offsetof(TEEPromFile,softstop))
 #define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
+#define REG_DEFAULT_PWM (OFFSET_EEPROM+offsetof(TEEPromFile,defaultPWM))
 #define REG_VERSION (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
 #define REG_BUILD (OFFSET_FLASH+offsetof(TFlashFile,fw_build))
 
@@ -178,6 +179,7 @@ extern "C" {
   extern uint16_t processBlinkPhase(uint8_t lef, operation_t operation);
   extern uint16_t processBlinkDivider(uint8_t val, operation_t operation);
   extern uint16_t processPWM(uint8_t pwm, operation_t operation);
+  extern uint16_t processDefaultPWM(uint8_t pwm, operation_t operation);
   extern uint16_t processVCC();
   extern uint8_t processVCCCalibration(uint8_t cal, operation_t operation);
   extern uint16_t processDebounce(uint8_t val, operation_t operation);

@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 Wolfgang Reder.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package at.or.reder.tools.fieldtest;
 
@@ -10,10 +20,6 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import javax.swing.event.ChangeListener;
 
-/**
- *
- * @author Wolfgang Reder
- */
 public interface Field extends AutoCloseable
 {
 
@@ -47,6 +53,10 @@ public interface Field extends AutoCloseable
 
   public void setPWM(int pwm) throws IOException, TimeoutException, InterruptedException;
 
+  public int getDefaultPWM() throws IOException, TimeoutException, InterruptedException;
+
+  public void setDefaultPWM(int defaultPWM) throws IOException, TimeoutException, InterruptedException;
+
   public float getVCC() throws IOException, TimeoutException, InterruptedException;
 
   public int getCalibration() throws IOException, TimeoutException, InterruptedException;
@@ -56,6 +66,14 @@ public interface Field extends AutoCloseable
   public int getDebounce() throws IOException, TimeoutException, InterruptedException;
 
   public void setDebounce(int deb) throws IOException, TimeoutException, InterruptedException;
+
+  public ModuleType getModuleType() throws IOException, TimeoutException, InterruptedException;
+
+  public void setModuleType(ModuleType type) throws IOException, TimeoutException, InterruptedException;
+
+  public ModuleState getModuleState() throws IOException, TimeoutException, InterruptedException;
+
+  public void setModuleState(ModuleState ms) throws IOException, TimeoutException, InterruptedException;
 
   public Version getVersion() throws IOException, TimeoutException, InterruptedException;
 

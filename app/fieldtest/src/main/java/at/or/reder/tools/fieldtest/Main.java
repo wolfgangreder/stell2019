@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 Wolfgang Reder.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package at.or.reder.tools.fieldtest;
 
@@ -16,14 +26,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 
-/**
- *
- * @author Wolfgang Reder
- */
 public class Main extends javax.swing.JFrame
 {
 
   private final Field field;
+  private final AbstractComboBoxModel<ModuleType> typeModel = AbstractComboBoxModel.instanceOf(ModuleType.class);
 
   public Main() throws PortInUseException, UnsupportedCommOperationException
   {
@@ -55,7 +62,6 @@ public class Main extends javax.swing.JFrame
       int pwm = field.getPWM();
       float vcc = field.getVCC();
       int div = field.getBlinkDivider();
-
       lbVersion.setText(version.toString());
       ledPanel.setValue(leds);
       blinkMask.setValue(bMask);
@@ -64,6 +70,7 @@ public class Main extends javax.swing.JFrame
       spPWM.setValue(pwm);
       edVCC.setValue(vcc);
       spDivider.setValue(div);
+      typeModel.setSelectedItem(field.getModuleType());
     } catch (IOException | TimeoutException | InterruptedException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
                                                  null,
@@ -111,44 +118,51 @@ public class Main extends javax.swing.JFrame
   private void initComponents()
   {
 
-    javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-    javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-    javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-    javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-    javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-    jLabel6 = new javax.swing.JLabel();
-    jButton4 = new javax.swing.JButton();
-    jButton5 = new javax.swing.JButton();
-    javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
-    jLabel8 = new javax.swing.JLabel();
-    jButton6 = new javax.swing.JButton();
-    jButton7 = new javax.swing.JButton();
+    jTabbedPane1 = new javax.swing.JTabbedPane();
+    jScrollPane1 = new javax.swing.JScrollPane();
+    jPanel1 = new javax.swing.JPanel();
     jButton8 = new javax.swing.JButton();
     jButton9 = new javax.swing.JButton();
+    jLabel6 = new javax.swing.JLabel();
     jButton10 = new javax.swing.JButton();
-    jButton11 = new javax.swing.JButton();
+    javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
+    jButton4 = new javax.swing.JButton();
     jButton12 = new javax.swing.JButton();
+    javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
+    jButton6 = new javax.swing.JButton();
+    javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+    javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
+    jButton5 = new javax.swing.JButton();
+    javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+    jButton7 = new javax.swing.JButton();
+    jLabel8 = new javax.swing.JLabel();
+    javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
     jButton13 = new javax.swing.JButton();
+    jButton11 = new javax.swing.JButton();
+    jButton14 = new javax.swing.JButton();
+    jButton15 = new javax.swing.JButton();
+    jPanel2 = new javax.swing.JPanel();
+    jLabel9 = new javax.swing.JLabel();
+    jCheckBox1 = new javax.swing.JCheckBox();
+    jButton2 = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-    jLabel1.setText("LED");
-
-    ledPanel.addChangeListener(new javax.swing.event.ChangeListener()
+    spDivider.setModel(new javax.swing.SpinnerNumberModel());
+    spDivider.addChangeListener(new javax.swing.event.ChangeListener()
     {
       public void stateChanged(javax.swing.event.ChangeEvent evt)
       {
-        ledPanelStateChanged(evt);
+        spDividerStateChanged(evt);
       }
     });
 
-    jLabel2.setText("Blinken");
-
-    blinkMask.addChangeListener(new javax.swing.event.ChangeListener()
+    jButton8.setText("Inc");
+    jButton8.addActionListener(new java.awt.event.ActionListener()
     {
-      public void stateChanged(javax.swing.event.ChangeEvent evt)
+      public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        blinkMaskStateChanged(evt);
+        jButton8ActionPerformed(evt);
       }
     });
 
@@ -160,9 +174,56 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    jLabel3.setText("Phase");
+    jButton9.setText("Dec");
+    jButton9.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton9ActionPerformed(evt);
+      }
+    });
 
-    jLabel4.setText("PWM");
+    jLabel6.setText("Cal");
+
+    jButton10.setText("Read All");
+    jButton10.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton10ActionPerformed(evt);
+      }
+    });
+
+    ckKeyError.setText("Tastenfehler");
+
+    spPWM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 255, 1));
+    spPWM.addChangeListener(new javax.swing.event.ChangeListener()
+    {
+      public void stateChanged(javax.swing.event.ChangeEvent evt)
+      {
+        spPWMStateChanged(evt);
+      }
+    });
+
+    jLabel5.setText("VCC");
+
+    jButton4.setText("Read");
+    jButton4.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton4ActionPerformed(evt);
+      }
+    });
+
+    jButton12.setText("Write volatile");
+    jButton12.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton12ActionPerformed(evt);
+      }
+    });
 
     slPWM.setMajorTickSpacing(10);
     slPWM.setMaximum(255);
@@ -177,20 +238,7 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    spPWM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 255, 1));
-    spPWM.addChangeListener(new javax.swing.event.ChangeListener()
-    {
-      public void stateChanged(javax.swing.event.ChangeEvent evt)
-      {
-        spPWMStateChanged(evt);
-      }
-    });
-
-    jLabel5.setText("VCC");
-
-    edVCC.setEditable(false);
-    edVCC.setColumns(5);
-    edVCC.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.000"))));
+    jLabel7.setText("Version:");
 
     jButton1.setText("Read");
     jButton1.addActionListener(new java.awt.event.ActionListener()
@@ -201,60 +249,15 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    jButton2.setText("Read");
-    jButton2.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton2ActionPerformed(evt);
-      }
-    });
-
-    jButton3.setText("Write");
-    jButton3.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton3ActionPerformed(evt);
-      }
-    });
-
-    jLabel6.setText("Cal");
-
-    spCalibration.setModel(new javax.swing.SpinnerNumberModel((byte)0, null, null, (byte)1));
-
-    jButton4.setText("Read");
-    jButton4.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton4ActionPerformed(evt);
-      }
-    });
-
-    jButton5.setText("Write");
-    jButton5.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton5ActionPerformed(evt);
-      }
-    });
-
-    jLabel7.setText("Version:");
-
-    lbVersion.setText("jLabel8");
-
-    jLabel8.setText("Blinkteiler");
-
-    spDivider.setModel(new javax.swing.SpinnerNumberModel());
-    spDivider.addChangeListener(new javax.swing.event.ChangeListener()
+    ledPanel.addChangeListener(new javax.swing.event.ChangeListener()
     {
       public void stateChanged(javax.swing.event.ChangeEvent evt)
       {
-        spDividerStateChanged(evt);
+        ledPanelStateChanged(evt);
       }
     });
+
+    lbVersion.setText("jLabel8");
 
     jButton6.setText("Read");
     jButton6.addActionListener(new java.awt.event.ActionListener()
@@ -265,6 +268,27 @@ public class Main extends javax.swing.JFrame
       }
     });
 
+    jLabel3.setText("Phase");
+
+    jLabel4.setText("PWM");
+
+    jButton5.setText("Write");
+    jButton5.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton5ActionPerformed(evt);
+      }
+    });
+
+    ckKeyPressed.setText("Taste gedrückt");
+
+    edVCC.setEditable(false);
+    edVCC.setColumns(5);
+    edVCC.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.000"))));
+
+    jLabel1.setText("LED");
+
     jButton7.setText("Write");
     jButton7.addActionListener(new java.awt.event.ActionListener()
     {
@@ -274,30 +298,24 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    jButton8.setText("Inc");
-    jButton8.addActionListener(new java.awt.event.ActionListener()
+    blinkMask.addChangeListener(new javax.swing.event.ChangeListener()
     {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
+      public void stateChanged(javax.swing.event.ChangeEvent evt)
       {
-        jButton8ActionPerformed(evt);
+        blinkMaskStateChanged(evt);
       }
     });
 
-    jButton9.setText("Dec");
-    jButton9.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jButton9ActionPerformed(evt);
-      }
-    });
+    jLabel8.setText("Blinkteiler");
 
-    jButton10.setText("Read All");
-    jButton10.addActionListener(new java.awt.event.ActionListener()
+    jLabel2.setText("Blinken");
+
+    jButton13.setText("Read");
+    jButton13.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        jButton10ActionPerformed(evt);
+        jButton13ActionPerformed(evt);
       }
     });
 
@@ -310,178 +328,228 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    jButton12.setText("Write volatile");
-    jButton12.addActionListener(new java.awt.event.ActionListener()
+    spCalibration.setModel(new javax.swing.SpinnerNumberModel((byte)0, null, null, (byte)1));
+
+    jButton14.setText("Write default");
+    jButton14.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        jButton12ActionPerformed(evt);
+        jButton14ActionPerformed(evt);
       }
     });
 
-    ckKeyPressed.setText("Taste gedrückt");
-
-    jButton13.setText("Read");
-    jButton13.addActionListener(new java.awt.event.ActionListener()
+    jButton15.setText("Read default");
+    jButton15.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        jButton13ActionPerformed(evt);
+        jButton15ActionPerformed(evt);
       }
     });
 
-    ckKeyError.setText("Tastenfehler");
-
-    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-    getContentPane().setLayout(layout);
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
+    javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+    jPanel1.setLayout(jPanel1Layout);
+    jPanel1Layout.setHorizontalGroup(
+      jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                  .addComponent(jLabel5)
-                  .addComponent(jLabel6))
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(jLabel5)
+              .addComponent(jLabel6))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+              .addComponent(edVCC)
+              .addComponent(spCalibration, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(jButton1)
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5))))
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(slPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(ledPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                  .addComponent(edVCC)
-                  .addComponent(spCalibration))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(blinkMask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jLabel3)
+                  .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                  .addComponent(jButton1)
-                  .addGroup(layout.createSequentialGroup()
-                    .addComponent(jButton4)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jButton5))))
-              .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                  .addGroup(layout.createSequentialGroup()
-                    .addComponent(jLabel4)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(slPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                  .addGroup(layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addComponent(ledPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                      .addComponent(jLabel1))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addComponent(blinkMask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                      .addComponent(jLabel2))
-                    .addGap(18, 18, 18)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addComponent(jLabel3)
-                      .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addComponent(spDivider, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                  .addGroup(layout.createSequentialGroup()
-                    .addComponent(jLabel8)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(spDivider, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                      .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                      .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE))
-                      .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton7)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-                  .addGroup(layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                      .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbVersion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                      .addGroup(layout.createSequentialGroup()
-                        .addComponent(spPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
-                    .addGap(0, 0, Short.MAX_VALUE)))))
-            .addGap(33, 33, 33))
-          .addGroup(layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                  .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .addComponent(jButton6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jButton9)
+                  .addComponent(jButton7)))
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbVersion, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(spPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton15))))
+          .addGroup(jPanel1Layout.createSequentialGroup()
             .addComponent(jButton10)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jButton11)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButton12)
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-          .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(ckKeyError)
-              .addGroup(layout.createSequentialGroup()
-                .addComponent(ckKeyPressed)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton13)))
-            .addGap(0, 0, Short.MAX_VALUE))))
+            .addComponent(jButton12))
+          .addComponent(ckKeyError)
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addComponent(ckKeyPressed)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton13)))
+        .addGap(75, 75, 75))
     );
 
-    layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton7, jButton9});
+    jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton7, jButton9});
 
-    layout.setVerticalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
+    jPanel1Layout.setVerticalGroup(
+      jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel1)
           .addComponent(jLabel2)
           .addComponent(jLabel3)
           .addComponent(jLabel7)
           .addComponent(lbVersion))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(ledPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(blinkMask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(blinkPhase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
               .addComponent(jLabel8)
               .addComponent(spDivider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
               .addComponent(jButton6)
               .addComponent(jButton7))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
               .addComponent(jButton8)
               .addComponent(jButton9))))
         .addGap(18, 18, 18)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(slPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
             .addComponent(spPWM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(jButton2)
-            .addComponent(jButton3))
+            .addComponent(jButton14)
+            .addComponent(jButton15))
           .addComponent(jLabel4))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel5)
           .addComponent(edVCC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jButton1))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jLabel6)
           .addComponent(spCalibration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jButton4)
           .addComponent(jButton5))
         .addGap(26, 26, 26)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(ckKeyPressed)
           .addComponent(jButton13))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(ckKeyError)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jButton10)
           .addComponent(jButton11)
           .addComponent(jButton12))
         .addContainerGap())
     );
+
+    jScrollPane1.setViewportView(jPanel1);
+
+    jTabbedPane1.addTab("Low Level", jScrollPane1);
+
+    jLabel9.setText("Modultyp");
+
+    cbModuleType.setModel(typeModel);
+    cbModuleType.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        cbModuleTypeActionPerformed(evt);
+      }
+    });
+
+    jCheckBox1.setText("Lamp-Test");
+    jCheckBox1.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jCheckBox1ActionPerformed(evt);
+      }
+    });
+
+    jButton2.setText("Read State");
+    jButton2.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton2ActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(jLabel9)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbModuleType, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGap(18, 18, 18)
+        .addComponent(jCheckBox1)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(jButton2)
+        .addContainerGap(151, Short.MAX_VALUE))
+    );
+    jPanel2Layout.setVerticalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(jLabel9)
+          .addComponent(cbModuleType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jCheckBox1)
+          .addComponent(jButton2))
+        .addContainerGap(354, Short.MAX_VALUE))
+    );
+
+    jTabbedPane1.addTab("Modul", jPanel2);
+
+    getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+    jTabbedPane1.getAccessibleContext().setAccessibleName("Modul");
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
@@ -497,19 +565,6 @@ public class Main extends javax.swing.JFrame
     }
   }//GEN-LAST:event_ledPanelStateChanged
 
-  private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
-  {//GEN-HEADEREND:event_jButton2ActionPerformed
-    try {
-      int pwm = field.getPWM();
-      spPWM.setValue(pwm);
-      slPWM.setValue(pwm);
-    } catch (IOException | TimeoutException | InterruptedException ex) {
-      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
-                                                 null,
-                                                 ex);
-    }
-  }//GEN-LAST:event_jButton2ActionPerformed
-
   private void spPWMStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_spPWMStateChanged
   {//GEN-HEADEREND:event_spPWMStateChanged
     slPWM.setValue(((Number) spPWM.getValue()).intValue());
@@ -521,17 +576,6 @@ public class Main extends javax.swing.JFrame
                                                  ex);
     }
   }//GEN-LAST:event_spPWMStateChanged
-
-  private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
-  {//GEN-HEADEREND:event_jButton3ActionPerformed
-    try {
-      field.setPWM(((Number) spPWM.getValue()).intValue());
-    } catch (IOException | TimeoutException | InterruptedException ex) {
-      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
-                                                 null,
-                                                 ex);
-    }
-  }//GEN-LAST:event_jButton3ActionPerformed
 
   private void slPWMStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_slPWMStateChanged
   {//GEN-HEADEREND:event_slPWMStateChanged
@@ -670,6 +714,75 @@ public class Main extends javax.swing.JFrame
     }
   }//GEN-LAST:event_jButton13ActionPerformed
 
+  private void cbModuleTypeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cbModuleTypeActionPerformed
+  {//GEN-HEADEREND:event_cbModuleTypeActionPerformed
+    ModuleType selected = typeModel.getSelectedItem();
+    if (selected != null && selected != ModuleType.UNKNOWN) {
+      try {
+        field.setModuleType(selected);
+      } catch (IOException | TimeoutException | InterruptedException ex) {
+        Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                   null,
+                                                   ex);
+      }
+    }
+  }//GEN-LAST:event_cbModuleTypeActionPerformed
+
+  private void jButton14ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton14ActionPerformed
+  {//GEN-HEADEREND:event_jButton14ActionPerformed
+    try {
+      field.setDefaultPWM(((Number) spPWM.getValue()).intValue());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jButton14ActionPerformed
+
+  private void jButton15ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton15ActionPerformed
+  {//GEN-HEADEREND:event_jButton15ActionPerformed
+    try {
+      spPWM.setValue(field.getDefaultPWM());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jButton15ActionPerformed
+
+  private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBox1ActionPerformed
+  {//GEN-HEADEREND:event_jCheckBox1ActionPerformed
+    ModuleState newState;
+    if (jCheckBox1.isSelected()) {
+      newState = ModuleState.valueOf(typeModel.getSelectedItem(),
+                                     LedState.LAMP_TEST,
+                                     0);
+    } else {
+      newState = ModuleState.valueOf(typeModel.getSelectedItem(),
+                                     LedState.OFF,
+                                     0);
+    }
+    try {
+      field.setModuleState(newState);
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+  private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
+  {//GEN-HEADEREND:event_jButton2ActionPerformed
+    try {
+      ModuleState ms = field.getModuleState();
+      typeModel.setSelectedItem(ms.getModuleType());
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_jButton2ActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -722,6 +835,7 @@ public class Main extends javax.swing.JFrame
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private final at.or.reder.tools.fieldtest.LedPanel blinkMask = new at.or.reder.tools.fieldtest.LedPanel();
   private final at.or.reder.tools.fieldtest.LedPanel blinkPhase = new at.or.reder.tools.fieldtest.LedPanel();
+  private final javax.swing.JComboBox<at.or.reder.tools.fieldtest.ModuleType> cbModuleType = new javax.swing.JComboBox<>();
   private final javax.swing.JCheckBox ckKeyError = new javax.swing.JCheckBox();
   private final javax.swing.JCheckBox ckKeyPressed = new javax.swing.JCheckBox();
   private final javax.swing.JFormattedTextField edVCC = new javax.swing.JFormattedTextField();
@@ -730,16 +844,23 @@ public class Main extends javax.swing.JFrame
   private javax.swing.JButton jButton11;
   private javax.swing.JButton jButton12;
   private javax.swing.JButton jButton13;
-  private final javax.swing.JButton jButton2 = new javax.swing.JButton();
-  private final javax.swing.JButton jButton3 = new javax.swing.JButton();
+  private javax.swing.JButton jButton14;
+  private javax.swing.JButton jButton15;
+  private javax.swing.JButton jButton2;
   private javax.swing.JButton jButton4;
   private javax.swing.JButton jButton5;
   private javax.swing.JButton jButton6;
   private javax.swing.JButton jButton7;
   private javax.swing.JButton jButton8;
   private javax.swing.JButton jButton9;
+  private javax.swing.JCheckBox jCheckBox1;
   private javax.swing.JLabel jLabel6;
   private javax.swing.JLabel jLabel8;
+  private javax.swing.JLabel jLabel9;
+  private javax.swing.JPanel jPanel1;
+  private javax.swing.JPanel jPanel2;
+  private javax.swing.JScrollPane jScrollPane1;
+  private javax.swing.JTabbedPane jTabbedPane1;
   private final javax.swing.JLabel lbVersion = new javax.swing.JLabel();
   private final at.or.reder.tools.fieldtest.LedPanel ledPanel = new at.or.reder.tools.fieldtest.LedPanel();
   private final javax.swing.JSlider slPWM = new javax.swing.JSlider();

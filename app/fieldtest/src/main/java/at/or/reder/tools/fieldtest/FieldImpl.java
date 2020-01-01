@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 Wolfgang Reder.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package at.or.reder.tools.fieldtest;
 
@@ -30,12 +40,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-/**
- *
- * @author Wolfgang Reder
- */
 public final class FieldImpl implements Field
 {
+
+  public static final long WAIT_FOR_STATE = 1000L;
+  public static final long WAIT_FOR_FUTURE = 2000L;
 
   private enum ReaderState
   {
@@ -69,10 +78,10 @@ public final class FieldImpl implements Field
     } catch (TooManyListenersException ex) {
       throw new IllegalStateException(ex);
     }
-    poll.scheduleAtFixedRate(this::pollKey,
-                             50,
-                             50,
-                             TimeUnit.MILLISECONDS);
+//    poll.scheduleAtFixedRate(this::pollKey,
+//                             50,
+//                             50,
+//                             TimeUnit.MILLISECONDS);
   }
 
   @Override
@@ -194,9 +203,10 @@ public final class FieldImpl implements Field
     return state == ReaderState.IDLE;
   }
 
-  private void initState(ReaderState expectedState)
+  private void initState(ReaderState expectedState,
+                         boolean forRead)
   {
-    state = ReaderState.ACK_PENDING;
+    state = forRead ? ReaderState.ACK : ReaderState.ACK_PENDING;
     returnValue.rewind();
     this.expectedState = expectedState;
   }
@@ -206,7 +216,7 @@ public final class FieldImpl implements Field
     int result = -1;
     synchronized (lock) {
       if (this.state != expectendState && state != ReaderState.ERROR) {
-        lock.wait(10000L);
+        lock.wait(WAIT_FOR_STATE);
       }
       if (this.state == expectendState || state == ReaderState.ERROR) {
         result = returnValue.getShort() & 0xffff;
@@ -221,7 +231,8 @@ public final class FieldImpl implements Field
                     int b) throws IOException, InterruptedException, TimeoutException
   {
     Future<Void> result = exec.submit(() -> {
-      initState(ReaderState.ACK);
+      initState(ReaderState.ACK,
+                false);
       try {
         try (OutputStream os = port.getOutputStream()) {
           os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
@@ -237,8 +248,8 @@ public final class FieldImpl implements Field
       return null;
     });
     try {
-      result.get(2,
-                 TimeUnit.SECONDS);
+      result.get(WAIT_FOR_FUTURE,
+                 TimeUnit.MILLISECONDS);
     } catch (ExecutionException ex) {
       Throwable cause = ex.getCause();
       if (cause instanceof IOException) {
@@ -260,7 +271,8 @@ public final class FieldImpl implements Field
                           int b) throws IOException, InterruptedException, TimeoutException
   {
     Future<Integer> result = exec.submit(() -> {
-      initState(ReaderState.IDLE);
+      initState(ReaderState.IDLE,
+                true);
       int r = -1;
       try {
         try (OutputStream os = port.getOutputStream()) {
@@ -277,8 +289,8 @@ public final class FieldImpl implements Field
       return r;
     });
     try {
-      return result.get(2,
-                        TimeUnit.SECONDS);
+      return result.get(WAIT_FOR_FUTURE,
+                        TimeUnit.MILLISECONDS);
     } catch (ExecutionException ex) {
       Throwable cause = ex.getCause();
       if (cause instanceof IOException) {
@@ -411,6 +423,24 @@ public final class FieldImpl implements Field
   }
 
   @Override
+  public int getDefaultPWM() throws IOException, TimeoutException, InterruptedException
+  {
+    return sendReceive(Register.DEFAULT_PWM,
+                       Operation.READ,
+                       0,
+                       0);
+  }
+
+  @Override
+  public void setDefaultPWM(int defaultPWM) throws IOException, TimeoutException, InterruptedException
+  {
+    send(Register.DEFAULT_PWM,
+         Operation.WRITE,
+         defaultPWM,
+         0);
+  }
+
+  @Override
   public float getVCC() throws IOException, InterruptedException, TimeoutException
   {
     int tmp = sendReceive(Register.VCC,
@@ -471,6 +501,48 @@ public final class FieldImpl implements Field
     send(Register.DEBOUNCE,
          Operation.WRITE,
          deb,
+         0);
+  }
+
+  @Override
+  public ModuleType getModuleType() throws IOException, TimeoutException, InterruptedException
+  {
+    int tmp = sendReceive(Register.MODULE_TYPE,
+                          Operation.READ,
+                          0,
+                          0);
+    return ModuleType.valueOfMagic(tmp);
+  }
+
+  @Override
+  public void setModuleType(ModuleType type) throws IOException, TimeoutException, InterruptedException
+  {
+    send(Register.MODULE_TYPE,
+         Operation.WRITE,
+         type.getMagic(),
+         0);
+  }
+
+  @Override
+  public ModuleState getModuleState() throws IOException, TimeoutException, InterruptedException
+  {
+    int magic = sendReceive(Register.MODULE_STATE,
+                            Operation.READ,
+                            0,
+                            0);
+    if (magic != -1) {
+      return ModuleState.valueOf(magic);
+    }
+    throw new IOException("Cannot read Module state");
+  }
+
+  @Override
+  public void setModuleState(ModuleState ms) throws IOException, TimeoutException, InterruptedException
+  {
+    int magic = ms.getMagic();
+    send(Register.MODULE_STATE,
+         Operation.WRITE,
+         magic,
          0);
   }
 

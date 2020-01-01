@@ -6,8 +6,7 @@
 
 #ifdef KEY_DEBOUNCE
 
-typedef enum
-{
+typedef enum {
   IDLE,
   RELEASED,
   TRIGGERED_PRESSED,
@@ -33,7 +32,7 @@ void initHW()
   eeprom_read_block(&eepromFile, &ee_eepromFile, sizeof (TEEPromFile));
   memcpy_P(&flashFile, &fl_flashFile, sizeof (TFlashFile));
   registerFile.blinkdivider = 4;
-  processPWM(0x7f, OP_WRITE);
+  processPWM(eepromFile.defaultPWM, OP_WRITE);
   currentPWM = registerFile.pwm;
   TCCR0 = _BV(WGM01) + _BV(WGM00) + _BV(CS02); // fast PWM; fosc/256
   TIMSK |= _BV(OCIE0) + _BV(TOIE0);
@@ -75,23 +74,23 @@ ISR(TIMER1_OVF_vect)
     TCCR1B = 0; // stop timer
     uint8_t sp = isKeyPressed();
     switch (keyState) {
-    case TRIGGERED_PRESSED:
-      if (sp) {
-        IND_01;
-        registerFile.key_pressed = 1;
-      }
-      break;
-    case TRIGGERED_RELEASED:
-      if (!sp) {
-        IND_00;
-        registerFile.key_pressed = 0;
-      }
+      case TRIGGERED_PRESSED:
+        if (sp) {
+          IND_01;
+          registerFile.key_pressed = 1;
+        }
+        break;
+      case TRIGGERED_RELEASED:
+        if (!sp) {
+          IND_00;
+          registerFile.key_pressed = 0;
+        }
 
-      break;
-    default:
-      registerFile.key_error = 1;
-      break;
-      // do nothing by intention
+        break;
+      default:
+        registerFile.key_error = 1;
+        break;
+        // do nothing by intention
     }
     keyState = IDLE;
   }
@@ -126,16 +125,16 @@ ISR(TIMER0_COMP_vect)
 uint16_t processLed(uint8_t led, operation_t operation)
 {
   switch (operation) {
-  case OP_READ:
-    return registerFile.led;
-  case OP_WRITE:
-    registerFile.led = led;
-    return led;
-  case OP_COMPLEMENT:
-    registerFile.led = ~registerFile.led;
-    return registerFile.led;
-  default:
-    return -1;
+    case OP_READ:
+      return registerFile.led;
+    case OP_WRITE:
+      registerFile.led = led;
+      return led;
+    case OP_COMPLEMENT:
+      registerFile.led = ~registerFile.led;
+      return registerFile.led;
+    default:
+      return -1;
   }
   return -1;
 }
@@ -143,83 +142,109 @@ uint16_t processLed(uint8_t led, operation_t operation)
 uint16_t processBlinkMask(uint8_t led, operation_t operation)
 {
   switch (operation) {
-  case OP_READ:
-    return registerFile.blinkmask;
-  case OP_WRITE:
-    return registerFile.blinkmask = led;
-  case OP_COMPLEMENT:
-    registerFile.blinkmask = ~registerFile.blinkmask;
-    return registerFile.blinkmask;
-  default:
-    return -1;
+    case OP_READ:
+      return registerFile.blinkmask;
+    case OP_WRITE:
+      return registerFile.blinkmask = led;
+    case OP_COMPLEMENT:
+      registerFile.blinkmask = ~registerFile.blinkmask;
+      return registerFile.blinkmask;
+    default:
+      return -1;
   }
 }
 
 uint16_t processBlinkPhase(uint8_t led, operation_t operation)
 {
   switch (operation) {
-  case OP_READ:
-    return registerFile.blinkphase;
-  case OP_WRITE:
-    return registerFile.blinkphase = led;
-  case OP_COMPLEMENT:
-    registerFile.blinkphase = ~registerFile.blinkphase;
-    return registerFile.blinkphase;
-  default:
-    return -1;
+    case OP_READ:
+      return registerFile.blinkphase;
+    case OP_WRITE:
+      return registerFile.blinkphase = led;
+    case OP_COMPLEMENT:
+      registerFile.blinkphase = ~registerFile.blinkphase;
+      return registerFile.blinkphase;
+    default:
+      return -1;
   }
 }
 
 uint16_t processPWM(uint8_t pwm, operation_t operation)
 {
+  uint16_t tmp;
   switch (operation) {
-  case OP_READ:
-    return registerFile.pwm;
-  case OP_WRITE:
-    OCR0 = pwm;
-    registerFile.pwm = OCR0;
-    if (OCR0 != 0xff) {
-      TIMSK |= _BV(OCIE0);
-    }
-    else {
-      TIMSK &= ~_BV(OCIE0);
-    }
-    return registerFile.pwm;
-  case OP_INCREMENT:
-  {
-    uint16_t tmp = registerFile.pwm += pwm;
-    if (tmp > 0xff) {
-      registerFile.pwm = 0xff;
-    }
-    else {
-      registerFile.pwm = tmp;
-    }
+    case OP_READ:
+      return registerFile.pwm;
+    case OP_WRITE:
+      OCR0 = pwm;
+      registerFile.pwm = OCR0;
+      if (OCR0 != 0xff) {
+        TIMSK |= _BV(OCIE0);
+      } else {
+        TIMSK &= ~_BV(OCIE0);
+      }
+      return registerFile.pwm;
+    case OP_INCREMENT:
+      tmp = registerFile.pwm += pwm;
+      if (tmp > 0xff) {
+        registerFile.pwm = 0xff;
+      } else {
+        registerFile.pwm = tmp;
+      }
+      OCR0 = registerFile.pwm;
+      if (OCR0 != 0xff) {
+        TIMSK |= _BV(OCIE0);
+      } else {
+        TIMSK &= ~_BV(OCIE0);
+      }
+      return registerFile.pwm;
+    case OP_DECREMENT:
+      if (pwm > registerFile.pwm) {
+        registerFile.pwm = 0;
+      } else {
+        registerFile.pwm -= pwm;
+      }
+      OCR0 = registerFile.pwm;
+      if (OCR0 != 0xff) {
+        TIMSK |= _BV(OCIE0);
+      } else {
+        TIMSK &= ~_BV(OCIE0);
+      }
+      return registerFile.pwm;
+    default:
+      return -1;
   }
-    OCR0 = registerFile.pwm;
-    if (OCR0 != 0xff) {
-      TIMSK |= _BV(OCIE0);
-    }
-    else {
-      TIMSK &= ~_BV(OCIE0);
-    }
-    return registerFile.pwm;
-  case OP_DECREMENT:
-    if (pwm > registerFile.pwm) {
-      registerFile.pwm = 0;
-    }
-    else {
-      registerFile.pwm -= pwm;
-    }
-    OCR0 = registerFile.pwm;
-    if (OCR0 != 0xff) {
-      TIMSK |= _BV(OCIE0);
-    }
-    else {
-      TIMSK &= ~_BV(OCIE0);
-    }
-    return registerFile.pwm;
-  default:
-    return -1;
+}
+
+uint16_t processDefaultPWM(uint8_t pwm, operation_t operation)
+{
+  uint16_t tmp;
+  switch (operation) {
+    case OP_READ:
+      return eepromFile.defaultPWM;
+    case OP_WRITE:
+      eepromFile.defaultPWM = pwm;
+      eeprom_write_byte(&ee_eepromFile.defaultPWM, eepromFile.defaultPWM);
+      return eepromFile.defaultPWM;
+    case OP_INCREMENT:
+      tmp = eepromFile.defaultPWM += pwm;
+      if (tmp > 0xff) {
+        eepromFile.defaultPWM = 0xff;
+      } else {
+        eepromFile.defaultPWM = tmp;
+      }
+      eeprom_write_byte(&ee_eepromFile.defaultPWM, eepromFile.defaultPWM);
+      return registerFile.pwm;
+    case OP_DECREMENT:
+      if (pwm > eepromFile.defaultPWM) {
+        eepromFile.defaultPWM = 0;
+      } else {
+        eepromFile.defaultPWM -= pwm;
+      }
+      eeprom_write_byte(&ee_eepromFile.defaultPWM, eepromFile.defaultPWM);
+      return eepromFile.defaultPWM;
+    default:
+      return -1;
   }
 }
 
@@ -241,22 +266,22 @@ uint16_t processVCC()
 uint8_t processVCCCalibration(uint8_t cal, operation_t operation)
 {
   switch (operation) {
-  case OP_READ:
-    return eepromFile.vcc_calibration;
-  case OP_WRITE:
-    eepromFile.vcc_calibration = (int8_t) cal;
-    eeprom_write_byte((uint8_t*) & ee_eepromFile.vcc_calibration, eepromFile.vcc_calibration);
-    return cal;
-  case OP_INCREMENT:
-    eepromFile.vcc_calibration++;
-    eeprom_write_byte((uint8_t*) & ee_eepromFile.vcc_calibration, eepromFile.vcc_calibration);
-    return eepromFile.vcc_calibration;
-  case OP_DECREMENT:
-    eepromFile.vcc_calibration--;
-    eeprom_write_byte((uint8_t*) & ee_eepromFile.vcc_calibration, eepromFile.vcc_calibration);
-    return eepromFile.vcc_calibration;
-  default:
-    return -1;
+    case OP_READ:
+      return eepromFile.vcc_calibration;
+    case OP_WRITE:
+      eepromFile.vcc_calibration = (int8_t) cal;
+      eeprom_write_byte((uint8_t*) & ee_eepromFile.vcc_calibration, eepromFile.vcc_calibration);
+      return cal;
+    case OP_INCREMENT:
+      eepromFile.vcc_calibration++;
+      eeprom_write_byte((uint8_t*) & ee_eepromFile.vcc_calibration, eepromFile.vcc_calibration);
+      return eepromFile.vcc_calibration;
+    case OP_DECREMENT:
+      eepromFile.vcc_calibration--;
+      eeprom_write_byte((uint8_t*) & ee_eepromFile.vcc_calibration, eepromFile.vcc_calibration);
+      return eepromFile.vcc_calibration;
+    default:
+      return -1;
   }
 }
 
@@ -273,25 +298,25 @@ uint16_t processFirmwareBuild()
 uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 {
   switch (operation) {
-  case OP_READ:
-    return registerFile.blinkdivider;
-  case OP_WRITE:
-    if (val != 0) {
-      registerFile.blinkdivider = val;
-    }
-    return registerFile.blinkdivider;
-  case OP_DECREMENT:
-    if (registerFile.blinkdivider > 1) {
-      registerFile.blinkdivider--;
-    }
-    return registerFile.blinkdivider;
-  case OP_INCREMENT:
-    if (registerFile.blinkdivider < 255) {
-      registerFile.blinkdivider++;
-    }
-    return registerFile.blinkdivider;
-  default:
-    return -1;
+    case OP_READ:
+      return registerFile.blinkdivider;
+    case OP_WRITE:
+      if (val != 0) {
+        registerFile.blinkdivider = val;
+      }
+      return registerFile.blinkdivider;
+    case OP_DECREMENT:
+      if (registerFile.blinkdivider > 1) {
+        registerFile.blinkdivider--;
+      }
+      return registerFile.blinkdivider;
+    case OP_INCREMENT:
+      if (registerFile.blinkdivider < 255) {
+        registerFile.blinkdivider++;
+      }
+      return registerFile.blinkdivider;
+    default:
+      return -1;
   }
 }
 
@@ -305,22 +330,22 @@ uint16_t processDebounce(uint8_t val, operation_t operation)
 #ifdef KEY_DEBOUNCE
 
   switch (operation) {
-  case OP_READ:
-    return eepromFile.debounce;
-  case OP_WRITE:
-    eepromFile.debounce = val;
-    eeprom_write_byte(&ee_eepromFile.debounce, eepromFile.debounce);
-    return val;
-  case OP_INCREMENT:
-    eepromFile.debounce++;
-    eeprom_write_byte(&ee_eepromFile.debounce, eepromFile.debounce);
-    return eepromFile.debounce;
-  case OP_DECREMENT:
-    eepromFile.debounce++;
-    eeprom_write_byte(&ee_eepromFile.debounce, eepromFile.debounce);
-    return eepromFile.debounce;
-  default:
-    return -1;
+    case OP_READ:
+      return eepromFile.debounce;
+    case OP_WRITE:
+      eepromFile.debounce = val;
+      eeprom_write_byte(&ee_eepromFile.debounce, eepromFile.debounce);
+      return val;
+    case OP_INCREMENT:
+      eepromFile.debounce++;
+      eeprom_write_byte(&ee_eepromFile.debounce, eepromFile.debounce);
+      return eepromFile.debounce;
+    case OP_DECREMENT:
+      eepromFile.debounce++;
+      eeprom_write_byte(&ee_eepromFile.debounce, eepromFile.debounce);
+      return eepromFile.debounce;
+    default:
+      return -1;
   }
 #else
   return -1;
