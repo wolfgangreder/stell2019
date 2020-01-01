@@ -71,7 +71,7 @@ SOURCEFILES=source/boot.c
 
 # Pack Options 
 PACK_COMPILER_OPTIONS=-I ${DFP_DIR}/include
-PACK_COMMON_OPTIONS=-B ${DFP_DIR}/gcc/dev/attiny804
+PACK_COMMON_OPTIONS=-B ${DFP_DIR}/gcc/dev/atmega8535
 
 
 

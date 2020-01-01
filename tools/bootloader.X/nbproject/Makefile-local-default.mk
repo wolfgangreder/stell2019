@@ -14,24 +14,24 @@
 # You can invoke make with the values of the macros:
 # $ makeMP_CC="/opt/microchip/mplabc30/v3.30c/bin/pic30-gcc" ...  
 #
-PATH_TO_IDE_BIN=/home/opt/microchip/mplabx/v5.30/mplab_platform/platform/../mplab_ide/modules/../../bin/
+PATH_TO_IDE_BIN=/opt/microchip/mplabx/v5.30/mplab_platform/platform/../mplab_ide/modules/../../bin/
 # Adding MPLAB X bin directory to path.
-PATH:=/home/opt/microchip/mplabx/v5.30/mplab_platform/platform/../mplab_ide/modules/../../bin/:$(PATH)
+PATH:=/opt/microchip/mplabx/v5.30/mplab_platform/platform/../mplab_ide/modules/../../bin/:$(PATH)
 # Path to java used to run MPLAB X when this makefile was created
-MP_JAVA_PATH="/home/opt/microchip/mplabx/v5.30/sys/java/jre1.8.0_181/bin/"
+MP_JAVA_PATH="/opt/microchip/mplabx/v5.30/sys/java/jre1.8.0_181/bin/"
 OS_CURRENT="$(shell uname -s)"
-MP_CC="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-gcc"
-MP_CPPC="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-g++"
+MP_CC="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin/avr-gcc"
+MP_CPPC="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin/avr-g++"
 # MP_BC is not defined
-MP_AS="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-as"
-MP_LD="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-ld"
-MP_AR="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-ar"
-DEP_GEN=${MP_JAVA_PATH}java -jar "/home/opt/microchip/mplabx/v5.30/mplab_platform/platform/../mplab_ide/modules/../../bin/extractobjectdependencies.jar"
-MP_CC_DIR="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin"
-MP_CPPC_DIR="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin"
+MP_AS="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin/avr-as"
+MP_LD="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin/avr-ld"
+MP_AR="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin/avr-ar"
+DEP_GEN=${MP_JAVA_PATH}java -jar "/opt/microchip/mplabx/v5.30/mplab_platform/platform/../mplab_ide/modules/../../bin/extractobjectdependencies.jar"
+MP_CC_DIR="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin"
+MP_CPPC_DIR="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin"
 # MP_BC_DIR is not defined
-MP_AS_DIR="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin"
-MP_LD_DIR="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin"
-MP_AR_DIR="/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin"
+MP_AS_DIR="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin"
+MP_LD_DIR="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin"
+MP_AR_DIR="/opt/microchip/avr8-gnu-toolchain-linux_x86_64/bin"
 # MP_BC_DIR is not defined
-DFP_DIR="/home/opt/microchip/mplabx/v5.30/packs/Microchip/ATtiny_DFP/2.0.10"
+DFP_DIR="/opt/microchip/mplabx/v5.30/packs/Microchip/ATtiny_DFP/2.0.10"

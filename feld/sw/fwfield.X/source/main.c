@@ -49,12 +49,13 @@
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
 #ifdef COMM_USART
-#  include "comm.h"
+#include "comm.h"
 #else
-#  include "TWI_slave.h"
+#include "TWI_slave.h"
 #endif
 #include "avr/sleep.h"
 #include "hw.h"
+#include "symbols.h"
 
 TRegisterFile registerFile;
 EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS, .debounce = 20, .moduletype = 0, .softstart = 0, .softstop = 0, .vcc_calibration = 9};
@@ -65,28 +66,30 @@ TFlashFile flashFile;
 uint16_t processCommand(TCommandBuffer* cmd)
 {
   switch (cmd->registerAddress) {
-    case REG_STATE:
-      return processState();
-    case REG_LED:
-      return processLed(cmd->data[0], cmd->registerOperation);
-    case REG_BLINKMASK:
-      return processBlinkMask(cmd->data[0], cmd->registerOperation);
-    case REG_BLINKPHASE:
-      return processBlinkPhase(cmd->data[0], cmd->registerOperation);
-    case REG_BLINKDIVIDER:
-      return processBlinkDivider(cmd->data[0], cmd->registerOperation);
-    case REG_PWM:
-      return processPWM(cmd->data[0], cmd->registerOperation);
-    case REG_VCC:
-      return processVCC();
-    case REG_VCC_CALIBRATION:
-      return processVCCCalibration(cmd->data[0], cmd->registerOperation);
-    case REG_DEBOUNCE:
-      return processDebounce(cmd->data[0], cmd->registerOperation);
-    case REG_VERSION:
-      return processFirmwareVersion();
-    case REG_BUILD:
-      return processFirmwareBuild();
+  case REG_STATE:
+    return processState();
+  case REG_MODULETYPE:
+    return processModuleState(cmd->data[0], cmd->registerOperation);
+  case REG_LED:
+    return processLed(cmd->data[0], cmd->registerOperation);
+  case REG_BLINKMASK:
+    return processBlinkMask(cmd->data[0], cmd->registerOperation);
+  case REG_BLINKPHASE:
+    return processBlinkPhase(cmd->data[0], cmd->registerOperation);
+  case REG_BLINKDIVIDER:
+    return processBlinkDivider(cmd->data[0], cmd->registerOperation);
+  case REG_PWM:
+    return processPWM(cmd->data[0], cmd->registerOperation);
+  case REG_VCC:
+    return processVCC();
+  case REG_VCC_CALIBRATION:
+    return processVCCCalibration(cmd->data[0], cmd->registerOperation);
+  case REG_DEBOUNCE:
+    return processDebounce(cmd->data[0], cmd->registerOperation);
+  case REG_VERSION:
+    return processFirmwareVersion();
+  case REG_BUILD:
+    return processFirmwareBuild();
   }
   return -1;
 }
@@ -98,6 +101,7 @@ int main(void)
   IND_INIT;
 
   initHW(&registerFile, &eepromFile);
+  initModule();
   initCommUsart(eepromFile.address_lsb);
 
   sei(); //set global interrupt enable
@@ -109,7 +113,8 @@ int main(void)
       if (commandBuf.registerOperation == OP_READ) {
         uint16_t data = processCommand(&commandBuf);
         writeBytesUsart((uint8_t*) & data, sizeof (data));
-      } else {
+      }
+      else {
         processCommand(&commandBuf);
       }
     }
@@ -124,7 +129,7 @@ int main(void)
   TCommandBuffer commandBuf;
 
   initHW(&registerFile, &eepromFile);
-
+  initModule();
 
   // Initialize TWI module for slave operation. Include address and/or enable General Call.
   TWI_Slave_Initialise((unsigned char) ((eepromFile.address_lsb << TWI_ADR_BITS) | (TRUE << TWI_GEN_BIT)));
@@ -153,16 +158,19 @@ int main(void)
           if (TWI_statusReg.genAddressCall) {
             // Put data received out to PORTB as an example.
             // PORTB = messageBuf[0];
-          } else // Ends up here if the last operation was a reception as Slave Address Match
+          }
+          else // Ends up here if the last operation was a reception as Slave Address Match
           {
             if (commandBuf.registerOperation == OP_READ) {
               uint16_t data = processCommand(&commandBuf);
               TWI_Start_Transceiver_With_Data((uint8_t*) & data, sizeof (data));
-            } else {
+            }
+            else {
               processCommand(&commandBuf);
             }
           }
-        } else // Ends up here if the last operation was a transmission
+        }
+        else // Ends up here if the last operation was a transmission
         {
           asm("nop"); // Put own code here.
         }
@@ -171,7 +179,8 @@ int main(void)
         if (!TWI_Transceiver_Busy()) {
           TWI_Start_Transceiver();
         }
-      } else // Ends up here if the last operation completed unsuccessfully
+      }
+      else // Ends up here if the last operation completed unsuccessfully
       {
         TWI_Act_On_Failure_In_Last_Transmission(TWI_Get_State_Info());
       }

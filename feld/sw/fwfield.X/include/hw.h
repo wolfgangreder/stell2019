@@ -183,7 +183,7 @@ extern "C" {
   extern uint16_t processDebounce(uint8_t val, operation_t operation);
   extern uint16_t processFirmwareVersion();
   extern uint16_t processFirmwareBuild();
-
+  extern uint16_t processModuleType(uint8_t moduleType, operation_t operation);
 #ifdef	__cplusplus
 }
 #endif
