@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
 public interface ModuleState
 {
@@ -195,5 +195,7 @@ public interface ModuleState
   public LedState getLedState();
 
   public int getMagic();
+
+  public int getStateMagic();
 
 }

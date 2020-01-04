@@ -51,7 +51,7 @@
 #ifdef COMM_USART
 #  include "comm.h"
 #else
-#  include "TWI_slave.h"
+#  include "TWI.h"
 #endif
 #include "avr/sleep.h"
 #include "hw.h"
@@ -59,14 +59,16 @@
 
 TRegisterFile registerFile;
 EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS,
-  .debounce = 20,
+  .debounce = 10,
   .moduletype = 0,
   .softstart = 0,
   .softstop = 0,
   .vcc_calibration = 9,
-  .defaultPWM = 0x7f};
+  .defaultPWM = 100,
+  .baudRate = 0xc0,
+  .masterAddress = 1};
 TEEPromFile eepromFile;
-const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR, .fw_build = FW_BUILD};
+const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR};
 TFlashFile flashFile;
 
 uint16_t processCommand(TCommandBuffer* cmd)
@@ -98,8 +100,6 @@ uint16_t processCommand(TCommandBuffer* cmd)
       return processDebounce(cmd->data[0], cmd->registerOperation);
     case REG_VERSION:
       return processFirmwareVersion();
-    case REG_BUILD:
-      return processFirmwareBuild();
   }
   return -1;
 }
@@ -136,17 +136,18 @@ unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg)
 int main(void)
 {
   TCommandBuffer commandBuf;
+  IND_INIT;
 
   initHW(&registerFile, &eepromFile);
   initModule();
 
   // Initialize TWI module for slave operation. Include address and/or enable General Call.
-  TWI_Slave_Initialise((unsigned char) ((eepromFile.address_lsb << TWI_ADR_BITS) | (TRUE << TWI_GEN_BIT)));
+  TWI_Initialize((unsigned char) ((eepromFile.address_lsb << TWI_ADR_BITS) | (TRUE << TWI_GEN_BIT)), eepromFile.baudRate);
 
   sei(); //set global interrupt enable
 
   // Start the TWI transceiver to enable reception of the first command from the TWI Master.
-  TWI_Start_Transceiver();
+  TWI_Start_Transceiver_SL();
 
   // This example is made to work together with the AVR315 TWI Master application note. In addition to connecting the TWI
   // pins, also connect PORTB to the LEDS. The code reads a message as a TWI slave and acts according to if it is a
@@ -171,7 +172,7 @@ int main(void)
           {
             if (commandBuf.registerOperation == OP_READ) {
               uint16_t data = processCommand(&commandBuf);
-              TWI_Start_Transceiver_With_Data((uint8_t*) & data, sizeof (data));
+              TWI_Start_Transceiver_With_Data_SL((uint8_t*) & data, sizeof (data));
             } else {
               processCommand(&commandBuf);
             }
@@ -183,7 +184,7 @@ int main(void)
         // Check if the TWI Transceiver has already been started.
         // If not then restart it to prepare it for new receptions.
         if (!TWI_Transceiver_Busy()) {
-          TWI_Start_Transceiver();
+          TWI_Start_Transceiver_SL();
         }
       } else // Ends up here if the last operation completed unsuccessfully
       {
@@ -201,7 +202,7 @@ unsigned char TWI_Act_On_Failure_In_Last_Transmission(unsigned char TWIerrorMsg)
 
   // This very simple example puts the error code on PORTB and restarts the transceiver with
   // all the same data in the transmission buffers.
-  TWI_Start_Transceiver();
+  TWI_Start_Transceiver_SL();
 
   return TWIerrorMsg;
 }

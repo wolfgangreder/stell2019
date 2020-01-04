@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
 import java.util.Objects;
 
@@ -70,6 +70,12 @@ public final class ModuleStateTurnout implements ModuleState
   public int getMagic()
   {
     return (state.getMagic() << 4) + (ledState.getMagic()) + (module.getMagic() << 8);
+  }
+
+  @Override
+  public int getStateMagic()
+  {
+    return state.getMagic();
   }
 
   @Override

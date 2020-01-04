@@ -13,25 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-public enum Operation
+public enum TurnoutState
 {
-  READ(0),
-  WRITE(1),
-  INCREMENT(2),
-  DECREMENT(3),
-  COMPLEMENT(4);
-  private final byte magic;
+  STRAIT(0),
+  DEFLECTION(1),
+  UNKNOWN(0xff);
+  private final int magic;
 
-  private Operation(int m)
+  private TurnoutState(int magic)
   {
-    this.magic = (byte) m;
+    this.magic = magic;
   }
 
-  public byte getMagic()
+  public int getMagic()
   {
     return magic;
+  }
+
+  public static TurnoutState valueOfMagic(int magic)
+  {
+    for (TurnoutState s : values()) {
+      if (s.magic == (magic & 0xff)) {
+        return s;
+      }
+    }
+    return TurnoutState.UNKNOWN;
   }
 
 }

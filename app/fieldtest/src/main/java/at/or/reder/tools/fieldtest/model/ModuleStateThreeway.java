@@ -1,4 +1,4 @@
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
 import java.util.Objects;
 
@@ -21,24 +21,25 @@ import java.util.Objects;
  *
  * @author Wolfgang Reder
  */
-public final class ModuleStateCrossing implements ModuleState
+public final class ModuleStateThreeway implements ModuleState
 {
 
   private final ModuleType module;
   private final LedState ledState;
-  private final CrossingState state;
+  private final ThreewayState state;
 
-  public ModuleStateCrossing(ModuleType module,
+  public ModuleStateThreeway(ModuleType module,
                              LedState ledState,
-                             CrossingState state)
+                             ThreewayState state)
   {
     switch (Objects.requireNonNull(module,
                                    "module is null")) {
-      case K1:
-      case K2:
+      case DW1:
+      case DW2:
+      case DW3:
         break;
       default:
-        throw new IllegalArgumentException("module is not a crossing turnout");
+        throw new IllegalArgumentException("module is not a threeway turnout");
     }
     this.module = module;
     this.ledState = Objects.requireNonNull(ledState,
@@ -59,7 +60,7 @@ public final class ModuleStateCrossing implements ModuleState
     return ledState;
   }
 
-  public CrossingState getState()
+  public ThreewayState getState()
   {
     return state;
   }
@@ -68,6 +69,12 @@ public final class ModuleStateCrossing implements ModuleState
   public int getMagic()
   {
     return (state.getMagic() << 4) + (ledState.getMagic()) + (module.getMagic() << 8);
+  }
+
+  @Override
+  public int getStateMagic()
+  {
+    return state.getMagic();
   }
 
   @Override
@@ -92,7 +99,7 @@ public final class ModuleStateCrossing implements ModuleState
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final ModuleStateCrossing other = (ModuleStateCrossing) obj;
+    final ModuleStateThreeway other = (ModuleStateThreeway) obj;
     if (this.module != other.module) {
       return false;
     }

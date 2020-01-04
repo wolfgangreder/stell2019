@@ -48,7 +48,7 @@ void initModule()
       ledMask = _BV(LED_3) | _BV(LED_4) | _BV(LED_5) | _BV(LED_6);
       break;
     case K2:
-      ledMask = _BV(LED_1) | _BV(LED_5) | _BV(LED_5) | _BV(LED_8);
+      ledMask = _BV(LED_1) | _BV(LED_4) | _BV(LED_5) | _BV(LED_8);
       break;
     case DW1:
       ledMask = _BV(LED_3) | _BV(LED_4) | _BV(LED_5) | _BV(LED_8);
@@ -71,11 +71,9 @@ void initModule()
   DDR_LED = ledMask; // Ledausgänge
   PORT_LED = ledMask; // alle leds aus
   if (IS_FUNCTION_MODULE(moduletype)) {
-    MCUCR |= SWITCH_MCU_OR;
-    MCUCR &= SWITCH_MCU_AND;
-    GICR |= SWITCH_INT_ENABLE;
-    SWITCH_DIR &= ~_BV(SWITCH);
-    SWITCH_PORT |= _BV(SWITCH);
+    enableSwitch();
+  } else {
+    disableSwitch();
   }
 }
 
@@ -123,6 +121,7 @@ uint16_t processModuleType(uint8_t moduleType, operation_t operation)
           eepromFile.moduletype = moduleType;
           eeprom_write_byte(&ee_eepromFile.moduletype, moduleType);
           initModule();
+          processModuleState(0, OP_WRITE);
           return moduleType;
           break;
         default:
@@ -136,13 +135,15 @@ uint16_t processModuleType(uint8_t moduleType, operation_t operation)
 
 uint8_t applyStateTrack(module_t type, modulestate_t state)
 {
+  state_led_t ledstate = LEDSTATE(state);
+
   uint8_t leds = 0;
-  uint8_t blink = state.ledstate == LED_BLINK ? ledMask : 0;
+  uint8_t blink = ledstate == LED_BLINK ? ledMask : 0;
   uint8_t phase = 0;
-  if (state.ledstate == LED_LAMPTEST) {
+  if (ledstate == LED_LAMPTEST) {
     leds = ledMask;
   } else {
-    if (state.ledstate != LED_OFF) {
+    if (ledstate != LED_OFF) {
       switch (type) {
         case G1:
           leds = _BV(LED_4) | _BV(LED_5) | _BV(LED_9);
@@ -176,20 +177,22 @@ uint8_t applyStateTrack(module_t type, modulestate_t state)
   processLed(leds & ledMask, OP_WRITE);
   processBlinkMask(blink & ledMask, OP_WRITE);
   processBlinkPhase(phase & ledMask, OP_WRITE);
-  return state.state;
+  return state;
 }
 
 uint8_t applyStateTurnout(module_t type, modulestate_t state)
 {
+  state_led_t ledstate = LEDSTATE(state);
+  state_t_t turnout = TURNOUTSTATE(state);
   uint8_t leds = 0;
-  uint8_t blink = state.ledstate == LED_BLINK ? ledMask : 0;
+  uint8_t blink = ledstate == LED_BLINK ? ledMask : 0;
   uint8_t phase = 0;
-  if (state.ledstate == LED_LAMPTEST) {
+  if (ledstate == LED_LAMPTEST) {
     leds = ledMask;
-  } else {
+  } else if (ledstate != LED_OFF) {
     switch (type) {
       case W1:
-        switch (state.turnout) {
+        switch (turnout) {
           case T_STRAIT:
             leds = _BV(LED_4) | _BV(LED_5);
             break;
@@ -201,18 +204,19 @@ uint8_t applyStateTurnout(module_t type, modulestate_t state)
         }
         break;
       case W2:
-        switch (state.turnout) {
+        switch (turnout) {
           case T_STRAIT:
             leds = _BV(LED_4) | _BV(LED_5);
             break;
           case T_DEFLECTION:
             leds = _BV(LED_6) | _BV(LED_5);
+            break;
           default:
             return -1;
         }
         break;
       case W3:
-        switch (state.turnout) {
+        switch (turnout) {
           case T_STRAIT:
             leds = _BV(LED_6) | _BV(LED_3);
             break;
@@ -224,7 +228,7 @@ uint8_t applyStateTurnout(module_t type, modulestate_t state)
         }
         break;
       case W4:
-        switch (state.turnout) {
+        switch (turnout) {
           case T_STRAIT:
             leds = _BV(LED_1) | _BV(LED_8);
             break;
@@ -242,20 +246,22 @@ uint8_t applyStateTurnout(module_t type, modulestate_t state)
   processLed(leds & ledMask, OP_WRITE);
   processBlinkMask(blink & ledMask, OP_WRITE);
   processBlinkPhase(phase & ledMask, OP_WRITE);
-  return state.state;
+  return state;
 }
 
 uint8_t applyStateCrossing(module_t type, modulestate_t state)
 {
+  state_led_t ledstate = LEDSTATE(state);
+  state_k_t crossing = CROSSINGSTATE(state);
   uint8_t leds = 0;
-  uint8_t blink = state.ledstate == LED_BLINK ? ledMask : 0;
+  uint8_t blink = ledstate == LED_BLINK ? ledMask : 0;
   uint8_t phase = 0;
-  if (state.ledstate == LED_LAMPTEST) {
+  if (ledstate == LED_LAMPTEST) {
     leds = ledMask;
-  } else {
+  } else if (ledstate != LED_OFF) {
     switch (type) {
-      case K1:break;
-        switch (state.crossing) {
+      case K1:
+        switch (crossing) {
           case K_STRAIT_0:
             leds = _BV(LED_4) | _BV(LED_5);
             break;
@@ -267,12 +273,13 @@ uint8_t applyStateCrossing(module_t type, modulestate_t state)
             break;
           case K_DEFLECTION_1:
             leds = _BV(LED_5) | _BV(LED_6);
+            break;
           default:
             return -1;
         }
         break;
       case K2:
-        switch (state.crossing) {
+        switch (crossing) {
           case K_STRAIT_0:
             leds = _BV(LED_4) | _BV(LED_5);
             break;
@@ -296,20 +303,23 @@ uint8_t applyStateCrossing(module_t type, modulestate_t state)
   processLed(leds & ledMask, OP_WRITE);
   processBlinkMask(blink & ledMask, OP_WRITE);
   processBlinkPhase(phase & ledMask, OP_WRITE);
-  return state.state;
+  return state;
 }
 
 uint8_t applyStateThreeway(module_t type, modulestate_t state)
 {
+  state_led_t ledstate = LEDSTATE(state);
+  state_dw_t threeway = THREEWAYSTATE(state);
+
   uint8_t leds = 0;
-  uint8_t blink = state.ledstate == LED_BLINK ? ledMask : 0;
+  uint8_t blink = ledstate == LED_BLINK ? ledMask : 0;
   uint8_t phase = 0;
-  if (state.ledstate == LED_LAMPTEST) {
+  if (ledstate == LED_LAMPTEST) {
     leds = ledMask;
-  } else {
+  } else if (ledstate != LED_OFF) {
     switch (type) {
       case DW1:
-        switch (state.threeway) {
+        switch (threeway) {
           case D_STRAIT:
             leds = _BV(LED_4) | _BV(LED_5);
             break;
@@ -324,7 +334,7 @@ uint8_t applyStateThreeway(module_t type, modulestate_t state)
         }
         break;
       case DW2:
-        switch (state.threeway) {
+        switch (threeway) {
           case D_STRAIT:
             leds = _BV(LED_3) | _BV(LED_4);
             break;
@@ -339,7 +349,7 @@ uint8_t applyStateThreeway(module_t type, modulestate_t state)
         }
         break;
       case DW3:
-        switch (state.threeway) {
+        switch (threeway) {
           case D_STRAIT:
             leds = _BV(LED_8) | _BV(LED_4);
             break;
@@ -360,36 +370,38 @@ uint8_t applyStateThreeway(module_t type, modulestate_t state)
   processLed(leds & ledMask, OP_WRITE);
   processBlinkMask(blink & ledMask, OP_WRITE);
   processBlinkPhase(phase & ledMask, OP_WRITE);
-  return state.state;
+  return state;
 }
 
 uint8_t applyStateSemaphore(module_t type, modulestate_t state)
 {
-  uint8_t leds = state.ledstate != LED_OFF ? _BV(LED_4) | _BV(LED_5) : 0;
-  uint8_t blink = state.ledstate == LED_BLINK ? _BV(LED_4) | _BV(LED_5) : 0;
+  state_led_t ledstate = LEDSTATE(state);
+  state_s_t semaphore = SEMAPHORESTATE(state);
+  uint8_t leds = ledstate != LED_OFF ? _BV(LED_4) | _BV(LED_5) : 0;
+  uint8_t blink = ledstate == LED_BLINK ? _BV(LED_4) | _BV(LED_5) : 0;
   uint8_t phase = 0;
-  if (state.ledstate == LED_LAMPTEST) {
+  if (ledstate == LED_LAMPTEST) {
     leds = ledMask;
     blink = 0;
-  } else {
+  } else if (ledstate != LED_OFF) {
     switch (type) {
       case SEM_E:
-        switch (state.semaphore) {
+        switch (semaphore) {
           case S_STOP:
             leds |= _BV(LED_3);
-            if (state.ledstate == LED_BLINK) {
+            if (ledstate == LED_BLINK) {
               blink |= _BV(LED_3);
             }
             break;
           case S_FREE:
             leds |= _BV(LED_2);
-            if (state.ledstate == LED_BLINK) {
+            if (ledstate == LED_BLINK) {
               blink |= _BV(LED_2);
             }
             break;
           case S_PENDING:
-            leds = _BV(LED_3) | _BV(LED_2);
-            blink |= leds;
+            leds |= _BV(LED_3) | _BV(LED_2);
+            blink |= _BV(LED_3) | _BV(LED_2);
             phase = _BV(LED_2);
             break;
           default:
@@ -397,22 +409,22 @@ uint8_t applyStateSemaphore(module_t type, modulestate_t state)
         }
         break;
       case SEM_W:
-        switch (state.semaphore) {
+        switch (semaphore) {
           case S_STOP:
             leds |= _BV(LED_1);
-            if (state.ledstate == LED_BLINK) {
+            if (ledstate == LED_BLINK) {
               blink |= _BV(LED_1);
             }
             break;
           case S_FREE:
             leds |= _BV(LED_2);
-            if (state.ledstate == LED_BLINK) {
+            if (ledstate == LED_BLINK) {
               blink |= _BV(LED_2);
             }
             break;
           case S_PENDING:
-            leds = _BV(LED_1) | _BV(LED_2);
-            blink |= leds;
+            leds |= _BV(LED_1) | _BV(LED_2);
+            blink |= _BV(LED_1) | _BV(LED_2);
             phase = _BV(LED_2);
             break;
           default:
@@ -426,6 +438,6 @@ uint8_t applyStateSemaphore(module_t type, modulestate_t state)
   processLed(leds & ledMask, OP_WRITE);
   processBlinkMask(blink & ledMask, OP_WRITE);
   processBlinkPhase(phase & ledMask, OP_WRITE);
-  return state.state;
+  return state;
 }
 

@@ -15,6 +15,13 @@
  */
 package at.or.reder.tools.fieldtest;
 
+import at.or.reder.tools.fieldtest.model.Field;
+import at.or.reder.tools.fieldtest.model.ModuleState;
+import at.or.reder.tools.fieldtest.model.ModuleType;
+import at.or.reder.tools.fieldtest.model.Operation;
+import at.or.reder.tools.fieldtest.model.Register;
+import at.or.reder.tools.fieldtest.model.State;
+import at.or.reder.tools.fieldtest.model.Version;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import java.io.IOException;
@@ -55,6 +62,7 @@ public final class FieldImpl implements Field
   }
   private final SerialPort port;
   private final short address;
+  private volatile boolean dataPending;
   private volatile ReaderState state;
   private volatile ReaderState expectedState;
   private volatile IOException error;
@@ -137,6 +145,14 @@ public final class FieldImpl implements Field
 
   private ReaderState doIdle(int b)
   {
+    synchronized (lock) {
+      if (!dataPending) {
+        if (returnValue.position() == 0 && b == 6) {
+          expectedState = ReaderState.IDLE;
+          return ReaderState.ACK;
+        }
+      }
+    }
     return state;
   }
 
@@ -185,8 +201,14 @@ public final class FieldImpl implements Field
         newState = ReaderState.ERROR;
       }
     } finally {
-      synchronized (lock) {
-        lock.notifyAll();
+      if (dataPending) {
+        synchronized (lock) {
+          lock.notifyAll();
+        }
+      } else {
+        keyPressed.set(returnValue.get(0) != 0);
+        returnValue.rewind();
+        SwingUtilities.invokeLater(this::fireChange);
       }
       setState(newState);
     }
@@ -207,6 +229,7 @@ public final class FieldImpl implements Field
                          boolean forRead)
   {
     state = forRead ? ReaderState.ACK : ReaderState.ACK_PENDING;
+    dataPending = true;
     returnValue.rewind();
     this.expectedState = expectedState;
   }
@@ -221,6 +244,8 @@ public final class FieldImpl implements Field
       if (this.state == expectendState || state == ReaderState.ERROR) {
         result = returnValue.getShort() & 0xffff;
       }
+      returnValue.rewind();
+      dataPending = false;
     }
     return result;
   }
@@ -478,12 +503,7 @@ public final class FieldImpl implements Field
                               Operation.READ,
                               0,
                               0) & 0xffff;
-    int build = sendReceive(Register.FW_BUILD,
-                            Operation.READ,
-                            0,
-                            0);
-    return new Version(version,
-                       build);
+    return new Version(version);
   }
 
   @Override

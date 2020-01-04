@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-public enum TurnoutState
+public enum CrossingState
 {
-  STRAIT(0),
-  DEFLECTION(1),
+  STRAIT_0(0),
+  DEFLECTION_0(1),
+  STRAIT_1(2),
+  DEFLECTION_1(3),
   UNKNOWN(0xff);
+
   private final int magic;
 
-  private TurnoutState(int magic)
+  private CrossingState(int magic)
   {
     this.magic = magic;
   }
@@ -32,14 +35,14 @@ public enum TurnoutState
     return magic;
   }
 
-  public static TurnoutState valueOfMagic(int magic)
+  public static CrossingState valueOfMagic(int magic)
   {
-    for (TurnoutState s : values()) {
+    for (CrossingState s : values()) {
       if (s.magic == (magic & 0xff)) {
         return s;
       }
     }
-    return TurnoutState.UNKNOWN;
+    return UNKNOWN;
   }
 
 }

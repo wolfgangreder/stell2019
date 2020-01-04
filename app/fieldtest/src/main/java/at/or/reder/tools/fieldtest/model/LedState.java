@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-public enum CrossingState
+/**
+ *
+ * @author Wolfgang Reder
+ */
+public enum LedState
 {
-  STRAIT_0(0),
-  DEFLECTION_0(1),
-  STRAIT_1(2),
-  DEFLECTION_1(3),
+  OFF(0),
+  BLINK(1),
+  ON(2),
+  LAMP_TEST(3),
   UNKNOWN(0xff);
-
   private final int magic;
 
-  private CrossingState(int magic)
+  private LedState(int magic)
   {
     this.magic = magic;
   }
@@ -35,14 +38,14 @@ public enum CrossingState
     return magic;
   }
 
-  public static CrossingState valueOfMagic(int magic)
+  public static LedState valueOfMagic(int magic)
   {
-    for (CrossingState s : values()) {
+    for (LedState s : values()) {
       if (s.magic == (magic & 0xff)) {
         return s;
       }
     }
-    return UNKNOWN;
+    return LedState.UNKNOWN;
   }
 
 }

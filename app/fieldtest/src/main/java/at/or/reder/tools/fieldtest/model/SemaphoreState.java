@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-public enum State
+public enum SemaphoreState
 {
-  KEY_PRESSED(0x01),
-  KEY_ERROR(0x80);
+  STOP(0),
+  FREE(1),
+  PENDING(2),
+  UNKNOWN(0xff);
+
   private final int magic;
 
-  private State(int magic)
+  private SemaphoreState(int magic)
   {
     this.magic = magic;
   }
@@ -29,6 +32,16 @@ public enum State
   public int getMagic()
   {
     return magic;
+  }
+
+  public static SemaphoreState valueOfMagic(int magic)
+  {
+    for (SemaphoreState s : values()) {
+      if (s.magic == (magic & 0xff)) {
+        return s;
+      }
+    }
+    return UNKNOWN;
   }
 
 }

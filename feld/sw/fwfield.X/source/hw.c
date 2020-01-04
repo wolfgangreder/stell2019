@@ -3,24 +3,16 @@
 #include <util/atomic.h>
 #include <math.h>
 #include "hw.h"
-
-#ifdef KEY_DEBOUNCE
-
-typedef enum {
-  IDLE,
-  RELEASED,
-  TRIGGERED_PRESSED,
-  PRESSED,
-  TRIGGERED_RELEASED
-} debounce_state_t;
+#ifdef COMM_USART
+#  include "comm.h"
+#else
+#  include "TWI.h"
 #endif
+
 volatile uint8_t currentBlinkPhase;
 static volatile uint8_t blinkScale;
 static volatile uint8_t currentPWM;
-#ifdef KEY_DEBOUNCE
-static volatile debounce_state_t keyState;
 static volatile uint8_t debouncePhase;
-#endif
 
 inline uint8_t isKeyPressed()
 {
@@ -45,10 +37,7 @@ void initHW()
   ADMUX = _BV(REFS0) | _BV(MUX1) | _BV(MUX2) | _BV(MUX3) | _BV(MUX4);
   SFIOR &= ~(_BV(ADTS0) | _BV(ADTS1) | _BV(ADTS2));
   ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADPS2) | _BV(ADSC);
-#ifdef KEY_DEBOUNCE
   TIMSK |= _BV(TOIE1);
-  keyState = IDLE;
-#endif
 }
 
 inline void ledOn()
@@ -58,7 +47,6 @@ inline void ledOn()
   uint8_t tmp = registerFile.led & (~bm | (bm & (registerFile.blinkphase^currentBlinkPhase)));
   PORT_LED = ~tmp;
 }
-#ifdef KEY_DEBOUNCE
 
 void startDebounceTimer()
 {
@@ -69,37 +57,37 @@ void startDebounceTimer()
 
 ISR(TIMER1_OVF_vect)
 {
+  IND_11;
   TCNT1 = -231;
   if ((--debouncePhase) == 0) {
+    IND_21;
     TCCR1B = 0; // stop timer
-    uint8_t sp = isKeyPressed();
-    switch (keyState) {
-      case TRIGGERED_PRESSED:
-        if (sp) {
-          IND_01;
-          registerFile.key_pressed = 1;
-        }
-        break;
-      case TRIGGERED_RELEASED:
-        if (!sp) {
-          IND_00;
-          registerFile.key_pressed = 0;
-        }
-
-        break;
-      default:
-        registerFile.key_error = 1;
-        break;
-        // do nothing by intention
-    }
-    keyState = IDLE;
+    enableSwitch();
   }
+  IND_10;
+  IND_20;
 }
-#endif
 
 ISR(SWITCH_INT_vect)
 {
+  IND_01;
+  disableSwitch();
   registerFile.key_pressed = isKeyPressed();
+  startDebounceTimer();
+#ifdef COMM_USART
+  uint8_t msg[3];
+  msg[0] = 6;
+  msg[1] = registerFile.state;
+  msg[2] = registerFile.modulstate;
+  writeBytesUsart(msg, sizeof (msg));
+#else
+  uint8_t msg[3];
+  msg[0] = MAKE_ADDRESS_W(eepromFile.masterAddress);
+  msg[1] = registerFile.state;
+  msg[2] = registerFile.modulstate;
+  TWI_Start_Transceiver_With_Data_MA(msg, sizeof (msg));
+#endif
+  IND_00;
 }
 
 ISR(BLINK_INT_vect)
@@ -290,11 +278,6 @@ uint16_t processFirmwareVersion()
   return flashFile.fw_Version;
 }
 
-uint16_t processFirmwareBuild()
-{
-  return flashFile.fw_build;
-}
-
 uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 {
   switch (operation) {
@@ -327,8 +310,6 @@ uint16_t processState()
 
 uint16_t processDebounce(uint8_t val, operation_t operation)
 {
-#ifdef KEY_DEBOUNCE
-
   switch (operation) {
     case OP_READ:
       return eepromFile.debounce;
@@ -347,7 +328,4 @@ uint16_t processDebounce(uint8_t val, operation_t operation)
     default:
       return -1;
   }
-#else
-  return -1;
-#endif
 }

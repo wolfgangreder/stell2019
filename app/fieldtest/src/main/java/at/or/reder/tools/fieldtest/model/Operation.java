@@ -13,35 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-public enum SemaphoreState
+public enum Operation
 {
-  STOP(0),
-  FREE(1),
-  PENDING(2),
-  UNKNOWN(0xff);
+  READ(0),
+  WRITE(1),
+  INCREMENT(2),
+  DECREMENT(3),
+  COMPLEMENT(4);
+  private final byte magic;
 
-  private final int magic;
-
-  private SemaphoreState(int magic)
+  private Operation(int m)
   {
-    this.magic = magic;
+    this.magic = (byte) m;
   }
 
-  public int getMagic()
+  public byte getMagic()
   {
     return magic;
-  }
-
-  public static SemaphoreState valueOfMagic(int magic)
-  {
-    for (SemaphoreState s : values()) {
-      if (s.magic == (magic & 0xff)) {
-        return s;
-      }
-    }
-    return UNKNOWN;
   }
 
 }

@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
 import java.text.MessageFormat;
 
 public final class Version implements Comparable<Version>
 {
 
-  private static final String FMT_VERSION = "{0,number,0}.{1,number,0}.{2,number,0}";
+  private static final String FMT_VERSION = "{0,number,0}.{1,number,0}";
   private final int major;
   private final int minor;
-  private final int build;
   private String string;
 
-  public Version(int version,
-                 int build)
+  public Version(int version)
   {
     this.minor = (version & 0xff00) >> 8;
     this.major = version & 0xff;
-    this.build = build;
   }
 
   public int getMajor()
@@ -44,18 +41,12 @@ public final class Version implements Comparable<Version>
     return minor;
   }
 
-  public int getBuild()
-  {
-    return build;
-  }
-
   @Override
   public int hashCode()
   {
     int hash = 3;
     hash = 61 * hash + this.major;
     hash = 61 * hash + this.minor;
-    hash = 61 * hash + this.build;
     return hash;
   }
 
@@ -75,10 +66,7 @@ public final class Version implements Comparable<Version>
     if (this.major != other.major) {
       return false;
     }
-    if (this.minor != other.minor) {
-      return false;
-    }
-    return this.build == other.build;
+    return this.minor == other.minor;
   }
 
   @Override
@@ -93,10 +81,6 @@ public final class Version implements Comparable<Version>
       result = Integer.compare(minor,
                                o.minor);
     }
-    if (result == 0) {
-      result = Integer.compare(build,
-                               o.build);
-    }
     return result;
   }
 
@@ -106,8 +90,7 @@ public final class Version implements Comparable<Version>
     if (string == null) {
       string = MessageFormat.format(FMT_VERSION,
                                     major,
-                                    minor,
-                                    build);
+                                    minor);
     }
     return string;
   }

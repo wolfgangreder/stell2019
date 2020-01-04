@@ -13,37 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-public enum Register
+public enum State
 {
-  STATE(0),
-  LED(1),
-  BLINK_MASK(2),
-  BLINK_PHASE(3),
-  PWM(4),
-  MODULE_STATE(5),
-  VCC(6),
-  BLINK_DIVIDER(8),
-  ADDRESS(96),
-  MODULE_TYPE(98),
-  DEBOUNCE(99),
-  SOFTSTART(100),
-  SOFTSTOP(101),
-  VCC_CALIBRATION(102),
-  DEFAULT_PWM(103),
-  FW_VERSION(120),
-  FW_BUILD(122);
-  private final byte index;
+  KEY_PRESSED(0x01),
+  KEY_ERROR(0x80);
+  private final int magic;
 
-  private Register(int i)
+  private State(int magic)
   {
-    index = (byte) i;
+    this.magic = magic;
   }
 
-  public byte getIndex()
+  public int getMagic()
   {
-    return index;
+    return magic;
   }
 
 }

@@ -1,4 +1,4 @@
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
 import java.util.Objects;
 
@@ -68,6 +68,12 @@ public final class ModuleStateSemaphore implements ModuleState
   public int getMagic()
   {
     return (state.getMagic() << 4) + (ledState.getMagic()) + (module.getMagic() << 8);
+  }
+
+  @Override
+  public int getStateMagic()
+  {
+    return state.getMagic();
   }
 
   @Override

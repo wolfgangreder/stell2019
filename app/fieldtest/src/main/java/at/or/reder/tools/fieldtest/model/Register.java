@@ -13,39 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.or.reder.tools.fieldtest;
+package at.or.reder.tools.fieldtest.model;
 
-/**
- *
- * @author Wolfgang Reder
- */
-public enum LedState
+public enum Register
 {
-  OFF(0),
-  BLINK(1),
-  ON(2),
-  LAMP_TEST(3),
-  UNKNOWN(0xff);
-  private final int magic;
+  STATE(0),
+  LED(1),
+  BLINK_MASK(2),
+  BLINK_PHASE(3),
+  PWM(4),
+  MODULE_STATE(5),
+  VCC(6),
+  BLINK_DIVIDER(8),
+  ADDRESS(96),
+  MODULE_TYPE(98),
+  DEBOUNCE(99),
+  SOFTSTART(100),
+  SOFTSTOP(101),
+  VCC_CALIBRATION(102),
+  DEFAULT_PWM(103),
+  FW_VERSION(120);
+  private final byte index;
 
-  private LedState(int magic)
+  private Register(int i)
   {
-    this.magic = magic;
+    index = (byte) i;
   }
 
-  public int getMagic()
+  public byte getIndex()
   {
-    return magic;
-  }
-
-  public static LedState valueOfMagic(int magic)
-  {
-    for (LedState s : values()) {
-      if (s.magic == (magic & 0xff)) {
-        return s;
-      }
-    }
-    return LedState.UNKNOWN;
+    return index;
   }
 
 }

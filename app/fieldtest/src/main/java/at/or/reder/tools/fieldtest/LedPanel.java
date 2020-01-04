@@ -77,6 +77,12 @@ public class LedPanel extends javax.swing.JPanel
     ck6.setSelected((v & 0x20) != 0);
     ck8.setSelected((v & 0x40) != 0);
     ck9.setSelected((v & 0x80) != 0);
+    updateLabel(v);
+  }
+
+  private void updateLabel(int v)
+  {
+    jLabel2.setText("0x" + Integer.toHexString(v));
   }
 
   public void addChangeListener(ChangeListener l)
@@ -93,6 +99,7 @@ public class LedPanel extends javax.swing.JPanel
 
   private void fireChange()
   {
+    updateLabel(getValue());
     ChangeEvent evt = new ChangeEvent(this);
     for (ChangeListener l : changeListener) {
       l.stateChanged(evt);
@@ -107,10 +114,12 @@ public class LedPanel extends javax.swing.JPanel
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents()
   {
+    java.awt.GridBagConstraints gridBagConstraints;
 
     javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+    jLabel2 = new javax.swing.JLabel();
 
-    setLayout(new java.awt.GridLayout(3, 3));
+    setLayout(new java.awt.GridBagLayout());
 
     ck1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck1.addActionListener(new java.awt.event.ActionListener()
@@ -120,7 +129,11 @@ public class LedPanel extends javax.swing.JPanel
         ck1ActionPerformed(evt);
       }
     });
-    add(ck1);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck1, gridBagConstraints);
 
     ck2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck2.addActionListener(new java.awt.event.ActionListener()
@@ -130,7 +143,11 @@ public class LedPanel extends javax.swing.JPanel
         ck2ActionPerformed(evt);
       }
     });
-    add(ck2);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck2, gridBagConstraints);
 
     ck3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck3.addActionListener(new java.awt.event.ActionListener()
@@ -140,7 +157,11 @@ public class LedPanel extends javax.swing.JPanel
         ck3ActionPerformed(evt);
       }
     });
-    add(ck3);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck3, gridBagConstraints);
 
     ck4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck4.addActionListener(new java.awt.event.ActionListener()
@@ -150,7 +171,13 @@ public class LedPanel extends javax.swing.JPanel
         ck4ActionPerformed(evt);
       }
     });
-    add(ck4);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck4, gridBagConstraints);
 
     ck9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck9.addActionListener(new java.awt.event.ActionListener()
@@ -160,7 +187,13 @@ public class LedPanel extends javax.swing.JPanel
         ck9ActionPerformed(evt);
       }
     });
-    add(ck9);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck9, gridBagConstraints);
 
     ck5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck5.addActionListener(new java.awt.event.ActionListener()
@@ -170,7 +203,13 @@ public class LedPanel extends javax.swing.JPanel
         ck5ActionPerformed(evt);
       }
     });
-    add(ck5);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck5, gridBagConstraints);
 
     ck6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck6.addActionListener(new java.awt.event.ActionListener()
@@ -180,10 +219,22 @@ public class LedPanel extends javax.swing.JPanel
         ck6ActionPerformed(evt);
       }
     });
-    add(ck6);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck6, gridBagConstraints);
 
     jLabel1.setText("<html>&nbsp;"); // NOI18N
-    add(jLabel1);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(jLabel1, gridBagConstraints);
 
     ck8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     ck8.addActionListener(new java.awt.event.ActionListener()
@@ -193,7 +244,23 @@ public class LedPanel extends javax.swing.JPanel
         ck8ActionPerformed(evt);
       }
     });
-    add(ck8);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 0.3333333;
+    gridBagConstraints.weighty = 0.25;
+    add(ck8, gridBagConstraints);
+
+    jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    jLabel2.setText("jLabel2");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 3;
+    gridBagConstraints.gridwidth = 3;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    add(jLabel2, gridBagConstraints);
   }// </editor-fold>//GEN-END:initComponents
 
   private void ck1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ck1ActionPerformed
@@ -245,5 +312,6 @@ public class LedPanel extends javax.swing.JPanel
   private final javax.swing.JCheckBox ck6 = new javax.swing.JCheckBox();
   private final javax.swing.JCheckBox ck8 = new javax.swing.JCheckBox();
   private final javax.swing.JCheckBox ck9 = new javax.swing.JCheckBox();
+  private javax.swing.JLabel jLabel2;
   // End of variables declaration//GEN-END:variables
 }

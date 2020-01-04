@@ -67,25 +67,20 @@ extern "C" {
   } state_dw_t;
 
   typedef enum {
-    S_STOP = 0x1,
-    S_FREE = 0x2,
-    S_PENDING = 0x3
+    S_STOP = 0x0,
+    S_FREE = 0x1,
+    S_PENDING = 0x2
   } state_s_t;
 
-  typedef union {
-    uint8_t state;
+  typedef uint8_t modulestate_t;
 
-    struct {
-      state_led_t ledstate : 4;
-
-      union {
-        state_t_t turnout : 4;
-        state_k_t crossing : 4;
-        state_dw_t threeway : 4;
-        state_s_t semaphore : 4;
-      };
-    };
-  } modulestate_t;
+#define MAKEMODULESTATE(l,m) ((modulestate_t)((((m)&0x0f)<<4)+((l)&0x0f)))
+#define LEDSTATE(s) ((state_led_t)((s)&0x0f))
+#define MODELSTATE(s) (((s)&0xf0)>>4)
+#define TURNOUTSTATE(s) ((state_t_t)(((s)&0xf0)>>4))
+#define CROSSINGSTATE(s) ((state_k_t)(((s)&0xf0)>>4))
+#define THREEWAYSTATE(s) ((state_dw_t)(((s)&0xf0)>>4))
+#define SEMAPHORESTATE(s) ((state_s_t)(((s)&0xf0)>>4))
 
 
   extern void initModule();

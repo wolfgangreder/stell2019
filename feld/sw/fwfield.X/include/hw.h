@@ -87,6 +87,8 @@ extern "C" {
     uint8_t softstop;
     int8_t vcc_calibration;
     uint8_t defaultPWM;
+    uint8_t baudRate;
+    uint16_t masterAddress;
   } TEEPromFile;
 
 #define OFFSET_RAM (0)
@@ -112,7 +114,6 @@ extern "C" {
 #define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
 #define REG_DEFAULT_PWM (OFFSET_EEPROM+offsetof(TEEPromFile,defaultPWM))
 #define REG_VERSION (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
-#define REG_BUILD (OFFSET_FLASH+offsetof(TFlashFile,fw_build))
 
   typedef struct {
 
@@ -145,7 +146,6 @@ extern "C" {
         uint8_t fw_minor;
       };
     };
-    uint16_t fw_build;
   } TFlashFile;
 
   typedef enum {
@@ -172,6 +172,22 @@ extern "C" {
   extern const PROGMEM TFlashFile fl_flashFile;
   extern TFlashFile flashFile;
 
+  inline void enableSwitch() {
+    MCUCR |= SWITCH_MCU_OR;
+    MCUCR &= SWITCH_MCU_AND;
+    GICR |= SWITCH_INT_ENABLE;
+    SWITCH_DIR &= ~_BV(SWITCH);
+    SWITCH_PORT |= _BV(SWITCH);
+  }
+
+  inline void disableSwitch() {
+    MCUCR &= SWITCH_MCU_AND & ~SWITCH_MCU_OR;
+    GICR &= ~SWITCH_INT_ENABLE;
+    SWITCH_DIR &= ~_BV(SWITCH);
+    SWITCH_PORT &= ~_BV(SWITCH);
+  }
+
+
   extern void initHW();
   extern uint16_t processState();
   extern uint16_t processLed(uint8_t led, operation_t operation);
@@ -184,7 +200,6 @@ extern "C" {
   extern uint8_t processVCCCalibration(uint8_t cal, operation_t operation);
   extern uint16_t processDebounce(uint8_t val, operation_t operation);
   extern uint16_t processFirmwareVersion();
-  extern uint16_t processFirmwareBuild();
   extern uint16_t processModuleType(uint8_t moduleType, operation_t operation);
 #ifdef	__cplusplus
 }
