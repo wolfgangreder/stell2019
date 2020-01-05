@@ -59,14 +59,15 @@
 
 TRegisterFile registerFile;
 EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS,
-  .debounce = 10,
+  .debounce = 5,
   .moduletype = 0,
   .softstart = 0,
   .softstop = 0,
   .vcc_calibration = 9,
   .defaultPWM = 100,
   .baudRate = 0xc0,
-  .masterAddress = 1};
+  .masterAddress = 1,
+  .featureControl = 0};
 TEEPromFile eepromFile;
 const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR};
 TFlashFile flashFile;
@@ -75,7 +76,7 @@ uint16_t processCommand(TCommandBuffer* cmd)
 {
   switch (cmd->registerAddress) {
     case REG_STATE:
-      return processState();
+      return processState(cmd->data[0], cmd->registerOperation);
     case REG_MODULETYPE:
       return processModuleType(cmd->data[0], cmd->registerOperation);
     case REG_MODULESTATE:
@@ -98,8 +99,12 @@ uint16_t processCommand(TCommandBuffer* cmd)
       return processVCCCalibration(cmd->data[0], cmd->registerOperation);
     case REG_DEBOUNCE:
       return processDebounce(cmd->data[0], cmd->registerOperation);
+    case REG_FEATURE_CONTROL:
+      IND_01;
+      return processFeatureControl(cmd->data[0], cmd->registerOperation);
     case REG_VERSION:
       return processFirmwareVersion();
+
   }
   return -1;
 }
@@ -127,6 +132,7 @@ int main(void)
         sendACK();
       }
     }
+    IND_00;
   }
 }
 #else

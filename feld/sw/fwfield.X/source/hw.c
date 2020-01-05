@@ -13,6 +13,8 @@ volatile uint8_t currentBlinkPhase;
 static volatile uint8_t blinkScale;
 static volatile uint8_t currentPWM;
 static volatile uint8_t debouncePhase;
+static volatile uint8_t switchState;
+static uint8_t blinkPrescale;
 
 inline uint8_t isKeyPressed()
 {
@@ -25,6 +27,7 @@ void initHW()
   memcpy_P(&flashFile, &fl_flashFile, sizeof (TFlashFile));
   registerFile.blinkdivider = 4;
   processPWM(eepromFile.defaultPWM, OP_WRITE);
+  processFeatureControl(eepromFile.featureControl, OP_WRITE);
   currentPWM = registerFile.pwm;
   TCCR0 = _BV(WGM01) + _BV(WGM00) + _BV(CS02); // fast PWM; fosc/256
   TIMSK |= _BV(OCIE0) + _BV(TOIE0);
@@ -32,12 +35,18 @@ void initHW()
   MCUCR &= BLINK_MCU_AND;
   GICR |= BLINK_INT_ENABLE;
   // ADC
-  // ref=PA0->VCC
+  // ref=VCC
   // channel = vref
   ADMUX = _BV(REFS0) | _BV(MUX1) | _BV(MUX2) | _BV(MUX3) | _BV(MUX4);
   SFIOR &= ~(_BV(ADTS0) | _BV(ADTS1) | _BV(ADTS2));
   ADCSRA = _BV(ADEN) | _BV(ADATE) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADPS2) | _BV(ADSC);
-  TIMSK |= _BV(TOIE1);
+  blinkPrescale = BLINK_PRESCALE_INIT;
+  TIMSK |= _BV(TICIE1);
+  TCNT1 = 0;
+  TCCR1A = 0;
+  ICR1 = MS_TIMER_OCR;
+  TCCR1B = _BV(WGM12) + _BV(WGM13) + MS_TIMER_PRESCALE;
+  switchState = isKeyPressed();
 }
 
 inline void ledOn()
@@ -50,30 +59,11 @@ inline void ledOn()
 
 void startDebounceTimer()
 {
-  TCNT1 = -231;
-  TCCR1B = _BV(CS11) | _BV(CS10);
   debouncePhase = eepromFile.debounce;
 }
 
-ISR(TIMER1_OVF_vect)
+void sendKeyEvent()
 {
-  IND_11;
-  TCNT1 = -231;
-  if ((--debouncePhase) == 0) {
-    IND_21;
-    TCCR1B = 0; // stop timer
-    enableSwitch();
-  }
-  IND_10;
-  IND_20;
-}
-
-ISR(SWITCH_INT_vect)
-{
-  IND_01;
-  disableSwitch();
-  registerFile.key_pressed = isKeyPressed();
-  startDebounceTimer();
 #ifdef COMM_USART
   uint8_t msg[3];
   msg[0] = 6;
@@ -87,7 +77,37 @@ ISR(SWITCH_INT_vect)
   msg[2] = registerFile.modulstate;
   TWI_Start_Transceiver_With_Data_MA(msg, sizeof (msg));
 #endif
-  IND_00;
+}
+
+ISR(TIMER1_CAPT_vect)
+{
+  if (debouncePhase == 1) {
+    --debouncePhase;
+    uint8_t savedSwitchState = switchState;
+    uint8_t ss = switchState;
+    savedSwitchState = isKeyPressed();
+    if (ss != savedSwitchState) {
+      registerFile.key_pressed = savedSwitchState;
+      sendKeyEvent();
+    }
+    switchState = savedSwitchState;
+    enableSwitch();
+  } else {
+    --debouncePhase;
+  }
+
+  if ((--blinkPrescale) == 0) {
+    blinkPrescale = BLINK_PRESCALE_INIT;
+    if (eepromFile.blinkGenerator) {
+      PORT_BLINK ^= _BV(BLINK);
+    }
+  }
+}
+
+ISR(SWITCH_INT_vect)
+{
+  disableSwitch();
+  startDebounceTimer();
 }
 
 ISR(BLINK_INT_vect)
@@ -306,6 +326,26 @@ uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 uint16_t processState()
 {
   return registerFile.state & 0xff;
+}
+
+uint16_t processFeatureControl(uint8_t val, operation_t operation)
+{
+  switch (operation) {
+    case OP_READ:
+      return eepromFile.featureControl;
+    case OP_WRITE:
+      eepromFile.featureControl = val;
+      eeprom_write_byte(&ee_eepromFile.featureControl, eepromFile.featureControl);
+      if (eepromFile.blinkGenerator) {
+        DDR_BLINK |= _BV(BLINK);
+      } else {
+        DDR_BLINK &= ~_BV(BLINK);
+        PORT_BLINK |= _BV(BLINK); // Pullup ein
+      }
+      return val;
+    default:
+      return -1;
+  }
 }
 
 uint16_t processDebounce(uint8_t val, operation_t operation)

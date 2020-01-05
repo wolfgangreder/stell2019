@@ -16,6 +16,7 @@
 package at.or.reder.tools.fieldtest;
 
 import at.or.reder.tools.fieldtest.model.CrossingState;
+import at.or.reder.tools.fieldtest.model.Feature;
 import at.or.reder.tools.fieldtest.model.Field;
 import at.or.reder.tools.fieldtest.model.LedState;
 import at.or.reder.tools.fieldtest.model.ModuleState;
@@ -30,6 +31,7 @@ import gnu.io.RXTXPort;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -46,6 +48,7 @@ public class Main extends javax.swing.JFrame
   private final AbstractComboBoxModel<CrossingState> crossingModel = AbstractComboBoxModel.instanceOf(CrossingState.class);
   private final AbstractComboBoxModel<SemaphoreState> semModel = AbstractComboBoxModel.instanceOf(SemaphoreState.class);
   private boolean ignoreChangeEvent;
+  private final Set<Feature> features = EnumSet.noneOf(Feature.class);
 
   public Main() throws PortInUseException, UnsupportedCommOperationException
   {
@@ -79,6 +82,9 @@ public class Main extends javax.swing.JFrame
       int div = field.getBlinkDivider();
       int debounce = field.getDebounce();
       ModuleType type = field.getModuleType();
+      features.clear();
+      features.addAll(field.getFeatures());
+      ckBlinkGenerator.setSelected(features.contains(Feature.BLINK_GENERATOR));
       lbVersion.setText(version.toString());
       ledPanel.setValue(leds);
       blinkMask.setValue(bMask);
@@ -161,6 +167,7 @@ public class Main extends javax.swing.JFrame
     jButton14 = new javax.swing.JButton();
     jButton15 = new javax.swing.JButton();
     jLabel15 = new javax.swing.JLabel();
+    jLabel16 = new javax.swing.JLabel();
     jPanel2 = new javax.swing.JPanel();
     javax.swing.JLabel jLabel9 = new javax.swing.JLabel();
     javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
@@ -383,6 +390,17 @@ public class Main extends javax.swing.JFrame
       }
     });
 
+    ckBlinkGenerator.setText("Blinkgen");
+    ckBlinkGenerator.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        ckBlinkGeneratorActionPerformed(evt);
+      }
+    });
+
+    jLabel16.setText("Feature");
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
@@ -461,8 +479,10 @@ public class Main extends javax.swing.JFrame
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jLabel15)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(spDebounce, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        .addGap(75, 75, 75))
+            .addComponent(spDebounce, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(jLabel16)
+          .addComponent(ckBlinkGenerator))
+        .addContainerGap())
     );
 
     jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton7, jButton9});
@@ -519,7 +539,11 @@ public class Main extends javax.swing.JFrame
           .addComponent(spDebounce, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(ckKeyError)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addComponent(jLabel16)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(ckBlinkGenerator)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jButton10)
           .addComponent(jButton11)
@@ -994,6 +1018,23 @@ public class Main extends javax.swing.JFrame
     }
   }//GEN-LAST:event_spDebounceStateChanged
 
+  private void ckBlinkGeneratorActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_ckBlinkGeneratorActionPerformed
+  {//GEN-HEADEREND:event_ckBlinkGeneratorActionPerformed
+    if (ckBlinkGenerator.isSelected()) {
+      features.add(Feature.BLINK_GENERATOR);
+    } else {
+      features.remove(Feature.BLINK_GENERATOR);
+    }
+
+    try {
+      field.setFeatures(features);
+    } catch (IOException | TimeoutException | InterruptedException ex) {
+      Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
+                                                 null,
+                                                 ex);
+    }
+  }//GEN-LAST:event_ckBlinkGeneratorActionPerformed
+
   private int getModuleState()
   {
     if (cbTurnout.isEnabled()) {
@@ -1150,6 +1191,7 @@ public class Main extends javax.swing.JFrame
   private final javax.swing.JComboBox<SemaphoreState> cbSem = new javax.swing.JComboBox<>();
   private final javax.swing.JComboBox<ThreewayState> cbThreeway = new javax.swing.JComboBox<>();
   private final javax.swing.JComboBox<TurnoutState> cbTurnout = new javax.swing.JComboBox<>();
+  private final javax.swing.JCheckBox ckBlinkGenerator = new javax.swing.JCheckBox();
   private final javax.swing.JCheckBox ckKeyError = new javax.swing.JCheckBox();
   private final javax.swing.JCheckBox ckKeyPressed = new javax.swing.JCheckBox();
   private final javax.swing.JFormattedTextField edVCC = new javax.swing.JFormattedTextField();
@@ -1167,6 +1209,7 @@ public class Main extends javax.swing.JFrame
   private javax.swing.JButton jButton8;
   private javax.swing.JButton jButton9;
   private javax.swing.JLabel jLabel15;
+  private javax.swing.JLabel jLabel16;
   private javax.swing.JLabel jLabel6;
   private javax.swing.JLabel jLabel8;
   private javax.swing.JPanel jPanel1;

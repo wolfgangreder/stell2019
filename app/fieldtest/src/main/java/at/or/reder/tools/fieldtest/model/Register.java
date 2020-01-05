@@ -32,6 +32,9 @@ public enum Register
   SOFTSTOP(101),
   VCC_CALIBRATION(102),
   DEFAULT_PWM(103),
+  BAUD_TWI(104),
+  MASTER_ADDRESS(105),
+  FEATURES_CONTROL(107),
   FW_VERSION(120);
   private final byte index;
 

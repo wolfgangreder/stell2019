@@ -37,6 +37,13 @@ extern "C" {
 #define IND_INIT
 #endif
 
+#define TIMER1_PRESCALE_MASK (_BV(CS10)|_BV(CS11)|_BV(CS12))
+#define TIMER1_PRESCALE_1 _BV(CS10)
+#define TIMER1_PRESCALE_8 _BV(CS11)
+#define TIMER1_PRESCALE_64 (_BV(CS10)|_BV(CS11))
+#define TIMER1_PRESCALE_256 _BV(CS12)
+#define TIMER1_PRESCALE_1024 (_BV(CS12)|_BV(CS10))
+
 #ifdef _AVR_IOM8535_H_
 #define FREQ 14745600
 #define DEVICE 8535
@@ -67,29 +74,14 @@ extern "C" {
 #define BLINK_MCU_OR _BV(ISC11)
 #define BLINK_MCU_AND (~_BV(ISC10))
 #define BLINK_INT_ENABLE _BV(INT1)
+#define MS_TIMER_PRESCALE TIMER1_PRESCALE_64
+#define MS_TIMER_OCR 231
+#define BLINK_PRESCALE_INIT 62
 #else
 #error device not supported
 #endif
 
-  typedef struct {
 
-    union {
-      uint16_t address;
-
-      struct {
-        uint8_t address_msb;
-        uint8_t address_lsb;
-      };
-    };
-    uint8_t moduletype;
-    uint8_t debounce;
-    uint8_t softstart;
-    uint8_t softstop;
-    int8_t vcc_calibration;
-    uint8_t defaultPWM;
-    uint8_t baudRate;
-    uint16_t masterAddress;
-  } TEEPromFile;
 
 #define OFFSET_RAM (0)
 #define OFFSET_EEPROM (96)
@@ -113,7 +105,36 @@ extern "C" {
 #define REG_SOFTSTOP (OFFSET_EEPROM+offsetof(TEEPromFile,softstop))
 #define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
 #define REG_DEFAULT_PWM (OFFSET_EEPROM+offsetof(TEEPromFile,defaultPWM))
+#define REG_FEATURE_CONTROL (OFFSET_EEPROM+offsetof(TEEPromFile,featureControl))
 #define REG_VERSION (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
+
+  typedef struct {
+
+    union {
+      uint16_t address;
+
+      struct {
+        uint8_t address_msb;
+        uint8_t address_lsb;
+      };
+    };
+    uint8_t moduletype;
+    uint8_t debounce;
+    uint8_t softstart;
+    uint8_t softstop;
+    int8_t vcc_calibration;
+    uint8_t defaultPWM;
+    uint8_t baudRate;
+    uint16_t masterAddress;
+
+    union {
+      uint8_t featureControl;
+
+      struct {
+        uint8_t blinkGenerator : 1;
+      };
+    };
+  } TEEPromFile;
 
   typedef struct {
 
@@ -199,6 +220,7 @@ extern "C" {
   extern uint16_t processVCC();
   extern uint8_t processVCCCalibration(uint8_t cal, operation_t operation);
   extern uint16_t processDebounce(uint8_t val, operation_t operation);
+  extern uint16_t processFeatureControl(uint8_t val, operation_t operation);
   extern uint16_t processFirmwareVersion();
   extern uint16_t processModuleType(uint8_t moduleType, operation_t operation);
 #ifdef	__cplusplus

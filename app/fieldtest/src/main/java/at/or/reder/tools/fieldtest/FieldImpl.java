@@ -15,6 +15,7 @@
  */
 package at.or.reder.tools.fieldtest;
 
+import at.or.reder.tools.fieldtest.model.Feature;
 import at.or.reder.tools.fieldtest.model.Field;
 import at.or.reder.tools.fieldtest.model.ModuleState;
 import at.or.reder.tools.fieldtest.model.ModuleType;
@@ -29,6 +30,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.TooManyListenersException;
@@ -355,6 +358,29 @@ public final class FieldImpl implements Field
       }
     }
     return result;
+  }
+
+  @Override
+  public Set<Feature> getFeatures() throws IOException, TimeoutException, InterruptedException
+  {
+    int tmp = sendReceive(Register.FEATURES_CONTROL,
+                          Operation.READ,
+                          0,
+                          0);
+    if (tmp > 0) {
+      return Feature.valuesOfMagic(tmp);
+    }
+    return Collections.emptySet();
+  }
+
+  @Override
+  public void setFeatures(Collection<Feature> f) throws IOException, TimeoutException, InterruptedException
+  {
+    int magic = Feature.magicOfValues(f);
+    send(Register.FEATURES_CONTROL,
+         Operation.WRITE,
+         magic,
+         0);
   }
 
   @Override
