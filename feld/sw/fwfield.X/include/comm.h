@@ -8,15 +8,16 @@
 #ifndef COMM_USART_H
 #define	COMM_USART_H
 #include "hw.h"
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
 
-  extern void initCommUsart(uint8_t ownAddress);
+  extern void initCommUsart();
   extern uint8_t getBytesAvailableUsart();
   extern uint8_t readBytes(uint8_t* buffer, uint8_t bytesToRead);
-  extern uint8_t isTxReady();
+  extern bool isTxReady();
   extern void writeBytesUsart(uint8_t* buffer, uint8_t bytesToSend);
 
   inline void writeByteUsart(uint8_t byte) {

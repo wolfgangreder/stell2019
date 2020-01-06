@@ -12,11 +12,9 @@ static volatile uint8_t rxAvail;
 static uint8_t txBuf[USARTBUFSIZE];
 static volatile uint8_t txOffset;
 static volatile uint8_t txAvail;
-static uint8_t ownAddress;
 
-void initCommUsart(uint8_t oa)
+void initCommUsart()
 {
-  ownAddress = oa;
 #  if FREQ==14745600
   UBRRL = 15; // 57.6@14.75MHz
   UBRRH = 0;
@@ -83,7 +81,7 @@ uint8_t readBytes(uint8_t* buffer, uint8_t bytesToRead)
   return toCopy;
 }
 
-uint8_t isTxReady()
+bool isTxReady()
 {
   return txAvail == 0;
 }

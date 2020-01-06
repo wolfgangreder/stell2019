@@ -11,10 +11,27 @@
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
+#include "types.h"
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
+
+
+#ifndef TWI_ADDRESS
+#define TWI_ADDRESS 3
+#endif
+
+#ifndef FW_MAJOR
+#define FW_MAJOR 0
+#endif
+
+#ifndef FW_MINOR
+#define FW_MINOR 0
+#endif
+
+
 #if 1
 #define IND_01 (PORTD&=~_BV(PD7))
 #define IND_00 (PORTD|=_BV(PD7))
@@ -77,6 +94,13 @@ extern "C" {
 #define MS_TIMER_PRESCALE TIMER1_PRESCALE_64
 #define MS_TIMER_OCR 231
 #define BLINK_PRESCALE_INIT 62
+#define BAUD_TWI 66 // 100k
+#define PRESC_TWI 0
+#define PORT_TWI PORTC
+#define DDR_TWI DDRC
+#define PIN_TWI PINC
+#define SDA PC1
+#define SCL PC0
 #else
 #error device not supported
 #endif
@@ -124,14 +148,15 @@ extern "C" {
     uint8_t softstop;
     int8_t vcc_calibration;
     uint8_t defaultPWM;
-    uint8_t baudRate;
+    uint8_t twibaud;
+    uint8_t twipresc;
     uint16_t masterAddress;
 
     union {
       uint8_t featureControl;
 
       struct {
-        uint8_t blinkGenerator : 1;
+        bool blinkGenerator : 1;
       };
     };
   } TEEPromFile;
@@ -142,9 +167,9 @@ extern "C" {
       uint8_t state;
 
       struct {
-        uint8_t key_pressed : 1; // 1 wenn taste gedrückt
+        bool key_pressed : 1; // 1 wenn taste gedrückt
         uint8_t reserved : 6;
-        uint8_t key_error : 1; // 1 wenn ein tastendruck nicht gelesen wurde
+        bool key_error : 1; // 1 wenn ein tastendruck nicht gelesen wurde
       };
     };
     uint8_t led; // 1-> led an
@@ -177,15 +202,32 @@ extern "C" {
     OP_COMPLEMENT = 4
   } operation_t;
 
-  typedef struct {
-    uint8_t registerAddress;
-    operation_t registerOperation;
+  typedef union {
 
-    union {
-      uint8_t data[2];
-      uint16_t wdata;
+    struct {
+      uint8_t registerAddress;
+      operation_t registerOperation;
+
+      union {
+        uint8_t data[2];
+        uint16_t wdata;
+      };
     };
-  } TCommandBuffer;
+
+    struct {
+      uint8_t slaveAddress;
+
+      union {
+        uint16_t ownAddress;
+
+        struct {
+          uint8_t ownAddress_msb;
+          uint8_t ownAddress_lsb;
+        };
+      };
+      uint8_t state;
+    };
+  } TDataPacket;
 
   extern TRegisterFile registerFile;
   extern EEMEM TEEPromFile ee_eepromFile;
@@ -218,7 +260,7 @@ extern "C" {
   extern uint16_t processPWM(uint8_t pwm, operation_t operation);
   extern uint16_t processDefaultPWM(uint8_t pwm, operation_t operation);
   extern uint16_t processVCC();
-  extern uint8_t processVCCCalibration(uint8_t cal, operation_t operation);
+  extern uint16_t processVCCCalibration(uint8_t cal, operation_t operation);
   extern uint16_t processDebounce(uint8_t val, operation_t operation);
   extern uint16_t processFeatureControl(uint8_t val, operation_t operation);
   extern uint16_t processFirmwareVersion();

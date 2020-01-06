@@ -6,17 +6,17 @@
 #ifdef COMM_USART
 #  include "comm.h"
 #else
-#  include "TWI.h"
+#  include "twi.h"
 #endif
 
 volatile uint8_t currentBlinkPhase;
 static volatile uint8_t blinkScale;
 static volatile uint8_t currentPWM;
 static volatile uint8_t debouncePhase;
-static volatile uint8_t switchState;
+static volatile bool switchState;
 static uint8_t blinkPrescale;
 
-inline uint8_t isKeyPressed()
+inline bool isKeyPressed()
 {
   return (SWITCH_PIN & _BV(SWITCH)) == 0;
 }
@@ -71,11 +71,11 @@ void sendKeyEvent()
   msg[2] = registerFile.modulstate;
   writeBytesUsart(msg, sizeof (msg));
 #else
-  uint8_t msg[3];
-  msg[0] = MAKE_ADDRESS_W(eepromFile.masterAddress);
-  msg[1] = registerFile.state;
-  msg[2] = registerFile.modulstate;
-  TWI_Start_Transceiver_With_Data_MA(msg, sizeof (msg));
+  TDataPacket msg;
+  msg.slaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
+  msg.ownAddress = eepromFile.address;
+  msg.state = registerFile.state;
+  twiSendData(&msg);
 #endif
 }
 
@@ -271,7 +271,7 @@ uint16_t processVCC()
   return result;
 }
 
-uint8_t processVCCCalibration(uint8_t cal, operation_t operation)
+uint16_t processVCCCalibration(uint8_t cal, operation_t operation)
 {
   switch (operation) {
     case OP_READ:

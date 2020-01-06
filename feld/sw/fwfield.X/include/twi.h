@@ -49,7 +49,7 @@ extern "C" {
 #endif
 
 #include "hw.h"
-#define TWI_BUFFER_SIZE sizeof(TCommandBuffer)      // Reserves memory for the drivers transceiver buffer.
+#define TWI_BUFFER_SIZE sizeof(TCommandBuffer)+1      // Reserves memory for the drivers transceiver buffer.
   // Set this to the largest message size that will be sent including address byte.
 
   /****************************************************************************
@@ -61,10 +61,11 @@ extern "C" {
     unsigned char all;
 
     struct {
-      unsigned char lastTransOK : 1;
-      unsigned char RxDataInBuf : 1;
-      unsigned char genAddressCall : 1; // TRUE = General call, FALSE = TWI Address;
-      unsigned char unusedBits : 5;
+      bool lastTransOK : 1;
+      bool rxDataInBuf : 1;
+      bool genAddressCall : 1; // TRUE = General call, FALSE = TWI Address;
+      unsigned char unusedBits : 4;
+      bool masterMode : 1;
     };
   };
 
@@ -75,16 +76,14 @@ extern "C" {
   /****************************************************************************
     Function definitions
    ****************************************************************************/
-  void TWI_Initialize(unsigned char, uint8_t baudRate);
-  unsigned char TWI_Transceiver_Busy(void);
-  unsigned char TWI_Get_State_Info(void);
-  void TWI_Start_Transceiver_With_Data_MA(unsigned char*, unsigned char);
-  void TWI_Start_Transceiver_With_Data_SL(unsigned char*, unsigned char);
-  void TWI_Start_Transceiver_MA(void);
-  void TWI_Start_Transceiver_SL(void);
-  unsigned char TWI_Get_Data_From_Transceiver(unsigned char*, unsigned char);
-#define MAKE_ADDRESS_R(addr) ((addr)<<TWI_ADR_BITS) | (0<<TWI_READ_BIT);
-#define MAKE_ADDRESS_W(addr) ((addr)<<TWI_ADR_BITS) | (1<<TWI_READ_BIT);
+  void twiInit();
+  bool twiIsBusy();
+  bool twiStartSlave();
+  bool twiStartSlaveWithData(TDataPacket* buffer);
+  bool twiSendData(TDataPacket* buffer);
+  uint8_t twiBytesAvailable();
+  uint8_t twiGetData(TDataPacket* buffer);
+
 
   /****************************************************************************
     Bit and byte definitions
@@ -93,8 +92,6 @@ extern "C" {
 #define TWI_ADR_BITS  1   // Bit position for LSB of the slave address bits in the init byte.
 #define TWI_GEN_BIT   0   // Bit position for LSB of the general call bit in the init byte.
 
-#define TRUE          1
-#define FALSE         0
 
 
 
@@ -123,7 +120,7 @@ extern "C" {
 #define TWI_STX_ADR_ACK_M_ARB_LOST 0xB0  // Arbitration lost in SLA+R/W as Master; own SLA+R has been received; ACK has been returned
 #define TWI_STX_DATA_ACK           0xB8  // Data byte in TWDR has been transmitted; ACK has been received
 #define TWI_STX_DATA_NACK          0xC0  // Data byte in TWDR has been transmitted; NOT ACK has been received
-#define TWI_STX_DATA_ACK_LAST_BYTE 0xC8  // Last data byte in TWDR has been transmitted (TWEA = �0�); ACK has been received
+#define TWI_STX_DATA_ACK_LAST_BYTE 0xC8  // Last data byte in TWDR has been transmitted (TWEA = 0); ACK has been received
 
   // TWI Slave Receiver status codes
 #define TWI_SRX_ADR_ACK            0x60  // Own SLA+W has been received ACK has been returned
@@ -137,11 +134,11 @@ extern "C" {
 #define TWI_SRX_STOP_RESTART       0xA0  // A STOP condition or repeated START condition has been received while still addressed as Slave
 
   // TWI Miscellaneous status codes
-#define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = �0�
+#define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = 0
 #define TWI_BUS_ERROR              0x00  // Bus error due to an illegal START or STOP condition
 
-#define MAKE_ADDRESS_R(addr) ((addr)<<TWI_ADR_BITS) | (0<<TWI_READ_BIT);
-#define MAKE_ADDRESS_W(addr) ((addr)<<TWI_ADR_BITS) | (1<<TWI_READ_BIT);
+#define MAKE_ADDRESS_R(addr) ((addr)<<TWI_ADR_BITS) | (1<<TWI_READ_BIT);
+#define MAKE_ADDRESS_W(addr) ((addr)<<TWI_ADR_BITS) | (0<<TWI_READ_BIT);
 
 
 #ifdef	__cplusplus
