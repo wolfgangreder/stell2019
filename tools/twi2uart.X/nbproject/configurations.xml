@@ -6,8 +6,8 @@
                    projectFiles="true">
       <itemPath>uart.h</itemPath>
       <itemPath>buffer.h</itemPath>
-      <itemPath>configrecord.h</itemPath>
       <itemPath>twi.h</itemPath>
+      <itemPath>config.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -32,7 +32,7 @@
     <conf name="default" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <targetDevice>ATmega8535</targetDevice>
+        <targetDevice>ATmega8</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
         <platformTool>Simulator</platformTool>
@@ -123,7 +123,7 @@
         <property key="make-warnings-into-errors" value="false"/>
         <property key="no-interrupts" value="false"/>
         <property key="no-system-directories" value="false"/>
-        <property key="optimization-level" value="-O1"/>
+        <property key="optimization-level" value="-O0"/>
         <property key="pack-struct" value="true"/>
         <property key="preprocessor-macros" value=""/>
         <property key="preprocessor-macros-undefined" value=""/>
@@ -168,6 +168,7 @@
         <property key="rodata-writable" value="false"/>
         <property key="sram-segment" value=""/>
         <property key="v-printf" value="false"/>
+        <appendMe value="-gdwarf"/>
       </AVR-LD>
       <Simulator>
         <property key="codecoverage.enabled" value="Disable"/>

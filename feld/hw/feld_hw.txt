@@ -1,0 +1,26 @@
+Stückliste exportiert aus /home/wolfi/eagle/stell2019/feld/hw/feld_hw.sch am 07.01.20 22:18
+
+Part Value         Device        Package   Description                          
+C1   100n          C-EUC0805     C0805     CAPACITOR, European symbol           
+C2   47µ           CPOL-EUCT7343 CT7343    POLARIZED CAPACITOR, European symbol 
+D1   ATtiny804-SS  ATTINY204     SOIC14                                         
+R1                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R2                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R3                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R4                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R5                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R6                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R7   33k           R-EU_R0805    R0805     RESISTOR, European symbol            
+R8                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R9                 R-EU_R0805    R0805     RESISTOR, European symbol            
+R10  100k          R-EU_R0805    R0805     RESISTOR, European symbol            
+S1   800SP9B5M2QEH 800SP9B5M2QEH ST811004  E-Switch Series 800 Switch           
+V1                 LEDPAD        LED3MMPAD LED                                  
+V2                 LEDPAD        LED3MMPAD LED                                  
+V3                 LEDPAD        LED3MMPAD LED                                  
+V4                 LEDPAD        LED3MMPAD LED                                  
+V5                 LEDPAD        LED3MMPAD LED                                  
+V6                 LEDPAD        LED3MMPAD LED                                  
+V8                 LEDPAD        LED3MMPAD LED                                  
+V9                 LEDPAD        LED3MMPAD LED                                  
+X1   PINH2X3N      PINH2X3N      MA03/2                                         

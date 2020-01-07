@@ -8,11 +8,14 @@
 #ifndef CONFIGRECORD_H
 #define	CONFIGRECORD_H
 
+#include <avr/io.h>
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-
+#define FREQ 1000000
+#define TWI_BAUD 
 
 #ifdef	__cplusplus
 }
