@@ -70,7 +70,7 @@ public final class FieldImpl implements Field
   private volatile ReaderState expectedState;
   private volatile IOException error;
   private final Object lock = new Object();
-  private final ByteBuffer returnValue = ByteBuffer.allocate(Short.BYTES).order(ByteOrder.LITTLE_ENDIAN);
+  private final ByteBuffer returnValue = ByteBuffer.allocate(3).order(ByteOrder.LITTLE_ENDIAN);
   private final ExecutorService exec = Executors.newSingleThreadExecutor();
   private final ScheduledExecutorService poll = Executors.newSingleThreadScheduledExecutor();
   private final AtomicBoolean keyPressed = new AtomicBoolean();
@@ -209,7 +209,7 @@ public final class FieldImpl implements Field
           lock.notifyAll();
         }
       } else {
-        keyPressed.set(returnValue.get(0) != 0);
+        keyPressed.set(returnValue.get(1) != 0);
         returnValue.rewind();
         SwingUtilities.invokeLater(this::fireChange);
       }
@@ -255,15 +255,14 @@ public final class FieldImpl implements Field
 
   private void send(Register register,
                     Operation operation,
-                    int a,
-                    int b) throws IOException, InterruptedException, TimeoutException
+                    int a) throws IOException, InterruptedException, TimeoutException
   {
     Future<Void> result = exec.submit(() -> {
       initState(ReaderState.ACK,
                 false);
       try {
         try (OutputStream os = port.getOutputStream()) {
-          os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
+          os.write(new byte[]{(byte) (address & 0x7f), register.getIndex(), operation.getMagic(), (byte) a});
         }
         waitForState(ReaderState.ACK);
         if (error != null) {
@@ -293,10 +292,7 @@ public final class FieldImpl implements Field
     }
   }
 
-  private int sendReceive(Register register,
-                          Operation operation,
-                          int a,
-                          int b) throws IOException, InterruptedException, TimeoutException
+  private int receive(Register register) throws IOException, InterruptedException, TimeoutException
   {
     Future<Integer> result = exec.submit(() -> {
       initState(ReaderState.IDLE,
@@ -304,7 +300,7 @@ public final class FieldImpl implements Field
       int r = -1;
       try {
         try (OutputStream os = port.getOutputStream()) {
-          os.write(new byte[]{register.getIndex(), operation.getMagic(), (byte) a, (byte) b});
+          os.write(new byte[]{(byte) (address & 0x7f), register.getIndex(), Operation.READ.getMagic(), (byte) 0});
         }
         r = waitForState(ReaderState.IDLE);
         if (error != null) {
@@ -347,10 +343,7 @@ public final class FieldImpl implements Field
   @Override
   public Set<State> getState() throws IOException, TimeoutException, InterruptedException
   {
-    int tmp = sendReceive(Register.STATE,
-                          Operation.READ,
-                          0,
-                          0);
+    int tmp = receive(Register.STATE);
     EnumSet<State> result = EnumSet.noneOf(State.class);
     for (State s : State.values()) {
       if ((tmp & s.getMagic()) != 0) {
@@ -363,10 +356,7 @@ public final class FieldImpl implements Field
   @Override
   public Set<Feature> getFeatures() throws IOException, TimeoutException, InterruptedException
   {
-    int tmp = sendReceive(Register.FEATURES_CONTROL,
-                          Operation.READ,
-                          0,
-                          0);
+    int tmp = receive(Register.FEATURES_CONTROL);
     if (tmp > 0) {
       return Feature.valuesOfMagic(tmp);
     }
@@ -379,17 +369,13 @@ public final class FieldImpl implements Field
     int magic = Feature.magicOfValues(f);
     send(Register.FEATURES_CONTROL,
          Operation.WRITE,
-         magic,
-         0);
+         magic);
   }
 
   @Override
   public int getLeds() throws IOException, InterruptedException, TimeoutException
   {
-    return sendReceive(Register.LED,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.LED);
   }
 
   @Override
@@ -397,17 +383,13 @@ public final class FieldImpl implements Field
   {
     send(Register.LED,
          Operation.WRITE,
-         leds,
-         0);
+         leds);
   }
 
   @Override
   public int getBlinkMask() throws IOException, TimeoutException, InterruptedException
   {
-    return sendReceive(Register.BLINK_MASK,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.BLINK_MASK);
   }
 
   @Override
@@ -415,17 +397,13 @@ public final class FieldImpl implements Field
   {
     send(Register.BLINK_MASK,
          Operation.WRITE,
-         bm,
-         0);
+         bm);
   }
 
   @Override
   public int getBlinkPhase() throws IOException, TimeoutException, InterruptedException
   {
-    return sendReceive(Register.BLINK_PHASE,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.BLINK_PHASE);
   }
 
   @Override
@@ -433,17 +411,13 @@ public final class FieldImpl implements Field
   {
     send(Register.BLINK_PHASE,
          Operation.WRITE,
-         bp,
-         0);
+         bp);
   }
 
   @Override
   public int getBlinkDivider() throws IOException, TimeoutException, InterruptedException
   {
-    return sendReceive(Register.BLINK_DIVIDER,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.BLINK_DIVIDER);
   }
 
   @Override
@@ -451,17 +425,13 @@ public final class FieldImpl implements Field
   {
     send(Register.BLINK_DIVIDER,
          Operation.WRITE,
-         blinkDivider,
-         0);
+         blinkDivider);
   }
 
   @Override
   public int getPWM() throws IOException, InterruptedException, TimeoutException
   {
-    return sendReceive(Register.PWM,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.PWM);
   }
 
   @Override
@@ -469,17 +439,13 @@ public final class FieldImpl implements Field
   {
     send(Register.PWM,
          Operation.WRITE,
-         pwm,
-         0);
+         pwm);
   }
 
   @Override
   public int getDefaultPWM() throws IOException, TimeoutException, InterruptedException
   {
-    return sendReceive(Register.DEFAULT_PWM,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.DEFAULT_PWM);
   }
 
   @Override
@@ -487,17 +453,13 @@ public final class FieldImpl implements Field
   {
     send(Register.DEFAULT_PWM,
          Operation.WRITE,
-         defaultPWM,
-         0);
+         defaultPWM);
   }
 
   @Override
   public float getVCC() throws IOException, InterruptedException, TimeoutException
   {
-    int tmp = sendReceive(Register.VCC,
-                          Operation.READ,
-                          0,
-                          0);
+    int tmp = receive(Register.VCC);
     if (tmp > 0) {
       return (1.22f * 1024f) / tmp;
     }
@@ -507,10 +469,7 @@ public final class FieldImpl implements Field
   @Override
   public int getCalibration() throws IOException, TimeoutException, InterruptedException
   {
-    return sendReceive(Register.VCC_CALIBRATION,
-                       Operation.READ,
-                       0,
-                       0) & 0xff;
+    return receive(Register.VCC_CALIBRATION) & 0xff;
   }
 
   @Override
@@ -518,27 +477,20 @@ public final class FieldImpl implements Field
   {
     send(Register.VCC_CALIBRATION,
          Operation.WRITE,
-         cal,
-         0);
+         cal);
   }
 
   @Override
   public Version getVersion() throws IOException, TimeoutException, InterruptedException
   {
-    int version = sendReceive(Register.FW_VERSION,
-                              Operation.READ,
-                              0,
-                              0) & 0xffff;
+    int version = receive(Register.FW_VERSION) & 0xffff;
     return new Version(version);
   }
 
   @Override
   public int getDebounce() throws IOException, TimeoutException, InterruptedException
   {
-    return sendReceive(Register.DEBOUNCE,
-                       Operation.READ,
-                       0,
-                       0);
+    return receive(Register.DEBOUNCE);
   }
 
   @Override
@@ -546,17 +498,13 @@ public final class FieldImpl implements Field
   {
     send(Register.DEBOUNCE,
          Operation.WRITE,
-         deb,
-         0);
+         deb);
   }
 
   @Override
   public ModuleType getModuleType() throws IOException, TimeoutException, InterruptedException
   {
-    int tmp = sendReceive(Register.MODULE_TYPE,
-                          Operation.READ,
-                          0,
-                          0);
+    int tmp = receive(Register.MODULE_TYPE);
     return ModuleType.valueOfMagic(tmp);
   }
 
@@ -565,17 +513,13 @@ public final class FieldImpl implements Field
   {
     send(Register.MODULE_TYPE,
          Operation.WRITE,
-         type.getMagic(),
-         0);
+         type.getMagic());
   }
 
   @Override
   public ModuleState getModuleState() throws IOException, TimeoutException, InterruptedException
   {
-    int magic = sendReceive(Register.MODULE_STATE,
-                            Operation.READ,
-                            0,
-                            0);
+    int magic = receive(Register.MODULE_STATE);
     if (magic != -1) {
       return ModuleState.valueOf(magic);
     }
@@ -588,8 +532,7 @@ public final class FieldImpl implements Field
     int magic = ms.getMagic();
     send(Register.MODULE_STATE,
          Operation.WRITE,
-         magic,
-         0);
+         magic);
   }
 
   @Override

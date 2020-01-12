@@ -53,7 +53,7 @@ public class Main extends javax.swing.JFrame
   public Main() throws PortInUseException, UnsupportedCommOperationException
   {
     SerialPort port = new RXTXPort("/dev/ttyS0");
-    port.setSerialPortParams(57600,
+    port.setSerialPortParams(38400,//57600,
                              SerialPort.DATABITS_8,
                              SerialPort.STOPBITS_1,
                              SerialPort.PARITY_NONE);

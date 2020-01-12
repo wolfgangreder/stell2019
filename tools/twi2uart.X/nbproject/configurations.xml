@@ -4,10 +4,10 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>uart.h</itemPath>
-      <itemPath>buffer.h</itemPath>
-      <itemPath>twi.h</itemPath>
-      <itemPath>config.h</itemPath>
+      <itemPath>include/config.h</itemPath>
+      <itemPath>include/twi.h</itemPath>
+      <itemPath>include/uart.h</itemPath>
+      <itemPath>include/spi.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -16,10 +16,10 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>main.c</itemPath>
-      <itemPath>uart.c</itemPath>
-      <itemPath>buffer.c</itemPath>
-      <itemPath>twi.c</itemPath>
+      <itemPath>source/main.c</itemPath>
+      <itemPath>source/twi.c</itemPath>
+      <itemPath>source/uart.c</itemPath>
+      <itemPath>include/spi.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -27,6 +27,10 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>include</Elem>
+    <Elem>source</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -115,7 +119,7 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="extra-include-directories" value=""/>
+        <property key="extra-include-directories" value="include"/>
         <property key="extra-warnings" value="false"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
@@ -123,7 +127,7 @@
         <property key="make-warnings-into-errors" value="false"/>
         <property key="no-interrupts" value="false"/>
         <property key="no-system-directories" value="false"/>
-        <property key="optimization-level" value="-O0"/>
+        <property key="optimization-level" value="-O1"/>
         <property key="pack-struct" value="true"/>
         <property key="preprocessor-macros" value=""/>
         <property key="preprocessor-macros-undefined" value=""/>

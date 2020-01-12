@@ -68,7 +68,7 @@ static volatile uint8_t rxAvail = 0;
 
 void twiInit()
 {
-  TWAR = eepromFile.address_lsb;
+  TWAR = eepromFile.address_lsb << TWI_ADR_BITS | _BV(TWI_GEN_BIT);
   TWBR = eepromFile.twibaud;
   TWDR = 0xff;
   TWCR = _BV(TWEN); // init slaveMode
