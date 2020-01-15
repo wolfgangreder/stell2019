@@ -50,7 +50,7 @@
 #include <avr/pgmspace.h>
 #include "comm.h"
 #include "twi.h"
-#include "hw.h"
+#include "config.h"
 #include "symbols.h"
 
 TRegisterFile registerFile;
@@ -71,34 +71,34 @@ TFlashFile flashFile;
 
 uint16_t processCommand(TDataPacket* cmd)
 {
-  switch (cmd->registerAddress) {
+  switch (cmd->rxRegisterAddress) {
     case REG_STATE:
-      return processState(cmd->data[0], cmd->registerOperation);
+      return processState(cmd->rxData, cmd->rxRegisterOperation);
     case REG_MODULETYPE:
-      return processModuleType(cmd->data[0], cmd->registerOperation);
+      return processModuleType(cmd->rxData, cmd->rxRegisterOperation);
     case REG_MODULESTATE:
-      return processModuleState(cmd->data[0], cmd->registerOperation);
+      return processModuleState(cmd->rxData, cmd->rxRegisterOperation);
     case REG_LED:
-      return processLed(cmd->data[0], cmd->registerOperation);
+      return processLed(cmd->rxData, cmd->rxRegisterOperation);
     case REG_BLINKMASK:
-      return processBlinkMask(cmd->data[0], cmd->registerOperation);
+      return processBlinkMask(cmd->rxData, cmd->rxRegisterOperation);
     case REG_BLINKPHASE:
-      return processBlinkPhase(cmd->data[0], cmd->registerOperation);
+      return processBlinkPhase(cmd->rxData, cmd->rxRegisterOperation);
     case REG_BLINKDIVIDER:
-      return processBlinkDivider(cmd->data[0], cmd->registerOperation);
+      return processBlinkDivider(cmd->rxData, cmd->rxRegisterOperation);
     case REG_PWM:
-      return processPWM(cmd->data[0], cmd->registerOperation);
+      return processPWM(cmd->rxData, cmd->rxRegisterOperation);
     case REG_DEFAULT_PWM:
-      return processDefaultPWM(cmd->data[0], cmd->registerOperation);
+      return processDefaultPWM(cmd->rxData, cmd->rxRegisterOperation);
     case REG_VCC:
       return processVCC();
     case REG_VCC_CALIBRATION:
-      return processVCCCalibration(cmd->data[0], cmd->registerOperation);
+      return processVCCCalibration(cmd->rxData, cmd->rxRegisterOperation);
     case REG_DEBOUNCE:
-      return processDebounce(cmd->data[0], cmd->registerOperation);
+      return processDebounce(cmd->rxData, cmd->rxRegisterOperation);
     case REG_FEATURE_CONTROL:
-      IND_01;
-      return processFeatureControl(cmd->data[0], cmd->registerOperation);
+      IND_0_ON;
+      return processFeatureControl(cmd->rxData, cmd->rxRegisterOperation);
     case REG_VERSION:
       return processFirmwareVersion();
 
@@ -140,18 +140,17 @@ int main(void)
 
   initHW();
   initModule();
-  twiInit();
+  twiInit(eepromFile.address, eepromFile.twibaud, 1);
   sei(); //set global interrupt enable
   for (;;) {
     if (!twiIsBusy()) {
       twiStartSlave();
     }
-    if (twiBytesAvailable() == sizeof (commandBuf)) {
-      twiGetData(&commandBuf);
-      if (commandBuf.registerOperation == OP_READ) {
-        commandBuf.slaveAddress = eepromFile.masterAddress;
-        commandBuf.ownAddress = eepromFile.address;
-        commandBuf.wdata = processCommand(&commandBuf);
+    if (twiPollData(&commandBuf)) {
+      if (commandBuf.rxRegisterOperation == OP_READ) {
+        commandBuf.txSlaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
+        commandBuf.txOwnAddress = eepromFile.address;
+        commandBuf.txWData = processCommand(&commandBuf);
         twiStartSlaveWithData(& commandBuf);
       } else {
         processCommand(&commandBuf);

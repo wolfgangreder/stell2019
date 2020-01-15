@@ -15,6 +15,9 @@
             <sourceRootList>
                 <sourceRootElem>source</sourceRootElem>
                 <sourceRootElem>include</sourceRootElem>
+                <sourceRootElem>../../../tools/twi2uart.X/source</sourceRootElem>
+                <sourceRootElem>../../../tools/twi2uart.X/include</sourceRootElem>
+                <sourceRootElem>../../../tools/twi</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

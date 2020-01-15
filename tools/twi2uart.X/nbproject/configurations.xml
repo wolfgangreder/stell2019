@@ -5,9 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>include/config.h</itemPath>
-      <itemPath>include/twi.h</itemPath>
       <itemPath>include/uart.h</itemPath>
       <itemPath>include/spi.h</itemPath>
+      <itemPath>../twi/twi.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -17,9 +17,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>source/main.c</itemPath>
-      <itemPath>source/twi.c</itemPath>
       <itemPath>source/uart.c</itemPath>
       <itemPath>include/spi.c</itemPath>
+      <itemPath>../twi/twi.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -30,6 +30,7 @@
   <sourceRootList>
     <Elem>include</Elem>
     <Elem>source</Elem>
+    <Elem>../twi</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -119,7 +120,7 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="extra-include-directories" value="include"/>
+        <property key="extra-include-directories" value="include;../twi"/>
         <property key="extra-warnings" value="false"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>

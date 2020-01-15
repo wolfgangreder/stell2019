@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=source/main.c source/hw.c source/symbols.c source/comm.c source/twi.c
+SOURCEFILES_QUOTED_IF_SPACED=source/main.c source/hw.c source/symbols.c source/comm.c ../../../tools/twi/twi.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/source/main.o ${OBJECTDIR}/source/hw.o ${OBJECTDIR}/source/symbols.o ${OBJECTDIR}/source/comm.o ${OBJECTDIR}/source/twi.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/source/main.o.d ${OBJECTDIR}/source/hw.o.d ${OBJECTDIR}/source/symbols.o.d ${OBJECTDIR}/source/comm.o.d ${OBJECTDIR}/source/twi.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/source/main.o ${OBJECTDIR}/source/hw.o ${OBJECTDIR}/source/symbols.o ${OBJECTDIR}/source/comm.o ${OBJECTDIR}/_ext/1534532573/twi.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/source/main.o.d ${OBJECTDIR}/source/hw.o.d ${OBJECTDIR}/source/symbols.o.d ${OBJECTDIR}/source/comm.o.d ${OBJECTDIR}/_ext/1534532573/twi.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/source/main.o ${OBJECTDIR}/source/hw.o ${OBJECTDIR}/source/symbols.o ${OBJECTDIR}/source/comm.o ${OBJECTDIR}/source/twi.o
+OBJECTFILES=${OBJECTDIR}/source/main.o ${OBJECTDIR}/source/hw.o ${OBJECTDIR}/source/symbols.o ${OBJECTDIR}/source/comm.o ${OBJECTDIR}/_ext/1534532573/twi.o
 
 # Source Files
-SOURCEFILES=source/main.c source/hw.c source/symbols.c source/comm.c source/twi.c
+SOURCEFILES=source/main.c source/hw.c source/symbols.c source/comm.c ../../../tools/twi/twi.c
 
 # Pack Options
 PACK_COMPILER_OPTIONS=-I ${DFP_DIR}/include
@@ -114,62 +114,62 @@ ${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/main.o.d
 	@${RM} ${OBJECTDIR}/source/main.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 ${OBJECTDIR}/source/hw.o: source/hw.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/hw.o.d
 	@${RM} ${OBJECTDIR}/source/hw.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/hw.o.d" -MT "${OBJECTDIR}/source/hw.o.d" -MT ${OBJECTDIR}/source/hw.o  -o ${OBJECTDIR}/source/hw.o source/hw.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/hw.o.d" -MT "${OBJECTDIR}/source/hw.o.d" -MT ${OBJECTDIR}/source/hw.o  -o ${OBJECTDIR}/source/hw.o source/hw.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 ${OBJECTDIR}/source/symbols.o: source/symbols.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/symbols.o.d
 	@${RM} ${OBJECTDIR}/source/symbols.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/symbols.o.d" -MT "${OBJECTDIR}/source/symbols.o.d" -MT ${OBJECTDIR}/source/symbols.o  -o ${OBJECTDIR}/source/symbols.o source/symbols.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/symbols.o.d" -MT "${OBJECTDIR}/source/symbols.o.d" -MT ${OBJECTDIR}/source/symbols.o  -o ${OBJECTDIR}/source/symbols.o source/symbols.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 ${OBJECTDIR}/source/comm.o: source/comm.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/comm.o.d
 	@${RM} ${OBJECTDIR}/source/comm.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/comm.o.d" -MT "${OBJECTDIR}/source/comm.o.d" -MT ${OBJECTDIR}/source/comm.o  -o ${OBJECTDIR}/source/comm.o source/comm.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/comm.o.d" -MT "${OBJECTDIR}/source/comm.o.d" -MT ${OBJECTDIR}/source/comm.o  -o ${OBJECTDIR}/source/comm.o source/comm.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
-${OBJECTDIR}/source/twi.o: source/twi.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/source"
-	@${RM} ${OBJECTDIR}/source/twi.o.d
-	@${RM} ${OBJECTDIR}/source/twi.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/twi.o.d" -MT "${OBJECTDIR}/source/twi.o.d" -MT ${OBJECTDIR}/source/twi.o  -o ${OBJECTDIR}/source/twi.o source/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+${OBJECTDIR}/_ext/1534532573/twi.o: ../../../tools/twi/twi.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/1534532573"
+	@${RM} ${OBJECTDIR}/_ext/1534532573/twi.o.d
+	@${RM} ${OBJECTDIR}/_ext/1534532573/twi.o
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/_ext/1534532573/twi.o.d" -MT "${OBJECTDIR}/_ext/1534532573/twi.o.d" -MT ${OBJECTDIR}/_ext/1534532573/twi.o  -o ${OBJECTDIR}/_ext/1534532573/twi.o ../../../tools/twi/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 else
 ${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/main.o.d
 	@${RM} ${OBJECTDIR}/source/main.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 ${OBJECTDIR}/source/hw.o: source/hw.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/hw.o.d
 	@${RM} ${OBJECTDIR}/source/hw.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/hw.o.d" -MT "${OBJECTDIR}/source/hw.o.d" -MT ${OBJECTDIR}/source/hw.o  -o ${OBJECTDIR}/source/hw.o source/hw.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/hw.o.d" -MT "${OBJECTDIR}/source/hw.o.d" -MT ${OBJECTDIR}/source/hw.o  -o ${OBJECTDIR}/source/hw.o source/hw.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 ${OBJECTDIR}/source/symbols.o: source/symbols.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/symbols.o.d
 	@${RM} ${OBJECTDIR}/source/symbols.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/symbols.o.d" -MT "${OBJECTDIR}/source/symbols.o.d" -MT ${OBJECTDIR}/source/symbols.o  -o ${OBJECTDIR}/source/symbols.o source/symbols.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/symbols.o.d" -MT "${OBJECTDIR}/source/symbols.o.d" -MT ${OBJECTDIR}/source/symbols.o  -o ${OBJECTDIR}/source/symbols.o source/symbols.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 ${OBJECTDIR}/source/comm.o: source/comm.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/comm.o.d
 	@${RM} ${OBJECTDIR}/source/comm.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/comm.o.d" -MT "${OBJECTDIR}/source/comm.o.d" -MT ${OBJECTDIR}/source/comm.o  -o ${OBJECTDIR}/source/comm.o source/comm.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/comm.o.d" -MT "${OBJECTDIR}/source/comm.o.d" -MT ${OBJECTDIR}/source/comm.o  -o ${OBJECTDIR}/source/comm.o source/comm.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
-${OBJECTDIR}/source/twi.o: source/twi.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/source"
-	@${RM} ${OBJECTDIR}/source/twi.o.d
-	@${RM} ${OBJECTDIR}/source/twi.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/source/twi.o.d" -MT "${OBJECTDIR}/source/twi.o.d" -MT ${OBJECTDIR}/source/twi.o  -o ${OBJECTDIR}/source/twi.o source/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
+${OBJECTDIR}/_ext/1534532573/twi.o: ../../../tools/twi/twi.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/1534532573"
+	@${RM} ${OBJECTDIR}/_ext/1534532573/twi.o.d
+	@${RM} ${OBJECTDIR}/_ext/1534532573/twi.o
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8535 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -I"include" -I"../../../tools/twi" -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/_ext/1534532573/twi.o.d" -MT "${OBJECTDIR}/_ext/1534532573/twi.o.d" -MT ${OBJECTDIR}/_ext/1534532573/twi.o  -o ${OBJECTDIR}/_ext/1534532573/twi.o ../../../tools/twi/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  ${BUILD_CONFIG}
 
 endif
 

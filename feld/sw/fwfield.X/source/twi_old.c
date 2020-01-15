@@ -50,7 +50,7 @@
 #  include <avr/sleep.h>
 #  include <util/atomic.h>
 #  include <string.h>
-#  include "twi.h"
+#  include "twi_old.h"
 
 static unsigned char TWI_state = TWI_NO_STATE; // State byte. Default set to TWI_NO_STATE.
 

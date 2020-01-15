@@ -21,12 +21,13 @@ FUSES = {
 
 void processCommand(TDataPacket* packet, packetsource_t source)
 {
-  IND_0_ON;
   switch (source) {
     case UART:
     case SPI:
-      packet->slaveAddress = packet->slaveAddress << TWI_ADR_BITS;
-      if (packet->registerOperation == OP_READ) {
+      IND_3_ON;
+      bool isRead = packet->rxRegisterOperation == OP_READ;
+      packet->txSlaveAddress = packet->txSlaveAddress << TWI_ADR_BITS;
+      if (isRead) {
         twiSendReceiveData(packet);
       } else {
         twiSendData(packet);
@@ -39,6 +40,19 @@ void processCommand(TDataPacket* packet, packetsource_t source)
       //      spiWriteData(packet);
       break;
   }
+}
+
+void sendAck()
+{
+#if UART_ENABLED==1
+  sendAck();
+#endif
+}
+
+void sendNack(TDataPacket* packet)
+{
+  memset(packet, 0xff, sizeof (TDataPacket));
+  writeBytesUsart((uint8_t*) packet, sizeof (TDataPacket));
 }
 
 void initHW()
@@ -58,7 +72,7 @@ int main()
   IND_3_OFF;
   IND_INIT;
 
-  twiInit();
+  twiInit(TWI_ADDR, TWI_BAUD, 1);
   spiInit();
   initHW();
 #if UART_ENABLED==1
@@ -69,6 +83,17 @@ int main()
 
   for (;;) {
     if (!twiIsBusy()) {
+      switch (getAck()) {
+        case ACK_ACK:
+          sendAck();
+          break;
+        case ACK_NACK:
+          sendNack(&commandBuf);
+          break;
+        default:
+          // do nothing
+          break;
+      }
       twiStartSlave();
     }
 #if UART_ENABLED==1
@@ -81,11 +106,12 @@ int main()
     //      spiGetData(&commandBuf);
     //      processCommand(&commandBuf, SPI);
     //    }
-    if (twiIsPacketAvailable()) {
-      twiGetData(&commandBuf);
+    if (twiPollData(&commandBuf)) {
       processCommand(&commandBuf, TWI);
     }
-    IND_0_OFF;
+    IND_1_OFF;
+    IND_2_OFF;
+    IND_3_OFF;
   }
 }
 

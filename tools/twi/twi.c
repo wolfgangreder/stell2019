@@ -75,10 +75,10 @@ static volatile uint8_t txOffset = 0xff;
 static uint8_t rxBuffer[sizeof (TDataPacket)];
 static volatile uint8_t rxAvail = 0;
 
-void twiInit()
+void twiInit(uint16_t ownAddress, uint8_t twiBaud, bool genCall)
 {
-  TWAR = TWI_ADDR << TWI_ADR_BITS;
-  TWBR = TWI_BAUD;
+  TWAR = (ownAddress << TWI_ADR_BITS) | (genCall ? _BV(TWI_GEN_BIT) : 0);
+  TWBR = twiBaud;
   TWDR = 0xff;
   TWCR = (1 << TWEN) | // Enable TWI-interface and release TWI pins.
       (0 << TWIE) | (0 << TWINT) | // Disable TWI Interrupt.
@@ -92,6 +92,7 @@ void twiInit()
 bool twiStartSlave()
 {
   while (twiIsBusy());
+  IND_1_ON;
   // Wait until TWI is ready for next transmission.
   TWI_statusReg.all = 0;
   TWI_state = TWI_NO_STATE;
@@ -104,7 +105,7 @@ bool twiStartSlave()
   return 1;
 }
 
-bool twiStartSlaveWithData(TDataPacket* buffer)
+bool twiStartSlaveWithData(TDataPacket * buffer)
 {
   while (twiIsBusy());
   memcpy(txBuffer, buffer, sizeof (TDataPacket));
@@ -118,43 +119,63 @@ bool twiStartSlaveWithData(TDataPacket* buffer)
   return 0;
 }
 
-bool twiSendData(TDataPacket* buffer)
+bool twiSendData(TDataPacket * buffer)
 {
-  while (txOffset != 0xff); // warten bis alles gesendet wurde
-  while (twiIsBusy());
+  bool wait;
+  do {
 
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-  {
-    memcpy(txBuffer, buffer, sizeof (TDataPacket));
-    txBuffer[0] &= ~_BV(TWI_READ_BIT);
-    txAvail = sizeof (TDataPacket);
-    txOffset = 0;
-    TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
-    twiMode = MASTER_WRITE;
-  }
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+      wait = txOffset != 0xff || twiBusy;
+      if (!wait) {
+        memcpy(txBuffer, buffer, sizeof (TDataPacket));
+        txAvail = sizeof (TDataPacket);
+        txOffset = 0;
+        twiBusy = 1;
+        TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
+        twiMode = MASTER_WRITE;
+      }
+    }
+  } while (wait);
   return 1;
 }
 
-bool twiSendReceiveData(TDataPacket* buffer)
+bool twiSendReceiveData(TDataPacket * buffer)
 {
-  while (txOffset != 0xff); // warten bis alles gesendet wurde
-  while (twiIsBusy());
+  bool wait;
+  do {
 
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-  {
-    memcpy(txBuffer, buffer, sizeof (TDataPacket));
-    txBuffer[0] &= ~_BV(TWI_READ_BIT);
-    txAvail = sizeof (TDataPacket);
-    txOffset = 0;
-    TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
-    twiMode = MASTER_READ;
-  }
-  return 0;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+      wait = txOffset != 0xff || twiBusy;
+      if (!wait) {
+        memcpy(txBuffer, buffer, sizeof (TDataPacket));
+        txBuffer[0] &= ~_BV(TWI_READ_BIT);
+        txAvail = sizeof (TDataPacket);
+        txOffset = 0;
+        twiBusy = 1;
+        TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
+        twiMode = MASTER_READ;
+      }
+    }
+  } while (wait);
+  return 1;
+}
+
+ack_t getAck()
+{
+  return TWI_statusReg.ack;
 }
 
 bool twiIsBusy()
 {
-  return twiBusy;
+  bool result = 0;
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    result = twiBusy || twiMode != INIT;
+  }
+  return result;
 }
 
 uint8_t twiBytesAvailable()
@@ -164,10 +185,16 @@ uint8_t twiBytesAvailable()
 
 bool twiIsPacketAvailable()
 {
-  return twiBytesAvailable() == sizeof (TDataPacket);
+  bool result = 0;
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    result = !twiBusy && TWI_statusReg.lastTransOK;
+  }
+  return result;
 }
 
-uint8_t twiGetData(TDataPacket* buffer)
+uint8_t twiGetData(TDataPacket * buffer)
 {
   uint8_t result = 0;
 
@@ -180,34 +207,46 @@ uint8_t twiGetData(TDataPacket* buffer)
   return result;
 }
 
+bool twiPollData(TDataPacket * buffer)
+{
+  bool result = 0;
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    if (twiBusy && TWI_statusReg.lastTransOK) {
+      memcpy(buffer, rxBuffer, sizeof (TDataPacket));
+      rxAvail = 0;
+      twiMode = INIT;
+      result = 1;
+      twiBusy = 0;
+    }
+  }
+  return result;
+}
+
 ISR(TWI_vect)
 {
-  uint8_t twiState = TWSR & 0x80;
+  uint8_t twiState = TWSR & 0xf8;
   switch (twiMode) {
     case SLAVE_READ:
       switch (twiState) {
         case TWI_SRX_ADR_ACK://            0x60  // Own SLA+W has been received ACK has been returned
-          rxAvail = 0;
-          rxBuffer[rxAvail++] = TWDR; // save addressbit in buffer
+          rxBuffer[0] = 6;
+          rxAvail = 1;
           TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
           twiBusy = 1;
           break;
         case TWI_SRX_ADR_DATA_ACK://       0x80  // Previously addressed with own SLA+W; data has been received; ACK has been returned
         case TWI_SRX_ADR_DATA_NACK://      0x88  // Previously addressed with own SLA+W; data has been received; NOT ACK has been returned
-          rxBuffer[rxAvail++] = TWDR;
-          if (rxAvail >= sizeof (rxBuffer)) {
-            TWI_statusReg.rxDataInBuf = 1;
-            TWI_statusReg.lastTransOK = 1;
-            TWCR = _BV(TWINT) | _BV(TWEA);
-          } else {
-            TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
+          if (rxAvail<sizeof (rxBuffer)) {
+            rxBuffer[rxAvail++] = TWDR;
           }
+          TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
           break;
         case TWI_SRX_STOP_RESTART://       0xA0  // A STOP condition or repeated START condition has been received while still addressed as Slave
           TWI_statusReg.rxDataInBuf = 1;
           TWI_statusReg.lastTransOK = rxAvail == sizeof (rxBuffer);
           TWCR = _BV(TWINT) | _BV(TWEN);
-          twiBusy = 0;
           break;
         case TWI_SRX_GEN_DATA_ACK://       0x90  // Previously addressed with general call; data has been received; ACK has been returned
         case TWI_SRX_GEN_DATA_NACK://      0x98  // Previously addressed with general call; data has been received; NOT ACK has been returned
@@ -264,13 +303,17 @@ ISR(TWI_vect)
           TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA) | _BV(TWSTA);
           break;
         case TWI_MTX_ADR_ACK://            0x18  // SLA+W has been transmitted and ACK received
-        case TWI_MTX_ADR_NACK://           0x20  // SLA+W has been transmitted and NACK received
         case TWI_MTX_DATA_ACK://           0x28  // Data byte has been transmitted and ACK received
-        case TWI_MTX_DATA_NACK://          0x30  // Data byte has been transmitted and NACK received
           if (txOffset < txAvail) {
             TWDR = txBuffer[txOffset++];
             TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
           } else {
+            txOffset = 0xff;
+            twiBusy = 0;
+            twiMode = INIT;
+            rxAvail = 0;
+            TWI_statusReg.all = 0;
+            TWI_statusReg.ack = ACK_ACK;
             TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
           }
           break;
@@ -283,21 +326,37 @@ ISR(TWI_vect)
           TWI_statusReg.rxDataInBuf = 1;
           break;
         case TWI_MRX_ADR_ACK://            0x40  // SLA+R has been transmitted and ACK received
-        case TWI_MRX_ADR_NACK://           0x48  // SLA+R has been transmitted and NACK received
-          adsljfaslkfjlkasjflköaskajld
+          rxAvail = 0;
         case TWI_MRX_DATA_ACK://           0x50  // Data byte has been received and ACK transmitted
+          rxBuffer[rxAvail++] = TWDR;
+          TWCR = _BV(TWINT) | _BV(TWIE) | _BV(TWEN) | _BV(TWEA);
+          break;
+        case TWI_MTX_DATA_NACK://          0x30  // Data byte has been transmitted and NACK received
+        case TWI_MRX_ADR_NACK://           0x48  // SLA+R has been transmitted and NACK received
         case TWI_MRX_DATA_NACK://          0x58  // Data byte has been received and NACK transmitted
+        case TWI_MTX_ADR_NACK://           0x20  // SLA+W has been transmitted and NACK received
+          TWI_statusReg.all = 0;
+          TWI_statusReg.ack = ACK_NACK;
+          TWCR = _BV(TWEN) | // TWI Interface enabled.
+              _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
+              _BV(TWEA) | _BV(TWSTO) | _BV(TWIE); // Prepare to ACK next time the Slave is addressed.
+          twiMode = INIT;
+          twiBusy = 0;
+          rxAvail = 0;
+          txOffset = 0xff;
+          break;
         case TWI_SRX_GEN_ACK_M_ARB_LOST:// 0x78  // Arbitration lost in SLA+R/W as Master; General call address has been received; ACK has been returned
         case TWI_BUS_ERROR://              0x00  // Bus error due to an illegal START or STOP condition
         case TWI_NO_STATE:
         default:
           TWI_statusReg.all = 0;
           TWCR = _BV(TWEN) | // TWI Interface enabled.
-              _BV(TWIE) | _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
-              _BV(TWEA); // Prepare to ACK next time the Slave is addressed.
-          twiMode = SLAVE_READ;
+              _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
+              _BV(TWEA) | _BV(TWSTO) | _BV(TWIE); // Prepare to ACK next time the Slave is addressed.
+          twiMode = INIT;
           twiBusy = 0;
           rxAvail = 0;
+          txOffset = 0xff;
       }
       break;
     case MASTER_WRITE:
@@ -310,21 +369,25 @@ ISR(TWI_vect)
         case TWI_REP_START://              0x10  // Repeated START has been transmitted
           TWDR = txBuffer[0] |= _BV(TWI_READ_BIT);
           rxBuffer[0] = TWDR;
-          rxAvail = 1;
+          rxAvail = 0;
           TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
           twiMode = MASTER_READ;
           break;
         case TWI_ARB_LOST://               0x38  // Arbitration lost
           TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA) | _BV(TWSTA);
+          txOffset = 0;
           break;
         case TWI_MTX_ADR_ACK://            0x18  // SLA+W has been transmitted and ACK received
-        case TWI_MTX_ADR_NACK://           0x20  // SLA+W has been transmitted and NACK received
         case TWI_MTX_DATA_ACK://           0x28  // Data byte has been transmitted and ACK received
-        case TWI_MTX_DATA_NACK://          0x30  // Data byte has been transmitted and NACK received
           if (txOffset < txAvail) {
             TWDR = txBuffer[txOffset++];
             TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
           } else {
+            txOffset = 0xff;
+            twiBusy = 0;
+            twiMode = INIT;
+            TWI_statusReg.all = 0;
+            TWI_statusReg.ack = ACK_ACK;
             TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
           }
           break;
@@ -336,22 +399,36 @@ ISR(TWI_vect)
           TWCR = _BV(TWINT) | _BV(TWIE) | _BV(TWEN);
           TWI_statusReg.rxDataInBuf = 1;
           break;
+        case TWI_MTX_DATA_NACK://          0x30  // Data byte has been transmitted and NACK received
+        case TWI_MTX_ADR_NACK://           0x20  // SLA+W has been transmitted and NACK received
+          TWI_statusReg.all = 0;
+          TWI_statusReg.ack = ACK_NACK;
+          TWCR = _BV(TWEN) | // TWI Interface enabled.
+              _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
+              _BV(TWEA) | _BV(TWSTO) | _BV(TWIE); // Prepare to ACK next time the Slave is addressed.
+          twiMode = INIT;
+          twiBusy = 0;
+          rxAvail = 0;
+          txOffset = 0xff;
+          break;
         case TWI_SRX_GEN_ACK_M_ARB_LOST:// 0x78  // Arbitration lost in SLA+R/W as Master; General call address has been received; ACK has been returned
         case TWI_BUS_ERROR://              0x00  // Bus error due to an illegal START or STOP condition
         case TWI_NO_STATE:
         default:
           TWI_statusReg.all = 0;
           TWCR = _BV(TWEN) | // TWI Interface enabled.
-              _BV(TWIE) | _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
-              _BV(TWEA); // Prepare to ACK next time the Slave is addressed.
-          twiMode = SLAVE_READ;
+              _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
+              _BV(TWEA) | _BV(TWSTO) | _BV(TWIE); // Prepare to ACK next time the Slave is addressed.
+          twiMode = INIT;
           twiBusy = 0;
           rxAvail = 0;
+          txOffset = 0xff;
       }
       break;
     default:
       TWCR = _BV(TWINT);
   }
+  IND_0_OFF;
 }
 
 

@@ -5,8 +5,8 @@
  * Created on 8. Dezember 2019, 22:05
  */
 
-#ifndef CONFIGRECORD_H
-#define	CONFIGRECORD_H
+#ifndef CONFIG_H
+#define	CONFIG_H
 
 #include <avr/io.h>
 
@@ -110,10 +110,24 @@ extern "C" {
     uint8_t raw[4];
 
     struct {
-      uint8_t slaveAddress;
-      uint8_t registerAddress;
-      operation_t registerOperation;
-      uint8_t data;
+      uint8_t rxSlaveAddress;
+      uint8_t rxRegisterAddress;
+      operation_t rxRegisterOperation;
+      uint8_t rxData;
+    };
+
+    struct {
+      uint8_t txSlaveAddress;
+      uint8_t txOwnAddress;
+
+      union {
+        uint16_t txWData;
+
+        struct {
+          uint8_t a;
+          uint8_t b;
+        };
+      };
     };
 
   } TDataPacket;

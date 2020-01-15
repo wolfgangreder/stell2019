@@ -48,13 +48,17 @@
 extern "C" {
 #endif
 
-#include "hw.h"
-#define TWI_BUFFER_SIZE sizeof(TCommandBuffer)+1      // Reserves memory for the drivers transceiver buffer.
+#include "config.h"
   // Set this to the largest message size that will be sent including address byte.
 
   /****************************************************************************
     Global definitions
    ****************************************************************************/
+  typedef enum {
+    ACK_UNKNOWN,
+    ACK_ACK,
+    ACK_NACK
+  } ack_t;
 
   union TWI_statusReg_t // Status byte holding flags.
   {
@@ -64,8 +68,8 @@ extern "C" {
       bool lastTransOK : 1;
       bool rxDataInBuf : 1;
       bool genAddressCall : 1; // TRUE = General call, FALSE = TWI Address;
-      unsigned char unusedBits : 4;
-      bool masterMode : 1;
+      ack_t ack : 2;
+      unsigned char unusedBits : 3;
     };
   };
 
@@ -76,13 +80,17 @@ extern "C" {
   /****************************************************************************
     Function definitions
    ****************************************************************************/
-  void twiInit();
+  void twiInit(uint16_t ownAddress, uint8_t twiBaud, bool genCall);
   bool twiIsBusy();
   bool twiStartSlave();
   bool twiStartSlaveWithData(TDataPacket* buffer);
   bool twiSendData(TDataPacket* buffer);
+  bool twiSendReceiveData(TDataPacket* buffer);
   uint8_t twiBytesAvailable();
+  bool twiIsPacketAvailable();
   uint8_t twiGetData(TDataPacket* buffer);
+  bool twiPollData(TDataPacket* buffer);
+  ack_t getAck();
 
 
   /****************************************************************************

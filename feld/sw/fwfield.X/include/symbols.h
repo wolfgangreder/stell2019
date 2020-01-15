@@ -8,7 +8,7 @@
 #ifndef SYMBOLS_H
 #define	SYMBOLS_H
 
-#include "hw.h"
+#include "config.h"
 
 #ifdef	__cplusplus
 extern "C" {

@@ -32,25 +32,39 @@ extern "C" {
 #endif
 
 
-#if 1
-#define IND_01 (PORTD&=~_BV(PD7))
-#define IND_00 (PORTD|=_BV(PD7))
-#define IND_11 (PORTD&=~_BV(PD6))
-#define IND_10 (PORTD|=_BV(PD6))
-#define IND_21 (PORTD&=~_BV(PD5))
-#define IND_20 (PORTD|=_BV(PD5))
-#define IND_31 (PORTD&=~_BV(PD4))
-#define IND_30 (PORTD|=_BV(PD4))
-#define IND_INIT   DDRD |= 0xf0; PORTD |= 0xf0;
+#ifndef IND_DEBUG
+#define IND_DEBUG 0
+#endif
+
+#if IND_DEBUG==1
+#define IND_0_OFF (PORTD&=~_BV(PD2))
+#define IND_0_ON (PORTD|=_BV(PD2))
+#define IND_1_OFF (PORTD&=~_BV(PD3))
+#define IND_1_ON (PORTD|=_BV(PD3))
+#define IND_2_OFF (PORTD&=~_BV(PD4))
+#define IND_2_ON (PORTD|=_BV(PD4))
+#define IND_3_OFF (PORTD&=~_BV(PB5))
+#define IND_3_ON (PORTD|=_BV(PB5))
+#define IND_INIT   DDRD |= (_BV(PD2)|_BV(PD3)|_BV(PD4)|_BV(PD5));
+#elif IND_DEBUG==2
+#undef IND_0_OFF
+#undef IND_0_ON
+#undef IND_1_OFF
+#undef IND_1_ON
+#undef IND_2_OFF
+#undef IND_2_ON
+#undef IND_3_OFF
+#undef IND_3_ON
+#undef IND_INIT
 #else
-#define IND_01
-#define IND_00
-#define IND_11
-#define IND_10
-#define IND_21
-#define IND_20
-#define IND_31
-#define IND_30
+#define IND_0_OFF
+#define IND_0_ON
+#define IND_1_OFF
+#define IND_1_ON
+#define IND_2_OFF
+#define IND_2_ON
+#define IND_3_OFF
+#define IND_3_ON
 #define IND_INIT
 #endif
 
@@ -203,30 +217,29 @@ extern "C" {
   } operation_t;
 
   typedef union {
+    uint8_t raw[4];
 
     struct {
-      uint8_t registerAddress;
-      operation_t registerOperation;
-
-      union {
-        uint8_t data[2];
-        uint16_t wdata;
-      };
+      uint8_t rxSlaveAddress;
+      uint8_t rxRegisterAddress;
+      operation_t rxRegisterOperation;
+      uint8_t rxData;
     };
 
     struct {
-      uint8_t slaveAddress;
+      uint8_t txSlaveAddress;
+      uint8_t txOwnAddress;
 
       union {
-        uint16_t ownAddress;
+        uint16_t txWData;
 
         struct {
-          uint8_t ownAddress_msb;
-          uint8_t ownAddress_lsb;
+          uint8_t txA;
+          uint8_t txB;
         };
       };
-      uint8_t state;
     };
+
   } TDataPacket;
 
   extern TRegisterFile registerFile;
@@ -265,6 +278,10 @@ extern "C" {
   extern uint16_t processFeatureControl(uint8_t val, operation_t operation);
   extern uint16_t processFirmwareVersion();
   extern uint16_t processModuleType(uint8_t moduleType, operation_t operation);
+
+#define TWI_ADDR 3
+#define TWI_BAUD 66
+
 #ifdef	__cplusplus
 }
 #endif

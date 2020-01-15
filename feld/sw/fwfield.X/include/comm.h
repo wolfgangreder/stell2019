@@ -7,7 +7,7 @@
 
 #ifndef COMM_USART_H
 #define	COMM_USART_H
-#include "hw.h"
+#include "config.h"
 
 #ifdef	__cplusplus
 extern "C" {

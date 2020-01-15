@@ -60,7 +60,7 @@ public class Main extends javax.swing.JFrame
     field = new FieldImpl(port,
                           3);
     initComponents();
-    readAll();
+//    readAll();
     field.addChangeListener(this::onKeyChanged);
   }
 

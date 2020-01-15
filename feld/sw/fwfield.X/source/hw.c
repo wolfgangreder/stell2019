@@ -2,11 +2,11 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 #include <math.h>
-#include "hw.h"
+#include "config.h"
 #ifdef COMM_USART
 #  include "comm.h"
 #else
-#  include "twi.h"
+#  include "twi_old.h"
 #endif
 
 volatile uint8_t currentBlinkPhase;
@@ -72,9 +72,11 @@ void sendKeyEvent()
   writeBytesUsart(msg, sizeof (msg));
 #else
   TDataPacket msg;
-  msg.slaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
-  msg.ownAddress = eepromFile.address;
-  msg.state = registerFile.state;
+  msg.txSlaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
+  msg.txOwnAddress = eepromFile.address;
+
+  msg.txA = registerFile.state;
+  msg.txB = registerFile.modulstate;
   twiSendData(&msg);
 #endif
 }

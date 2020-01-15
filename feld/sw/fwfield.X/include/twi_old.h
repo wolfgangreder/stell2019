@@ -64,7 +64,8 @@ extern "C" {
       bool lastTransOK : 1;
       bool rxDataInBuf : 1;
       bool genAddressCall : 1; // TRUE = General call, FALSE = TWI Address;
-      unsigned char unusedBits : 5;
+      unsigned char unusedBits : 4;
+      bool masterMode : 1;
     };
   };
 
@@ -80,9 +81,7 @@ extern "C" {
   bool twiStartSlave();
   bool twiStartSlaveWithData(TDataPacket* buffer);
   bool twiSendData(TDataPacket* buffer);
-  bool twiSendReceiveData(TDataPacket* buffer);
   uint8_t twiBytesAvailable();
-  bool twiIsPacketAvailable();
   uint8_t twiGetData(TDataPacket* buffer);
 
 
