@@ -222,7 +222,7 @@ public class Main extends javax.swing.JFrame
       }
     });
 
-    ckKeyError.setText("Tastenfehler");
+    ckBrownOut.setText("Brown Out Fehler");
 
     spPWM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 255, 1));
     spPWM.addChangeListener(new javax.swing.event.ChangeListener()
@@ -387,6 +387,8 @@ public class Main extends javax.swing.JFrame
       }
     });
 
+    ckWatchdog.setText("Watchdog Fehler");
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
@@ -394,6 +396,7 @@ public class Main extends javax.swing.JFrame
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(ckWatchdog)
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(jLabel5)
@@ -457,7 +460,7 @@ public class Main extends javax.swing.JFrame
             .addComponent(jButton11)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jButton12))
-          .addComponent(ckKeyError)
+          .addComponent(ckBrownOut)
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addComponent(ckKeyPressed)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -522,8 +525,10 @@ public class Main extends javax.swing.JFrame
           .addComponent(jLabel15)
           .addComponent(spDebounce, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(ckKeyError)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+        .addComponent(ckBrownOut)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(ckWatchdog)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(jButton10)
           .addComponent(jButton11)
@@ -876,7 +881,8 @@ public class Main extends javax.swing.JFrame
     try {
       Set<State> state = field.getState();
       ckKeyPressed.setSelected(state.contains(State.KEY_PRESSED));
-      ckKeyError.setSelected(state.contains(State.KEY_ERROR));
+      ckBrownOut.setSelected(state.contains(State.BO_ERROR));
+      ckWatchdog.setSelected(state.contains(State.WDT_ERROR));
     } catch (IOException | TimeoutException | InterruptedException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
                                                  null,
@@ -1154,8 +1160,9 @@ public class Main extends javax.swing.JFrame
   private final javax.swing.JComboBox<SemaphoreState> cbSem = new javax.swing.JComboBox<>();
   private final javax.swing.JComboBox<ThreewayState> cbThreeway = new javax.swing.JComboBox<>();
   private final javax.swing.JComboBox<TurnoutState> cbTurnout = new javax.swing.JComboBox<>();
-  private final javax.swing.JCheckBox ckKeyError = new javax.swing.JCheckBox();
+  private final javax.swing.JCheckBox ckBrownOut = new javax.swing.JCheckBox();
   private final javax.swing.JCheckBox ckKeyPressed = new javax.swing.JCheckBox();
+  private final javax.swing.JCheckBox ckWatchdog = new javax.swing.JCheckBox();
   private final javax.swing.JFormattedTextField edVCC = new javax.swing.JFormattedTextField();
   private final javax.swing.JButton jButton1 = new javax.swing.JButton();
   private javax.swing.JButton jButton10;

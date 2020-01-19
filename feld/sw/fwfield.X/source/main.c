@@ -48,6 +48,7 @@
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
+#include <avr/wdt.h>
 #include "comm.h"
 #include "twi.h"
 #include "config.h"
@@ -131,14 +132,18 @@ int main(void)
 
 int main(void)
 {
+  uint8_t resetSource = MCUCSR;
   TDataPacket commandBuf;
   IND_INIT;
-
+  wdt_enable(0); // 17ms
   initHW();
   initModule();
   twiInit(eepromFile.address, eepromFile.twibaud, 1);
+  registerFile.bo_error = resetSource & _BV(BORF);
+  registerFile.wdt_error = resetSource & _BV(WDRF);
   sei(); //set global interrupt enable
   for (;;) {
+    wdt_reset();
     if (!twiIsBusy()) {
       twiStartSlave();
     }

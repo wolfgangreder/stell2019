@@ -176,8 +176,9 @@ extern "C" {
 
       struct {
         bool key_pressed : 1; // 1 wenn taste gedrückt
-        uint8_t reserved : 6;
-        bool key_error : 1; // 1 wenn ein tastendruck nicht gelesen wurde
+        uint8_t reserved : 5;
+        bool bo_error : 1; // 1 wenn brown out reset
+        bool wdt_error : 1; // 1 wenn watchdog reset
       };
     };
     uint8_t led; // 1-> led an

@@ -80,7 +80,7 @@ extern "C" {
 #define TWI_BAUD     32 // 100k
 #define TWI_PRESCALE 0
 #define TIMER1_PRESCALE (_BV(CS11)|_BV(CS10)) // 64
-#define TIMER1_TOP    7812  // 8Hz
+#define TIMER1_TOP    7690  // 8Hz
 #else
 #error undefined frequency
 #endif

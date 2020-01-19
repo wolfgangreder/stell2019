@@ -18,7 +18,8 @@ package at.or.reder.tools.fieldtest.model;
 public enum State
 {
   KEY_PRESSED(0x01),
-  KEY_ERROR(0x80);
+  BO_ERROR(0x40),
+  WDT_ERROR(0x80);
   private final int magic;
 
   private State(int magic)

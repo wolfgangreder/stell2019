@@ -35,7 +35,6 @@ void processCommand(TDataPacket* packet, packetsource_t source)
       break;
     case TWI:
 #if UART_ENABLED==1
-      IND_0_ON;
       writeBytesUsart((uint8_t*) packet, sizeof (TDataPacket));
 #endif
       //      spiWriteData(packet);
@@ -66,11 +65,8 @@ void initHW()
 
 int main()
 {
+  uint8_t resetSource = MCUCSR;
   TDataPacket commandBuf;
-  IND_0_OFF;
-  IND_1_OFF;
-  IND_2_OFF;
-  IND_3_OFF;
   IND_INIT;
 
   twiInit(TWI_ADDR, TWI_BAUD, 1);
@@ -79,6 +75,7 @@ int main()
 #if UART_ENABLED==1
   initCommUsart();
 #endif
+
 
   sei(); //set global interrupt enable
 
@@ -111,10 +108,6 @@ int main()
       twiClearAck();
       processCommand(&commandBuf, TWI);
     }
-    IND_0_OFF;
-    IND_1_OFF;
-    IND_2_OFF;
-    IND_3_OFF;
   }
 }
 
