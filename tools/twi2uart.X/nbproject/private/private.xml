@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/source/twi.c</file>
             <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/config.h</file>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/buffer.h</file>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/spi.c</file>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/twi.h</file>
-            <file>file:/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/avr/include/util/atomic.h</file>
+            <file>file:/home/wolfi/eagle/stell2019/tools/twi/twi.c</file>
+            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/uart.h</file>
+            <file>file:/home/wolfi/eagle/stell2019/tools/twi/twi.h</file>
             <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/source/main.c</file>
             <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/nbproject/Makefile-default.mk</file>
         </group>

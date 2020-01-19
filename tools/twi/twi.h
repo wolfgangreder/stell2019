@@ -90,7 +90,8 @@ extern "C" {
   bool twiIsPacketAvailable();
   uint8_t twiGetData(TDataPacket* buffer);
   bool twiPollData(TDataPacket* buffer);
-  ack_t getAck();
+  ack_t twiGetAck();
+  void twiClearAck();
 
 
   /****************************************************************************

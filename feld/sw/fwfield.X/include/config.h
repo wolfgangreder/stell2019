@@ -33,19 +33,21 @@ extern "C" {
 
 
 #ifndef IND_DEBUG
-#define IND_DEBUG 0
+#define IND_DEBUG 1
 #endif
 
 #if IND_DEBUG==1
-#define IND_0_OFF (PORTD&=~_BV(PD2))
-#define IND_0_ON (PORTD|=_BV(PD2))
-#define IND_1_OFF (PORTD&=~_BV(PD3))
-#define IND_1_ON (PORTD|=_BV(PD3))
-#define IND_2_OFF (PORTD&=~_BV(PD4))
-#define IND_2_ON (PORTD|=_BV(PD4))
-#define IND_3_OFF (PORTD&=~_BV(PB5))
-#define IND_3_ON (PORTD|=_BV(PB5))
-#define IND_INIT   DDRD |= (_BV(PD2)|_BV(PD3)|_BV(PD4)|_BV(PD5));
+#define IND_PORT PORTA
+#define IND_DIR DDRA
+#define IND_0_OFF (IND_PORT&=~_BV(PA0))
+#define IND_0_ON (IND_PORT|=_BV(PA0))
+#define IND_1_OFF (IND_PORT&=~_BV(PA1))
+#define IND_1_ON (IND_PORT|=_BV(PA1))
+#define IND_2_OFF (IND_PORT&=~_BV(PA2))
+#define IND_2_ON (IND_PORT|=_BV(PA2))
+#define IND_3_OFF (IND_PORT&=~_BV(PA3))
+#define IND_3_ON (IND_PORT|=_BV(PA3))
+#define IND_INIT   IND_DIR |= (_BV(PA0)|_BV(PA1)|_BV(PA2)|_BV(PA3));
 #elif IND_DEBUG==2
 #undef IND_0_OFF
 #undef IND_0_ON
@@ -168,10 +170,6 @@ extern "C" {
 
     union {
       uint8_t featureControl;
-
-      struct {
-        bool blinkGenerator : 1;
-      };
     };
   } TEEPromFile;
 

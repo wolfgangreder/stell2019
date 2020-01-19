@@ -21,11 +21,11 @@ FUSES = {
 
 void processCommand(TDataPacket* packet, packetsource_t source)
 {
+  bool isRead;
   switch (source) {
     case UART:
     case SPI:
-      IND_3_ON;
-      bool isRead = packet->rxRegisterOperation == OP_READ;
+      isRead = packet->rxRegisterOperation == OP_READ;
       packet->txSlaveAddress = packet->txSlaveAddress << TWI_ADR_BITS;
       if (isRead) {
         twiSendReceiveData(packet);
@@ -35,6 +35,7 @@ void processCommand(TDataPacket* packet, packetsource_t source)
       break;
     case TWI:
 #if UART_ENABLED==1
+      IND_0_ON;
       writeBytesUsart((uint8_t*) packet, sizeof (TDataPacket));
 #endif
       //      spiWriteData(packet);
@@ -42,10 +43,10 @@ void processCommand(TDataPacket* packet, packetsource_t source)
   }
 }
 
-void sendAck()
+void doSendAck()
 {
 #if UART_ENABLED==1
-  sendAck();
+  sendACK();
 #endif
 }
 
@@ -83,9 +84,9 @@ int main()
 
   for (;;) {
     if (!twiIsBusy()) {
-      switch (getAck()) {
+      switch (twiGetAck()) {
         case ACK_ACK:
-          sendAck();
+          doSendAck();
           break;
         case ACK_NACK:
           sendNack(&commandBuf);
@@ -107,8 +108,10 @@ int main()
     //      processCommand(&commandBuf, SPI);
     //    }
     if (twiPollData(&commandBuf)) {
+      twiClearAck();
       processCommand(&commandBuf, TWI);
     }
+    IND_0_OFF;
     IND_1_OFF;
     IND_2_OFF;
     IND_3_OFF;

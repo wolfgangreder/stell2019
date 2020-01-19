@@ -97,13 +97,6 @@ ISR(TIMER1_CAPT_vect)
   } else {
     --debouncePhase;
   }
-
-  if ((--blinkPrescale) == 0) {
-    blinkPrescale = BLINK_PRESCALE_INIT;
-    if (eepromFile.blinkGenerator) {
-      PORT_BLINK ^= _BV(BLINK);
-    }
-  }
 }
 
 ISR(SWITCH_INT_vect)
@@ -304,18 +297,22 @@ uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 {
   switch (operation) {
     case OP_READ:
+      IND_0_ON;
       return registerFile.blinkdivider;
     case OP_WRITE:
+      IND_1_ON;
       if (val != 0) {
         registerFile.blinkdivider = val;
       }
       return registerFile.blinkdivider;
     case OP_DECREMENT:
+      IND_2_ON;
       if (registerFile.blinkdivider > 1) {
         registerFile.blinkdivider--;
       }
       return registerFile.blinkdivider;
     case OP_INCREMENT:
+      IND_3_ON;
       if (registerFile.blinkdivider < 255) {
         registerFile.blinkdivider++;
       }
@@ -337,13 +334,6 @@ uint16_t processFeatureControl(uint8_t val, operation_t operation)
       return eepromFile.featureControl;
     case OP_WRITE:
       eepromFile.featureControl = val;
-      eeprom_write_byte(&ee_eepromFile.featureControl, eepromFile.featureControl);
-      if (eepromFile.blinkGenerator) {
-        DDR_BLINK |= _BV(BLINK);
-      } else {
-        DDR_BLINK &= ~_BV(BLINK);
-        PORT_BLINK |= _BV(BLINK); // Pullup ein
-      }
       return val;
     default:
       return -1;

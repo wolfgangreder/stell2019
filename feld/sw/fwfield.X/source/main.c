@@ -97,7 +97,6 @@ uint16_t processCommand(TDataPacket* cmd)
     case REG_DEBOUNCE:
       return processDebounce(cmd->rxData, cmd->rxRegisterOperation);
     case REG_FEATURE_CONTROL:
-      IND_0_ON;
       return processFeatureControl(cmd->rxData, cmd->rxRegisterOperation);
     case REG_VERSION:
       return processFirmwareVersion();
@@ -148,14 +147,19 @@ int main(void)
     }
     if (twiPollData(&commandBuf)) {
       if (commandBuf.rxRegisterOperation == OP_READ) {
+        commandBuf.txWData = processCommand(&commandBuf);
         commandBuf.txSlaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
         commandBuf.txOwnAddress = eepromFile.address;
-        commandBuf.txWData = processCommand(&commandBuf);
-        twiStartSlaveWithData(& commandBuf);
+        IND_1_ON;
+        twiStartSlaveWithData(&commandBuf);
       } else {
         processCommand(&commandBuf);
       }
     }
+    IND_0_OFF;
+    IND_1_OFF;
+    IND_2_OFF;
+    IND_3_OFF;
   }
 }
 

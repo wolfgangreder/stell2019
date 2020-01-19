@@ -67,7 +67,7 @@ public final class FieldImpl implements Field
   private volatile ReaderState expectedState;
   private volatile IOException error;
   private final Object lock = new Object();
-  private final ByteBuffer returnValue = ByteBuffer.allocate(3).order(ByteOrder.LITTLE_ENDIAN);
+  private final ByteBuffer returnValue = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
   private final ExecutorService exec = Executors.newSingleThreadExecutor();
   private final AtomicBoolean keyPressed = new AtomicBoolean();
   private final Set<ChangeListener> keyChangeListener = new CopyOnWriteArraySet<>();
@@ -128,6 +128,7 @@ public final class FieldImpl implements Field
     synchronized (lock) {
       if (!dataPending) {
         if (returnValue.position() == 0 && b == 6) {
+          returnValue.put((byte) b);
           expectedState = ReaderState.IDLE;
           return ReaderState.ACK;
         }
@@ -162,6 +163,7 @@ public final class FieldImpl implements Field
         int b;
         do {
           b = is.read();
+          System.err.println("read 0x" + Integer.toHexString(b));
           switch (newState) {
             case ACK_PENDING:
               newState = doAckPending(b);
@@ -181,16 +183,15 @@ public final class FieldImpl implements Field
         newState = ReaderState.ERROR;
       }
     } finally {
-      if (dataPending) {
-        synchronized (lock) {
-          lock.notifyAll();
-        }
-      } else {
-        keyPressed.set(returnValue.get(1) != 0);
+      boolean wasPending = dataPending;
+      setState(newState,
+               wasPending);
+      if (!wasPending && error == null) {
+        System.err.println("keyevent@" + newState);
+        keyPressed.set(returnValue.get(2) != 0);
         returnValue.rewind();
         SwingUtilities.invokeLater(this::fireChange);
       }
-      setState(newState);
     }
   }
 
@@ -216,13 +217,26 @@ public final class FieldImpl implements Field
 
   private int waitForState(ReaderState expectendState) throws InterruptedException
   {
-    int result = -1;
+    int result;
     synchronized (lock) {
       if (this.state != expectendState && state != ReaderState.ERROR) {
         lock.wait(WAIT_FOR_STATE);
       }
-      if (this.state == expectendState || state == ReaderState.ERROR) {
-        result = returnValue.getShort() & 0xffff;
+      if (this.state == expectendState) {
+        if (expectedState == ReaderState.IDLE) {
+          int a = returnValue.get(0) & 0xff;
+          int b = returnValue.get(1) & 0xff;
+          int c = returnValue.get(2) & 0xff;
+          int d = returnValue.get(3) & 0xff;
+          System.err.println("a=0x" + Integer.toHexString(a));
+          System.err.println("b=0x" + Integer.toHexString(b));
+          System.err.println("c=0x" + Integer.toHexString(c));
+          System.err.println("d=0x" + Integer.toHexString(d));
+        }
+        result = returnValue.getShort(1) & 0xffff;
+        System.err.println("result=0x" + Integer.toHexString(result));
+      } else {
+        result = -1;
       }
       returnValue.rewind();
       dataPending = false;
@@ -247,7 +261,8 @@ public final class FieldImpl implements Field
         }
       } finally {
         error = null;
-        setState(ReaderState.IDLE);
+        setState(ReaderState.IDLE,
+                 false);
       }
       return null;
     });
@@ -285,7 +300,8 @@ public final class FieldImpl implements Field
         }
       } finally {
         error = null;
-        setState(ReaderState.IDLE);
+        setState(ReaderState.IDLE,
+                 false);
       }
       return r;
     });
@@ -307,11 +323,12 @@ public final class FieldImpl implements Field
     }
   }
 
-  private void setState(ReaderState s)
+  private void setState(ReaderState s,
+                        boolean forceNotify)
   {
     synchronized (lock) {
       state = s;
-      if (s == ReaderState.IDLE) {
+      if (forceNotify || s == ReaderState.IDLE) {
         lock.notifyAll();
       }
     }

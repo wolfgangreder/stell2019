@@ -28,6 +28,9 @@ public interface ModuleState
     if (type == ModuleType.UNDEFINED) {
       return null;
     }
+    if (type == null) {
+      type = ModuleType.K2;
+    }
     switch (type) {
       case B1:
         return new ModuleStateTrack(type,

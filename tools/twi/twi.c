@@ -57,7 +57,8 @@ typedef enum {
   SLAVE_READ,
   SLAVE_WRITE,
   MASTER_READ,
-  MASTER_WRITE
+  MASTER_WRITE,
+  MASTER_WRITE_KB // wie MasterWrite, nur wird anschließend in MasterRead gewechselt
 } twi_mode_t;
 
 static volatile unsigned char TWI_state = TWI_NO_STATE; // State byte. Default set to TWI_NO_STATE.
@@ -92,7 +93,6 @@ void twiInit(uint16_t ownAddress, uint8_t twiBaud, bool genCall)
 bool twiStartSlave()
 {
   while (twiIsBusy());
-  IND_1_ON;
   // Wait until TWI is ready for next transmission.
   TWI_statusReg.all = 0;
   TWI_state = TWI_NO_STATE;
@@ -112,10 +112,11 @@ bool twiStartSlaveWithData(TDataPacket * buffer)
   txAvail = sizeof (TDataPacket);
   TWI_statusReg.all = 0;
   TWI_state = TWI_NO_STATE;
+  twiMode = SLAVE_WRITE;
+  txOffset = 0;
   TWCR = _BV(TWEN) | // TWI Interface enabled.
       _BV(TWIE) | _BV(TWINT) | // Enable TWI Interrupt and clear the flag.
       _BV(TWEA); // Prepare to ACK next time the Slave is addressed.
-  twiMode = SLAVE_WRITE;
   return 0;
 }
 
@@ -129,6 +130,7 @@ bool twiSendData(TDataPacket * buffer)
       wait = txOffset != 0xff || twiBusy;
       if (!wait) {
         memcpy(txBuffer, buffer, sizeof (TDataPacket));
+        txBuffer[0] &= ~_BV(TWI_READ_BIT);
         txAvail = sizeof (TDataPacket);
         txOffset = 0;
         twiBusy = 1;
@@ -150,21 +152,28 @@ bool twiSendReceiveData(TDataPacket * buffer)
       wait = txOffset != 0xff || twiBusy;
       if (!wait) {
         memcpy(txBuffer, buffer, sizeof (TDataPacket));
+        memset(rxBuffer, 0, sizeof (TDataPacket));
         txBuffer[0] &= ~_BV(TWI_READ_BIT);
         txAvail = sizeof (TDataPacket);
         txOffset = 0;
         twiBusy = 1;
+        rxAvail = 0;
+        twiMode = MASTER_WRITE_KB;
         TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
-        twiMode = MASTER_READ;
       }
     }
   } while (wait);
   return 1;
 }
 
-ack_t getAck()
+ack_t twiGetAck()
 {
   return TWI_statusReg.ack;
+}
+
+void twiClearAck()
+{
+  TWI_statusReg.ack = 0;
 }
 
 bool twiIsBusy()
@@ -264,17 +273,38 @@ ISR(TWI_vect)
     case SLAVE_WRITE:
       switch (twiState) {
         case TWI_STX_ADR_ACK://            0xA8  // Own SLA+R has been received; ACK has been returned
+          txOffset = 1;
         case TWI_STX_DATA_ACK://           0xB8  // Data byte in TWDR has been transmitted; ACK has been received
-        case TWI_STX_DATA_NACK://          0xC0  // Data byte in TWDR has been transmitted; NOT ACK has been received
           if (txOffset < txAvail) {
             TWDR = txBuffer[txOffset++];
+            if (txOffset < txAvail) {
+              TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE) | _BV(TWEA);
+            } else {
+              TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
+            }
           } else {
-            txOffset = 0xff;
             TWDR = 0xff;
+            TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
           }
-          TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE) | _BV(TWEA);
           break;
         case TWI_STX_DATA_ACK_LAST_BYTE:// 0xC8  // Last data byte in TWDR has been transmitted (TWEA = 0); ACK has been received
+          txOffset = 0xff;
+          twiMode = INIT;
+          twiBusy = 0;
+          rxAvail = 0;
+          TWI_statusReg.all = 0;
+          TWI_statusReg.ack = ACK_ACK;
+          TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE) | _BV(TWEA);
+          break;
+        case TWI_STX_DATA_NACK://          0xC0  // Data byte in TWDR has been transmitted; NOT ACK has been received
+          twiMode = INIT;
+          rxAvail = 0;
+          twiBusy = 0;
+          txOffset = 0xff;
+          TWI_statusReg.all = 0;
+          TWI_statusReg.ack = ACK_NACK;
+          TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
+          break;
         case TWI_BUS_ERROR://              0x00  // Bus error due to an illegal START or STOP condition
         case TWI_NO_STATE:
         default:
@@ -288,48 +318,37 @@ ISR(TWI_vect)
     case MASTER_READ:
       switch (twiState) {
         case TWI_START://                  0x08  // START has been transmitted
-          txOffset = 0;
-          TWDR = txBuffer[txOffset++];
-          TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
-          break;
         case TWI_REP_START://              0x10  // Repeated START has been transmitted
           TWDR = txBuffer[0] |= _BV(TWI_READ_BIT);
-          rxBuffer[0] = TWDR;
-          rxAvail = 1;
-          TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
-          twiMode = MASTER_READ;
+          TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE);
           break;
         case TWI_ARB_LOST://               0x38  // Arbitration lost
           TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA) | _BV(TWSTA);
-          break;
-        case TWI_MTX_ADR_ACK://            0x18  // SLA+W has been transmitted and ACK received
-        case TWI_MTX_DATA_ACK://           0x28  // Data byte has been transmitted and ACK received
-          if (txOffset < txAvail) {
-            TWDR = txBuffer[txOffset++];
-            TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
-          } else {
-            txOffset = 0xff;
-            twiBusy = 0;
-            twiMode = INIT;
-            rxAvail = 0;
-            TWI_statusReg.all = 0;
-            TWI_statusReg.ack = ACK_ACK;
-            TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
-          }
           break;
         case TWI_SRX_ADR_ACK_M_ARB_LOST:// 0x68  // Arbitration lost in SLA+R/W as Master; own SLA+W has been received; ACK has been returned
         case TWI_STX_ADR_ACK_M_ARB_LOST:// 0xB0  // Arbitration lost in SLA+R/W as Master; own SLA+R has been received; ACK has been returned
           twiMode = SLAVE_READ;
           rxAvail = 1;
-          rxBuffer[0] = TWDR;
+          //          rxBuffer[0] = TWDR;
           TWCR = _BV(TWINT) | _BV(TWIE) | _BV(TWEN);
           TWI_statusReg.rxDataInBuf = 1;
           break;
         case TWI_MRX_ADR_ACK://            0x40  // SLA+R has been transmitted and ACK received
+          rxBuffer[0] = txBuffer[0] >> TWI_ADR_BITS;
           rxAvail = 0;
+          TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWIE) | _BV(TWEN);
+          break;
         case TWI_MRX_DATA_ACK://           0x50  // Data byte has been received and ACK transmitted
-          rxBuffer[rxAvail++] = TWDR;
-          TWCR = _BV(TWINT) | _BV(TWIE) | _BV(TWEN) | _BV(TWEA);
+          if (rxAvail<sizeof (rxBuffer)) {
+            rxBuffer[rxAvail++] = TWDR;
+            TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
+          } else {
+            TWI_statusReg.all = 0;
+            TWI_statusReg.lastTransOK = 1;
+            TWI_statusReg.rxDataInBuf = 1;
+            txOffset = 0xff;
+            TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWSTO);
+          }
           break;
         case TWI_MTX_DATA_NACK://          0x30  // Data byte has been transmitted and NACK received
         case TWI_MRX_ADR_NACK://           0x48  // SLA+R has been transmitted and NACK received
@@ -359,6 +378,7 @@ ISR(TWI_vect)
           txOffset = 0xff;
       }
       break;
+    case MASTER_WRITE_KB:
     case MASTER_WRITE:
       switch (twiState) {
         case TWI_START://0x08  // START has been transmitted
@@ -384,11 +404,18 @@ ISR(TWI_vect)
             TWCR = _BV(TWEN) | _BV(TWINT) | _BV(TWIE) | _BV(TWEA);
           } else {
             txOffset = 0xff;
-            twiBusy = 0;
-            twiMode = INIT;
-            TWI_statusReg.all = 0;
-            TWI_statusReg.ack = ACK_ACK;
-            TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+            if (twiMode == MASTER_WRITE_KB) {
+              rxAvail = 1;
+              rxBuffer[0] = txBuffer[0];
+              twiMode = MASTER_READ;
+              TWCR = _BV(TWINT) | _BV(TWSTA) | _BV(TWEN) | _BV(TWIE);
+            } else {
+              twiBusy = 0;
+              TWI_statusReg.all = 0;
+              TWI_statusReg.ack = ACK_ACK;
+              twiMode = INIT;
+              TWCR = _BV(TWINT) | _BV(TWSTO) | _BV(TWEN);
+            }
           }
           break;
         case TWI_SRX_ADR_ACK_M_ARB_LOST:// 0x68  // Arbitration lost in SLA+R/W as Master; own SLA+W has been received; ACK has been returned
@@ -428,7 +455,6 @@ ISR(TWI_vect)
     default:
       TWCR = _BV(TWINT);
   }
-  IND_0_OFF;
 }
 
 
