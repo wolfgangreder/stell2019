@@ -9,6 +9,8 @@
 #define	CONFIG_H
 
 #include <avr/io.h>
+#include <avr/eeprom.h>
+#include <avr/pgmspace.h>
 
 #ifdef	__cplusplus
 extern "C" {
@@ -22,8 +24,20 @@ extern "C" {
 #define UART_ENABLED 1
 #endif
 
+#ifndef SPI_ENABLED
+#define SPI_ENABLED 0
+#endif
+
 #ifndef IND_DEBUG
-#define IND_DEBUG 1
+#define IND_DEBUG 0
+#endif
+
+#ifndef FW_MAJOR
+#define FW_MAJOR 0
+#endif
+
+#ifndef FW_MINOR
+#define FW_MINOR 1
 #endif
 
 #if IND_DEBUG==1
@@ -91,12 +105,78 @@ extern "C" {
 #define BLINK_PORT PORTB
 #define BLINK_PIN  PINB
 #define BLINK_DIR  DDRB
-#define BLINK      1
+#define BLINK      PB1
 
 #define INT_PORT   PORTB
 #define INT_PIN    PINB
 #define INT_DIR    DDRB
-#define INT        0
+#define INT        PB0
+
+#if SPI_ENABLED==1
+#define SPI_PORT   PORTB
+#define SPI_DIR    DDRB
+#define SPI_PIN    PINB
+#define SPI_MOSI   PB3
+#define SPI_MISO   PB4
+#define SPI_SS     PB2
+#define SPI_SCK    PB5
+#define SPI_SS_INT_OR (_BV(ISC00))
+#define SPI_SS_INT_EN _BV(INT0)
+#define SPI_SS_INT_vec INT0_vect
+#endif
+
+  typedef enum {
+    REG_STATE = 0,
+    REG_VCC = 1,
+    REG_VCC_CALIB = 2,
+    REG_VCC_REF = 3,
+    REG_TWI_BAUD = 4,
+    REG_BLINK_COUNTER_H = 5,
+    REG_BLINK_COUNTER_L = 6,
+    REG_BLINK_PRESCALE = 7,
+    REG_FW_VERSION = 8
+  } register_t;
+
+  typedef struct {
+    int8_t vcc_calibration;
+    uint8_t twibaud;
+
+    union {
+      uint16_t blinkCounter;
+
+      struct {
+        uint8_t blinkCounterH;
+        uint8_t blinkCounterL;
+      };
+    };
+    uint8_t blinkPrescale;
+  } TEEPromFile;
+
+  typedef struct {
+
+    union {
+      uint8_t state;
+
+      struct {
+        uint8_t reserved : 6;
+        bool bo_error : 1; // 1 wenn brown out reset
+        bool wdt_error : 1; // 1 wenn watchdog reset
+      };
+    };
+    uint16_t vcc; // vcc mV;
+  } TRegisterFile;
+
+  typedef struct {
+
+    union {
+      uint16_t fw_Version;
+
+      struct {
+        uint8_t fw_major;
+        uint8_t fw_minor;
+      };
+    };
+  } TFlashFile;
 
   typedef enum {
     OP_READ = 0,
@@ -137,6 +217,13 @@ extern "C" {
     UART,
     SPI
   } packetsource_t;
+
+  extern TRegisterFile registerFile;
+  extern EEMEM TEEPromFile ee_eepromFile;
+  extern TEEPromFile eepromFile;
+  extern const PROGMEM TFlashFile fl_flashFile;
+  extern TFlashFile flashFile;
+
 #ifdef	__cplusplus
 }
 #endif

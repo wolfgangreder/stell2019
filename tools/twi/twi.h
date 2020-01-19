@@ -81,6 +81,7 @@ extern "C" {
     Function definitions
    ****************************************************************************/
   void twiInit(uint16_t ownAddress, uint8_t twiBaud, bool genCall);
+  void twiSetBaud(uint8_t twiBaud);
   bool twiIsBusy();
   bool twiStartSlave();
   bool twiStartSlaveWithData(TDataPacket* buffer);

@@ -89,6 +89,20 @@ void twiInit(uint16_t ownAddress, uint8_t twiBaud, bool genCall)
   memset(rxBuffer, 0, sizeof (rxBuffer));
 }
 
+void twiSetBaud(uint8_t baud)
+{
+  while (twiIsBusy());
+  TWCR = 0;
+  TWBR = baud;
+  TWCR = (1 << TWEN) | // Enable TWI-interface and release TWI pins.
+      (0 << TWIE) | (0 << TWINT) | // Disable TWI Interrupt.
+      (0 << TWEA) | (0 << TWSTA) | (0 << TWSTO) | // Do not ACK on any requests, yet.
+      (0 << TWWC);
+  twiMode = INIT;
+  memset(txBuffer, 0, sizeof (txBuffer));
+  memset(rxBuffer, 0, sizeof (rxBuffer));
+}
+
 bool twiStartSlave()
 {
   while (twiIsBusy());

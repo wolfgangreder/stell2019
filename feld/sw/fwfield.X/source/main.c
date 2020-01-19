@@ -98,7 +98,8 @@ uint16_t processCommand(TDataPacket* cmd)
       return processDebounce(cmd->rxData, cmd->rxRegisterOperation);
     case REG_VERSION:
       return processFirmwareVersion();
-
+    case REG_VCC_REFERENCE:
+      return 2560;
   }
   return -1;
 }

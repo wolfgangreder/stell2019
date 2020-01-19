@@ -51,7 +51,7 @@ RANLIB=ranlib
 OBJDUMP=/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-objdump
 #AVRSIZE=/home/wolfi/bin/avr8-gnu-toolchain-linux_x86_64/bin/avr-size
 #BUILD_CONFIG=-DFW_MINOR=6 -DFW_MAJOR=0 -DTWI_ADDRESS=3 -DCOMM_USART -gdwarf
-BUILD_CONFIG=-DFW_MINOR=14 -DFW_MAJOR=0 -DTWI_ADDRESS=3 -gdwarf
+BUILD_CONFIG=-DFW_MINOR=15 -DFW_MAJOR=0 -DTWI_ADDRESS=3 -gdwarf
 # build
 build: .build-post
 

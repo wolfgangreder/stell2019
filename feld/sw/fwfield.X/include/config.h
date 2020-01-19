@@ -121,31 +121,24 @@ extern "C" {
 #error device not supported
 #endif
 
-
-
-#define OFFSET_RAM (0)
-#define OFFSET_EEPROM (96)
-#define OFFSET_FLASH (120)
-
-#define OFFSET(flag,file) (((void*)&(flag))-((void*)&(file)))
-
-#define REG_STATE offsetof(TRegisterFile,state)
-#define REG_LED offsetof(TRegisterFile,led)
-#define REG_BLINKMASK offsetof(TRegisterFile,blinkmask)
-#define REG_BLINKPHASE offsetof(TRegisterFile,blinkphase)
-#define REG_PWM offsetof(TRegisterFile,pwm)
-#define REG_MODULESTATE offsetof(TRegisterFile,modulstate)
-#define REG_VCC offsetof(TRegisterFile,vcc)
-#define REG_BLINKDIVIDER offsetof(TRegisterFile,blinkdivider)
-#define REG_ADDRESS_MSB (OFFSET_EEPROM+offsetof(TEEPromFile,address_msb))
-#define REG_ADDRESS_LSB (OFFSET_EEPROM+offsetof(TEEPromFile,address_lsb))
-#define REG_MODULETYPE (OFFSET_EEPROM+offsetof(TEEPromFile,moduletype))
-#define REG_DEBOUNCE (OFFSET_EEPROM+offsetof(TEEPromFile,debounce))
-#define REG_SOFTSTART (OFFSET_EEPROM+offsetof(TEEPromFile,softstart))
-#define REG_SOFTSTOP (OFFSET_EEPROM+offsetof(TEEPromFile,softstop))
-#define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
-#define REG_DEFAULT_PWM (OFFSET_EEPROM+offsetof(TEEPromFile,defaultPWM))
-#define REG_VERSION (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
+  typedef enum {
+    REG_STATE = 0,
+    REG_LED = 1,
+    REG_BLINKMASK = 2,
+    REG_BLINKPHASE = 3,
+    REG_PWM = 4,
+    REG_MODULESTATE = 5,
+    REG_VCC = 6,
+    REG_BLINKDIVIDER = 7,
+    REG_ADDRESS_MSB = 8,
+    REG_ADDRESS_LSB = 9,
+    REG_MODULETYPE = 10,
+    REG_DEBOUNCE = 11,
+    REG_VCC_CALIBRATION = 12,
+    REG_DEFAULT_PWM = 13,
+    REG_VERSION = 14,
+    REG_VCC_REFERENCE = 15
+  } register_t;
 
   typedef struct {
 

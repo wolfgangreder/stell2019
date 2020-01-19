@@ -114,50 +114,50 @@ ${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/main.o.d
 	@${RM} ${OBJECTDIR}/source/main.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 ${OBJECTDIR}/source/uart.o: source/uart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/uart.o.d
 	@${RM} ${OBJECTDIR}/source/uart.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/uart.o.d" -MT "${OBJECTDIR}/source/uart.o.d" -MT ${OBJECTDIR}/source/uart.o  -o ${OBJECTDIR}/source/uart.o source/uart.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/uart.o.d" -MT "${OBJECTDIR}/source/uart.o.d" -MT ${OBJECTDIR}/source/uart.o  -o ${OBJECTDIR}/source/uart.o source/uart.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 ${OBJECTDIR}/include/spi.o: include/spi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/include"
 	@${RM} ${OBJECTDIR}/include/spi.o.d
 	@${RM} ${OBJECTDIR}/include/spi.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/include/spi.o.d" -MT "${OBJECTDIR}/include/spi.o.d" -MT ${OBJECTDIR}/include/spi.o  -o ${OBJECTDIR}/include/spi.o include/spi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/include/spi.o.d" -MT "${OBJECTDIR}/include/spi.o.d" -MT ${OBJECTDIR}/include/spi.o  -o ${OBJECTDIR}/include/spi.o include/spi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 ${OBJECTDIR}/_ext/1360938359/twi.o: ../twi/twi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/1360938359"
 	@${RM} ${OBJECTDIR}/_ext/1360938359/twi.o.d
 	@${RM} ${OBJECTDIR}/_ext/1360938359/twi.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT ${OBJECTDIR}/_ext/1360938359/twi.o  -o ${OBJECTDIR}/_ext/1360938359/twi.o ../twi/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1 -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT ${OBJECTDIR}/_ext/1360938359/twi.o  -o ${OBJECTDIR}/_ext/1360938359/twi.o ../twi/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 else
 ${OBJECTDIR}/source/main.o: source/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/main.o.d
 	@${RM} ${OBJECTDIR}/source/main.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/main.o.d" -MT "${OBJECTDIR}/source/main.o.d" -MT ${OBJECTDIR}/source/main.o  -o ${OBJECTDIR}/source/main.o source/main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 ${OBJECTDIR}/source/uart.o: source/uart.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/source"
 	@${RM} ${OBJECTDIR}/source/uart.o.d
 	@${RM} ${OBJECTDIR}/source/uart.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/uart.o.d" -MT "${OBJECTDIR}/source/uart.o.d" -MT ${OBJECTDIR}/source/uart.o  -o ${OBJECTDIR}/source/uart.o source/uart.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/source/uart.o.d" -MT "${OBJECTDIR}/source/uart.o.d" -MT ${OBJECTDIR}/source/uart.o  -o ${OBJECTDIR}/source/uart.o source/uart.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 ${OBJECTDIR}/include/spi.o: include/spi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/include"
 	@${RM} ${OBJECTDIR}/include/spi.o.d
 	@${RM} ${OBJECTDIR}/include/spi.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/include/spi.o.d" -MT "${OBJECTDIR}/include/spi.o.d" -MT ${OBJECTDIR}/include/spi.o  -o ${OBJECTDIR}/include/spi.o include/spi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/include/spi.o.d" -MT "${OBJECTDIR}/include/spi.o.d" -MT ${OBJECTDIR}/include/spi.o  -o ${OBJECTDIR}/include/spi.o include/spi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 ${OBJECTDIR}/_ext/1360938359/twi.o: ../twi/twi.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/1360938359"
 	@${RM} ${OBJECTDIR}/_ext/1360938359/twi.o.d
 	@${RM} ${OBJECTDIR}/_ext/1360938359/twi.o
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT ${OBJECTDIR}/_ext/1360938359/twi.o  -o ${OBJECTDIR}/_ext/1360938359/twi.o ../twi/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega8 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums  -I "include" -I "../twi" -Wall -MD -MP -MF "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT "${OBJECTDIR}/_ext/1360938359/twi.o.d" -MT ${OBJECTDIR}/_ext/1360938359/twi.o  -o ${OBJECTDIR}/_ext/1360938359/twi.o ../twi/twi.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf
 
 endif
 

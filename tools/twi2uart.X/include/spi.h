@@ -17,8 +17,7 @@ extern "C" {
 
   extern void spiInit();
   extern bool spiIsBusy();
-  extern uint8_t spiGetDataAvailable();
-  extern uint8_t spiGetData(TDataPacket* buffer);
+  extern bool spiPollData(TDataPacket* buffer);
   extern void spiWriteData(TDataPacket* buffer);
 
 
