@@ -15,6 +15,9 @@
  */
 package at.or.reder.tools.fieldtest.model;
 
+import java.util.Collection;
+import java.util.EnumSet;
+
 public enum State
 {
   KEY_PRESSED(0x01),
@@ -30,6 +33,28 @@ public enum State
   public int getMagic()
   {
     return magic;
+  }
+
+  public static EnumSet<State> bitfieldToSet(int field)
+  {
+    EnumSet<State> result = EnumSet.noneOf(State.class);
+    for (State s : values()) {
+      if ((s.getMagic() & field) != 0) {
+        result.add(s);
+      }
+    }
+    return result;
+  }
+
+  public static int setToBitfield(Collection<State> states)
+  {
+    int result = 0;
+    if (states != null) {
+      for (State s : states) {
+        result += s.getMagic();
+      }
+    }
+    return result;
   }
 
 }

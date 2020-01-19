@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.TooManyListenersException;
@@ -39,7 +40,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -66,8 +67,10 @@ public final class FieldImpl implements Field
   private final Object lock = new Object();
   private final ByteBuffer returnValue = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
   private final ExecutorService exec = Executors.newSingleThreadExecutor();
-  private final AtomicBoolean keyPressed = new AtomicBoolean();
+  private final EnumSet<State> moduleState = EnumSet.noneOf(State.class);
   private final Set<ChangeListener> keyChangeListener = new CopyOnWriteArraySet<>();
+  private final AtomicReference<ModuleState> lastSymbolState = new AtomicReference<>();
+  private final AtomicReference<ModuleType> lastSymbolType = new AtomicReference<>();
   private final ChangeEvent event = new ChangeEvent(this);
 
   public FieldImpl(SerialPort port,
@@ -87,7 +90,21 @@ public final class FieldImpl implements Field
   @Override
   public boolean isKeyPressed()
   {
-    return keyPressed.get();
+    synchronized (moduleState) {
+      return moduleState.contains(State.KEY_PRESSED);
+    }
+  }
+
+  @Override
+  public Set<State> getLastState()
+  {
+    synchronized (moduleState) {
+      if (moduleState.isEmpty()) {
+        return Collections.emptySet();
+      } else {
+        return EnumSet.copyOf(moduleState);
+      }
+    }
   }
 
   @Override
@@ -160,7 +177,6 @@ public final class FieldImpl implements Field
         int b;
         do {
           b = is.read();
-          System.err.println("read 0x" + Integer.toHexString(b));
           switch (newState) {
             case ACK_PENDING:
               newState = doAckPending(b);
@@ -184,8 +200,18 @@ public final class FieldImpl implements Field
       setState(newState,
                wasPending);
       if (!wasPending && error == null) {
-        System.err.println("keyevent@" + newState);
-        keyPressed.set(returnValue.get(2) != 0);
+        Set<State> states = State.bitfieldToSet(returnValue.get(2));
+        ModuleState ms = null;
+        try {
+          ms = ModuleState.valueOf(lastSymbolType.get(),
+                                   returnValue.get(3));
+        } catch (Throwable th) {
+        }
+        synchronized (moduleState) {
+          moduleState.clear();
+          moduleState.addAll(states);
+          lastSymbolState.set(ms);
+        }
         returnValue.rewind();
         SwingUtilities.invokeLater(this::fireChange);
       }
@@ -220,18 +246,7 @@ public final class FieldImpl implements Field
         lock.wait(WAIT_FOR_STATE);
       }
       if (this.state == expectendState) {
-        if (expectedState == ReaderState.IDLE) {
-          int a = returnValue.get(0) & 0xff;
-          int b = returnValue.get(1) & 0xff;
-          int c = returnValue.get(2) & 0xff;
-          int d = returnValue.get(3) & 0xff;
-          System.err.println("a=0x" + Integer.toHexString(a));
-          System.err.println("b=0x" + Integer.toHexString(b));
-          System.err.println("c=0x" + Integer.toHexString(c));
-          System.err.println("d=0x" + Integer.toHexString(d));
-        }
         result = returnValue.getShort(1) & 0xffff;
-        System.err.println("result=0x" + Integer.toHexString(result));
       } else {
         result = -1;
       }
@@ -335,11 +350,10 @@ public final class FieldImpl implements Field
   public Set<State> getState() throws IOException, TimeoutException, InterruptedException
   {
     int tmp = receive(Register.STATE);
-    EnumSet<State> result = EnumSet.noneOf(State.class);
-    for (State s : State.values()) {
-      if ((tmp & s.getMagic()) != 0) {
-        result.add(s);
-      }
+    EnumSet<State> result = State.bitfieldToSet(tmp);
+    synchronized (moduleState) {
+      moduleState.clear();
+      moduleState.addAll(result);
     }
     return result;
   }
@@ -474,10 +488,18 @@ public final class FieldImpl implements Field
   }
 
   @Override
+  public ModuleType getLastModuleType()
+  {
+    return lastSymbolType.get();
+  }
+
+  @Override
   public ModuleType getModuleType() throws IOException, TimeoutException, InterruptedException
   {
     int tmp = receive(Register.MODULE_TYPE);
-    return ModuleType.valueOfMagic(tmp);
+    ModuleType type = ModuleType.valueOfMagic(tmp);
+    lastSymbolType.set(type);
+    return type;
   }
 
   @Override
@@ -486,6 +508,13 @@ public final class FieldImpl implements Field
     send(Register.MODULE_TYPE,
          Operation.WRITE,
          type.getMagic());
+    lastSymbolType.set(type);
+  }
+
+  @Override
+  public ModuleState getLastModuleState()
+  {
+    return lastSymbolState.get();
   }
 
   @Override
@@ -493,7 +522,9 @@ public final class FieldImpl implements Field
   {
     int magic = receive(Register.MODULE_STATE);
     if (magic != -1) {
-      return ModuleState.valueOf(magic);
+      ModuleState result = ModuleState.valueOf(magic);
+      lastSymbolState.set(result);
+      return result;
     }
     throw new IOException("Cannot read Module state");
   }
@@ -505,6 +536,7 @@ public final class FieldImpl implements Field
     send(Register.MODULE_STATE,
          Operation.WRITE,
          magic);
+    lastSymbolState.set(ms);
   }
 
   @Override

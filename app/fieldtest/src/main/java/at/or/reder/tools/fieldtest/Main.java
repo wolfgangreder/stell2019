@@ -31,6 +31,7 @@ import gnu.io.RXTXPort;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -66,7 +67,7 @@ public class Main extends javax.swing.JFrame
 
   private void onKeyChanged(ChangeEvent evt)
   {
-    ckKeyPressed.setSelected(field.isKeyPressed());
+    showModuleState(field.getLastState());
   }
 
   private void readAll()
@@ -879,10 +880,7 @@ public class Main extends javax.swing.JFrame
   private void jButton13ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton13ActionPerformed
   {//GEN-HEADEREND:event_jButton13ActionPerformed
     try {
-      Set<State> state = field.getState();
-      ckKeyPressed.setSelected(state.contains(State.KEY_PRESSED));
-      ckBrownOut.setSelected(state.contains(State.BO_ERROR));
-      ckWatchdog.setSelected(state.contains(State.WDT_ERROR));
+      showModuleState(field.getState());
     } catch (IOException | TimeoutException | InterruptedException ex) {
       Logger.getLogger(Main.class.getName()).log(Level.SEVERE,
                                                  null,
@@ -1099,6 +1097,14 @@ public class Main extends javax.swing.JFrame
     cbThreeway.setEnabled(moduleType == ModuleType.DW1 || moduleType == ModuleType.DW2 || moduleType == ModuleType.DW3);
     cbTurnout.setEnabled(moduleType == ModuleType.W1 || moduleType == ModuleType.W2 || moduleType == ModuleType.W3 || moduleType
                                                                                                                               == ModuleType.W4);
+  }
+
+  private void showModuleState(Collection<State> state)
+  {
+    ckKeyPressed.setSelected(state.contains(State.KEY_PRESSED));
+    ckBrownOut.setSelected(state.contains(State.BO_ERROR));
+    ckWatchdog.setSelected(state.contains(State.WDT_ERROR));
+    setModuleState(field.getLastModuleState());
   }
 
   /**

@@ -252,10 +252,7 @@ extern "C" {
   }
 
   inline void disableSwitch() {
-    MCUCR &= SWITCH_MCU_AND & ~SWITCH_MCU_OR;
     GICR &= ~SWITCH_INT_ENABLE;
-    SWITCH_DIR &= ~_BV(SWITCH);
-    SWITCH_PORT &= ~_BV(SWITCH);
   }
 
 

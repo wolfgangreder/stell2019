@@ -18,6 +18,34 @@ package at.or.reder.tools.fieldtest.model;
 public interface ModuleState
 {
 
+  public static int moduleTypeMagic(int magic)
+  {
+    return (magic & 0xff00) >> 8;
+  }
+
+  public static int ledStateMagic(int magic)
+  {
+    return magic & 0xf;
+  }
+
+  public static int moduleStateMagic(int magic)
+  {
+    return (magic & 0xf0) >> 4;
+  }
+
+  public static ModuleState valueOf(ModuleType type,
+                                    int stateMagic)
+  {
+    LedState ls = LedState.valueOfMagic(ledStateMagic(stateMagic));
+    int ms = moduleStateMagic(stateMagic);
+    if (type != null && ls != null) {
+      return valueOf(type,
+                     ls,
+                     ms);
+    }
+    return null;
+  }
+
   public static ModuleState valueOf(ModuleType type,
                                     LedState ls,
                                     int ms)
@@ -108,9 +136,9 @@ public interface ModuleState
   public static ModuleState valueOf(int magic)
   {
     if (magic != -1) {
-      ModuleType type = ModuleType.valueOfMagic((magic & 0xff00) >> 8);
-      int ls = (magic & 0xf);
-      int ms = (magic & 0xf0) >> 4;
+      ModuleType type = ModuleType.valueOfMagic(moduleTypeMagic(magic));
+      int ls = ledStateMagic(magic);
+      int ms = moduleStateMagic(magic);
       if (type == ModuleType.UNKNOWN) {
         throw new IllegalArgumentException("Unknown Module type");
       }

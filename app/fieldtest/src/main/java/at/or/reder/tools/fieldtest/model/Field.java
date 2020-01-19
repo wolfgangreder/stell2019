@@ -31,6 +31,8 @@ public interface Field extends AutoCloseable
 
   public boolean isKeyPressed();
 
+  public Set<State> getLastState();
+
   public Set<State> getState() throws IOException, TimeoutException, InterruptedException;
 
   public int getLeds() throws IOException, TimeoutException, InterruptedException;
@@ -67,9 +69,13 @@ public interface Field extends AutoCloseable
 
   public void setDebounce(int deb) throws IOException, TimeoutException, InterruptedException;
 
+  public ModuleType getLastModuleType();
+
   public ModuleType getModuleType() throws IOException, TimeoutException, InterruptedException;
 
   public void setModuleType(ModuleType type) throws IOException, TimeoutException, InterruptedException;
+
+  public ModuleState getLastModuleState();
 
   public ModuleState getModuleState() throws IOException, TimeoutException, InterruptedException;
 

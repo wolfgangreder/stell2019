@@ -6,13 +6,15 @@
 #ifdef COMM_USART
 #  include "comm.h"
 #else
-#  include "twi_old.h"
+#  include "twi.h"
+#  include "symbols.h"
 #endif
 
 volatile uint8_t currentBlinkPhase;
 static volatile uint8_t blinkScale;
 static volatile uint8_t currentPWM;
 static volatile uint8_t debouncePhase;
+static volatile bool switchArmed;
 static volatile bool switchState;
 static uint8_t blinkPrescale;
 
@@ -46,6 +48,7 @@ void initHW()
   ICR1 = MS_TIMER_OCR;
   TCCR1B = _BV(WGM12) + _BV(WGM13) + MS_TIMER_PRESCALE;
   switchState = isKeyPressed();
+  disableSwitch();
 }
 
 inline void ledOn()
@@ -58,7 +61,12 @@ inline void ledOn()
 
 void startDebounceTimer()
 {
-  debouncePhase = eepromFile.debounce;
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    debouncePhase = eepromFile.debounce;
+    switchArmed = 1;
+  }
 }
 
 void sendKeyEvent()
@@ -82,19 +90,24 @@ void sendKeyEvent()
 
 ISR(TIMER1_CAPT_vect)
 {
-  if (debouncePhase == 1) {
-    --debouncePhase;
-    uint8_t savedSwitchState = switchState;
-    uint8_t ss = switchState;
-    savedSwitchState = isKeyPressed();
-    if (ss != savedSwitchState) {
-      registerFile.key_pressed = savedSwitchState;
-      sendKeyEvent();
+  if (switchArmed) {
+    if (debouncePhase == 1) {
+      --debouncePhase;
+      switchArmed = 0;
+      uint8_t savedSwitchState = switchState;
+      uint8_t ss = switchState;
+      savedSwitchState = isKeyPressed();
+      if (ss != savedSwitchState) {
+        registerFile.key_pressed = savedSwitchState;
+        sendKeyEvent();
+      }
+      switchState = savedSwitchState;
+      if (isFunctionModule(eepromFile.moduletype)) {
+        enableSwitch();
+      }
+    } else {
+      --debouncePhase;
     }
-    switchState = savedSwitchState;
-    enableSwitch();
-  } else {
-    --debouncePhase;
   }
 }
 
@@ -319,7 +332,7 @@ uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 
 uint16_t processState()
 {
-  return registerFile.state & 0xff;
+  return (registerFile.state & 0xff) + ((registerFile.modulstate & 0xff) << 8);
 }
 
 uint16_t processDebounce(uint8_t val, operation_t operation)

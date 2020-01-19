@@ -38,8 +38,13 @@ extern "C" {
     UNDEFINED = 0xff
   } module_t;
 
-#define IS_FUNCTION_MODULE(s) ((s)&0x80)
-#define IS_STATEFUL_MODULE(S) ((s)&0x40)
+  inline bool isFunctionModule(module_t module) {
+    return (module & 0x80) != 0;
+  }
+
+  inline bool isStatefuleModule(module_t module) {
+    return (module & 0x40) != 0;
+  }
 
   typedef enum {
     LED_OFF = 0x0,

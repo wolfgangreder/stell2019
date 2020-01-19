@@ -142,6 +142,23 @@ int main(void)
   registerFile.bo_error = resetSource & _BV(BORF);
   registerFile.wdt_error = resetSource & _BV(WDRF);
   sei(); //set global interrupt enable
+  if (registerFile.state != 0) {
+#  ifdef COMM_USART
+    uint8_t msg[3];
+    msg[0] = 6;
+    msg[1] = registerFile.state;
+    msg[2] = registerFile.modulstate;
+    writeBytesUsart(msg, sizeof (msg));
+#  else
+    TDataPacket msg;
+    msg.txSlaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
+    msg.txOwnAddress = eepromFile.address;
+
+    msg.txA = registerFile.state;
+    msg.txB = registerFile.modulstate;
+    twiSendData(&msg);
+#  endif
+  }
   for (;;) {
     wdt_reset();
     if (!twiIsBusy()) {

@@ -70,7 +70,7 @@ void initModule()
   }
   DDR_LED = ledMask; // Ledausgänge
   PORT_LED = ledMask; // alle leds aus
-  if (IS_FUNCTION_MODULE(moduletype)) {
+  if (isFunctionModule(moduletype)) {
     enableSwitch();
   } else {
     disableSwitch();
