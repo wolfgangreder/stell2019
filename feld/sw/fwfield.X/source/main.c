@@ -63,8 +63,7 @@ EEMEM TEEPromFile ee_eepromFile = {.address = TWI_ADDRESS,
   .defaultPWM = 100,
   .twibaud = BAUD_TWI,
   .twipresc = PRESC_TWI,
-  .masterAddress = 1,
-  .featureControl = 0};
+  .masterAddress = 1};
 TEEPromFile eepromFile;
 const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR};
 TFlashFile flashFile;
@@ -96,8 +95,6 @@ uint16_t processCommand(TDataPacket* cmd)
       return processVCCCalibration(cmd->rxData, cmd->rxRegisterOperation);
     case REG_DEBOUNCE:
       return processDebounce(cmd->rxData, cmd->rxRegisterOperation);
-    case REG_FEATURE_CONTROL:
-      return processFeatureControl(cmd->rxData, cmd->rxRegisterOperation);
     case REG_VERSION:
       return processFirmwareVersion();
 
@@ -150,16 +147,11 @@ int main(void)
         commandBuf.txWData = processCommand(&commandBuf);
         commandBuf.txSlaveAddress = MAKE_ADDRESS_W(eepromFile.masterAddress);
         commandBuf.txOwnAddress = eepromFile.address;
-        IND_1_ON;
         twiStartSlaveWithData(&commandBuf);
       } else {
         processCommand(&commandBuf);
       }
     }
-    IND_0_OFF;
-    IND_1_OFF;
-    IND_2_OFF;
-    IND_3_OFF;
   }
 }
 

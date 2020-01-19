@@ -33,7 +33,7 @@ extern "C" {
 
 
 #ifndef IND_DEBUG
-#define IND_DEBUG 1
+#define IND_DEBUG 0
 #endif
 
 #if IND_DEBUG==1
@@ -145,7 +145,6 @@ extern "C" {
 #define REG_SOFTSTOP (OFFSET_EEPROM+offsetof(TEEPromFile,softstop))
 #define REG_VCC_CALIBRATION (OFFSET_EEPROM+offsetof(TEEPromFile,vcc_calibration))
 #define REG_DEFAULT_PWM (OFFSET_EEPROM+offsetof(TEEPromFile,defaultPWM))
-#define REG_FEATURE_CONTROL (OFFSET_EEPROM+offsetof(TEEPromFile,featureControl))
 #define REG_VERSION (OFFSET_FLASH+offsetof(TFlashFile,fw_major))
 
   typedef struct {
@@ -168,9 +167,6 @@ extern "C" {
     uint8_t twipresc;
     uint16_t masterAddress;
 
-    union {
-      uint8_t featureControl;
-    };
   } TEEPromFile;
 
   typedef struct {
@@ -273,7 +269,6 @@ extern "C" {
   extern uint16_t processVCC();
   extern uint16_t processVCCCalibration(uint8_t cal, operation_t operation);
   extern uint16_t processDebounce(uint8_t val, operation_t operation);
-  extern uint16_t processFeatureControl(uint8_t val, operation_t operation);
   extern uint16_t processFirmwareVersion();
   extern uint16_t processModuleType(uint8_t moduleType, operation_t operation);
 

@@ -27,7 +27,6 @@ void initHW()
   memcpy_P(&flashFile, &fl_flashFile, sizeof (TFlashFile));
   registerFile.blinkdivider = 4;
   processPWM(eepromFile.defaultPWM, OP_WRITE);
-  processFeatureControl(eepromFile.featureControl, OP_WRITE);
   currentPWM = registerFile.pwm;
   TCCR0 = _BV(WGM01) + _BV(WGM00) + _BV(CS02); // fast PWM; fosc/256
   TIMSK |= _BV(OCIE0) + _BV(TOIE0);
@@ -297,22 +296,18 @@ uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 {
   switch (operation) {
     case OP_READ:
-      IND_0_ON;
       return registerFile.blinkdivider;
     case OP_WRITE:
-      IND_1_ON;
       if (val != 0) {
         registerFile.blinkdivider = val;
       }
       return registerFile.blinkdivider;
     case OP_DECREMENT:
-      IND_2_ON;
       if (registerFile.blinkdivider > 1) {
         registerFile.blinkdivider--;
       }
       return registerFile.blinkdivider;
     case OP_INCREMENT:
-      IND_3_ON;
       if (registerFile.blinkdivider < 255) {
         registerFile.blinkdivider++;
       }
@@ -325,19 +320,6 @@ uint16_t processBlinkDivider(uint8_t val, operation_t operation)
 uint16_t processState()
 {
   return registerFile.state & 0xff;
-}
-
-uint16_t processFeatureControl(uint8_t val, operation_t operation)
-{
-  switch (operation) {
-    case OP_READ:
-      return eepromFile.featureControl;
-    case OP_WRITE:
-      eepromFile.featureControl = val;
-      return val;
-    default:
-      return -1;
-  }
 }
 
 uint16_t processDebounce(uint8_t val, operation_t operation)

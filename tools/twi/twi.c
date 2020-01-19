@@ -80,7 +80,6 @@ void twiInit(uint16_t ownAddress, uint8_t twiBaud, bool genCall)
 {
   TWAR = (ownAddress << TWI_ADR_BITS) | (genCall ? _BV(TWI_GEN_BIT) : 0);
   TWBR = twiBaud;
-  TWDR = 0xff;
   TWCR = (1 << TWEN) | // Enable TWI-interface and release TWI pins.
       (0 << TWIE) | (0 << TWINT) | // Disable TWI Interrupt.
       (0 << TWEA) | (0 << TWSTA) | (0 << TWSTO) | // Do not ACK on any requests, yet.
@@ -283,7 +282,6 @@ ISR(TWI_vect)
               TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
             }
           } else {
-            TWDR = 0xff;
             TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWIE);
           }
           break;
@@ -339,9 +337,17 @@ ISR(TWI_vect)
           TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWIE) | _BV(TWEN);
           break;
         case TWI_MRX_DATA_ACK://           0x50  // Data byte has been received and ACK transmitted
-          if (rxAvail<sizeof (rxBuffer)) {
+          if (rxAvail<sizeof (TDataPacket)) {
             rxBuffer[rxAvail++] = TWDR;
-            TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
+            if (rxAvail<sizeof (rxBuffer)) {
+              TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE);
+            } else {
+              TWI_statusReg.all = 0;
+              TWI_statusReg.lastTransOK = 1;
+              TWI_statusReg.rxDataInBuf = 1;
+              txOffset = 0xff;
+              TWCR = _BV(TWINT) | _BV(TWEN) | _BV(TWSTO);
+            }
           } else {
             TWI_statusReg.all = 0;
             TWI_statusReg.lastTransOK = 1;

@@ -69,7 +69,10 @@ extern "C" {
   typedef enum {
     S_STOP = 0x0,
     S_FREE = 0x1,
-    S_PENDING = 0x2
+    S_PENDING = 0x2,
+    S_OFF_STOP = 0x3,
+    S_OFF_FREE = 0x04,
+    S_OFF_PENDING = 0x05
   } state_s_t;
 
   typedef uint8_t modulestate_t;

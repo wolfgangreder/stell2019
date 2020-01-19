@@ -16,7 +16,6 @@
 package at.or.reder.tools.fieldtest.model;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import javax.swing.event.ChangeListener;
@@ -33,10 +32,6 @@ public interface Field extends AutoCloseable
   public boolean isKeyPressed();
 
   public Set<State> getState() throws IOException, TimeoutException, InterruptedException;
-
-  public Set<Feature> getFeatures() throws IOException, TimeoutException, InterruptedException;
-
-  public void setFeatures(Collection<Feature> f) throws IOException, TimeoutException, InterruptedException;
 
   public int getLeds() throws IOException, TimeoutException, InterruptedException;
 

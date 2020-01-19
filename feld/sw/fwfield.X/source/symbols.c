@@ -377,7 +377,7 @@ uint8_t applyStateSemaphore(module_t type, modulestate_t state)
 {
   state_led_t ledstate = LEDSTATE(state);
   state_s_t semaphore = SEMAPHORESTATE(state);
-  uint8_t leds = ledstate != LED_OFF ? _BV(LED_4) | _BV(LED_5) : 0;
+  uint8_t leds = (ledstate != LED_OFF && semaphore != S_OFF_FREE && semaphore != S_OFF_PENDING && semaphore != S_OFF_STOP) ? _BV(LED_4) | _BV(LED_5) : 0;
   uint8_t blink = ledstate == LED_BLINK ? _BV(LED_4) | _BV(LED_5) : 0;
   uint8_t phase = 0;
   if (ledstate == LED_LAMPTEST) {
@@ -388,18 +388,21 @@ uint8_t applyStateSemaphore(module_t type, modulestate_t state)
       case SEM_E:
         switch (semaphore) {
           case S_STOP:
+          case S_OFF_STOP:
             leds |= _BV(LED_3);
             if (ledstate == LED_BLINK) {
               blink |= _BV(LED_3);
             }
             break;
           case S_FREE:
+          case S_OFF_FREE:
             leds |= _BV(LED_2);
             if (ledstate == LED_BLINK) {
               blink |= _BV(LED_2);
             }
             break;
           case S_PENDING:
+          case S_OFF_PENDING:
             leds |= _BV(LED_3) | _BV(LED_2);
             blink |= _BV(LED_3) | _BV(LED_2);
             phase = _BV(LED_2);
@@ -411,18 +414,21 @@ uint8_t applyStateSemaphore(module_t type, modulestate_t state)
       case SEM_W:
         switch (semaphore) {
           case S_STOP:
+          case S_OFF_STOP:
             leds |= _BV(LED_1);
             if (ledstate == LED_BLINK) {
               blink |= _BV(LED_1);
             }
             break;
           case S_FREE:
+          case S_OFF_FREE:
             leds |= _BV(LED_2);
             if (ledstate == LED_BLINK) {
               blink |= _BV(LED_2);
             }
             break;
           case S_PENDING:
+          case S_OFF_PENDING:
             leds |= _BV(LED_1) | _BV(LED_2);
             blink |= _BV(LED_1) | _BV(LED_2);
             phase = _BV(LED_2);

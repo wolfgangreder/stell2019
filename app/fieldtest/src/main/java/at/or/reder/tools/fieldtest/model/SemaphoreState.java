@@ -20,6 +20,9 @@ public enum SemaphoreState
   STOP(0),
   FREE(1),
   PENDING(2),
+  OFF_STOP(3),
+  OFF_FREE(4),
+  OFF_PENDING(5),
   UNKNOWN(0xff);
 
   private final int magic;
