@@ -20,3 +20,13 @@
 /tools/twi2uart.X/build/
 /tools/twi2uart.X/dist/
 /app/fieldtest/target/
+/app/driver/.*
+*.o
+*.mod*
+*.ko
+*.ko.*
+*.o.*
+*.mod.*
+/app/driver/modules.order
+/app/driver/Module.symvers
+/app/driver/nbproject/private/

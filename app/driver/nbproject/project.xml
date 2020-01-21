@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://www.netbeans.org/ns/project/1">
-    <type>com.microchip.mplab.nbide.embedded.makeproject</type>
+    <type>org.netbeans.modules.cnd.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>twi2uart</name>
-            <creation-uuid>c16c17d2-251b-4f9f-b505-78ca5405ece3</creation-uuid>
-            <make-project-type>0</make-project-type>
+            <name>driver</name>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>
-            <header-extensions>h</header-extensions>
-            <asminc-extensions/>
+            <header-extensions/>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>include</sourceRootElem>
-                <sourceRootElem>source</sourceRootElem>
+                <sourceRootElem>.</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>default</name>
-                    <type>2</type>
+                    <name>Default</name>
+                    <type>0</type>
                 </confElem>
             </confList>
             <formatting>
-                <project-formatting-style>false</project-formatting-style>
+                <project-formatting-style>true</project-formatting-style>
+                <c-style>Linux|Linux</c-style>
+                <cpp-style>Linux|Linux</cpp-style>
+                <header-style>Linux|Linux</header-style>
             </formatting>
         </data>
     </configuration>
