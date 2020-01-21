@@ -2,7 +2,7 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 
-#define STELL_ALERT "<1>::stell2019::"
+#define STELL_ALERT KERN_ALERT"::stell2019::"
 
 MODULE_LICENSE("Apache-2.0");
 MODULE_AUTHOR("Wolfgang Reder");
