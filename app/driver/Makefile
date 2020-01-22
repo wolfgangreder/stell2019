@@ -1,9 +1,11 @@
-
+MODULE := stell2019
+MODE := 664
+GROUP := users
 # If KERNELRELEASE is defined, we've been invoked from the
 # kernel build system and can use its language.
 ifneq ($(KERNELRELEASE),)
 
-obj-m := stell2019.o
+obj-m := $(MODULE).o
 #stell2019-y := stell2019.c
 # Otherwise we were called directly from the command
 # line; invoke the kernel build system.
@@ -19,10 +21,10 @@ clean:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
 
 install: 
-	@sudo $(PWD)/install.sh
+	$(PWD)/install.sh $(MODULE) $(MODULE) $(MODE)
 
 uninstall: 
-	@sudo $(PWD)/uninstall.sh
+	$(PWD)/uninstall.sh $(MODULE) $(MODULE)
 
-all: modules install
+
 endif

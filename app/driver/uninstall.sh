@@ -1,7 +1,7 @@
 #!/bin/sh
 
-module="stell2019"
-device="stell"
+module=$1
+device=$2
 
 rm -f /dev/${device}
 /sbin/rmmod $module

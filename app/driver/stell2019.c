@@ -15,7 +15,7 @@ static int stell_init(void)
 	int result;
 
 	deviceNumber = MKDEV(0, 0);
-	result = alloc_chrdev_region(&deviceNumber, 0, 1, "/dev/stell");
+	result = alloc_chrdev_region(&deviceNumber, 0, 1, "stell2019");
 	printk(STELL_ALERT "Hello, world, im am device %u:%u\n", MAJOR(deviceNumber), MINOR(deviceNumber));
 	return result;
 }
