@@ -1,4 +1,3 @@
-DEVICE_NAME=stell
 
 # If KERNELRELEASE is defined, we've been invoked from the
 # kernel build system and can use its language.
@@ -11,22 +10,19 @@ obj-m := stell2019.o
 else
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
-default:
+default: modules
+	
+modules:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
 clean:
-	@rm -f *.o
-	@rm -f *.mod*
-	@rm -f *.ko
-	@rm -f modules.order
-	@rm -f Module.symvers
-	@rm -R -f .tmp*
-	@rm -f .stell*
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
 
-install:
-	install.sh
+install: 
+	@sudo $(PWD)/install.sh
 
-uninstall:
-	uninstall.sh
+uninstall: 
+	@sudo $(PWD)/uninstall.sh
 
+all: modules install
 endif
