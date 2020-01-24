@@ -1,6 +1,8 @@
 MODULE := stell2019
 MODE := 664
 GROUP := users
+
+CONFIG_MODULE_SIG=n
 # If KERNELRELEASE is defined, we've been invoked from the
 # kernel build system and can use its language.
 ifneq ($(KERNELRELEASE),)
@@ -13,17 +15,17 @@ else
 KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
 default: modules
-	
+
 modules:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
 clean:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
 
-install: 
+install:
 	$(PWD)/install.sh $(MODULE) $(MODULE) $(MODE)
 
-uninstall: 
+uninstall:
 	$(PWD)/uninstall.sh $(MODULE) $(MODULE)
 
 
