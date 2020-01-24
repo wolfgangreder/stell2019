@@ -27,7 +27,7 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
-                 commonFlags="-fshort-wchar -std=gnu89 -m64 -mtune=generic -O2 -fstack-protector-strong -g"/>
+                 commonFlags="-fshort-wchar -std=gnu89 -m64 -mtune=generic -O2 -fstack-protector -g"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -39,22 +39,23 @@
           <executablePath></executablePath>
           <cTool>
             <incDir>
-              <pElem>/usr/lib64/gcc/x86_64-suse-linux/9/include</pElem>
-              <pElem>/usr/src/linux-5.4.13-1/arch/x86/include</pElem>
-              <pElem>/usr/src/linux-5.4.13-1-obj/x86_64/default/arch/x86/include/generated</pElem>
-              <pElem>/usr/src/linux-5.4.13-1/include</pElem>
-              <pElem>/usr/src/linux-5.4.13-1-obj/x86_64/default/include</pElem>
-              <pElem>/usr/src/linux-5.4.13-1/arch/x86/include/uapi</pElem>
-              <pElem>/usr/src/linux-5.4.13-1-obj/x86_64/default/arch/x86/include/generated/uapi</pElem>
-              <pElem>/usr/src/linux-5.4.13-1/include/uapi</pElem>
-              <pElem>/usr/src/linux-5.4.13-1-obj/x86_64/default/include/generated/uapi</pElem>
-              <pElem>/usr/src/linux-5.4.13-1-obj/x86_64/default</pElem>
+              <pElem>/usr/lib64/gcc/x86_64-suse-linux/7/include</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82/arch/x86/include</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82-obj/x86_64/default/arch/x86/include/generated/uapi</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82-obj/x86_64/default/arch/x86/include/generated</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82/include</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82-obj/x86_64/default/include</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82/arch/x86/include/uapi</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82/include/uapi</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82-obj/x86_64/default/include/generated/uapi</pElem>
+              <pElem>.</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82-obj/x86_64/default</pElem>
             </incDir>
             <incFile>
-              <pElem>/usr/src/linux-5.4.13-1/include/linux/kconfig.h</pElem>
-              <pElem>/usr/src/linux-5.4.13-1/include/linux/compiler_types.h</pElem>
+              <pElem>/usr/src/linux-4.12.14-lp150.12.82/include/linux/kconfig.h</pElem>
             </incFile>
             <preprocessorList>
+              <Elem>CC_HAVE_ASM_GOTO</Elem>
               <Elem>CC_USING_FENTRY</Elem>
               <Elem>CONFIG_AS_AVX2=1</Elem>
               <Elem>CONFIG_AS_AVX512=1</Elem>
@@ -62,6 +63,8 @@
               <Elem>CONFIG_AS_CFI=1</Elem>
               <Elem>CONFIG_AS_CFI_SECTIONS=1</Elem>
               <Elem>CONFIG_AS_CFI_SIGNAL_FRAME=1</Elem>
+              <Elem>CONFIG_AS_CRC32=1</Elem>
+              <Elem>CONFIG_AS_FXSAVEQ=1</Elem>
               <Elem>CONFIG_AS_SHA1_NI=1</Elem>
               <Elem>CONFIG_AS_SHA256_NI=1</Elem>
               <Elem>CONFIG_AS_SSSE3=1</Elem>
@@ -69,6 +72,7 @@
               <Elem>KBUILD_BASENAME="stell2019"</Elem>
               <Elem>KBUILD_MODNAME="stell2019"</Elem>
               <Elem>MODULE</Elem>
+              <Elem>RETPOLINE</Elem>
               <Elem>__KERNEL__</Elem>
             </preprocessorList>
           </cTool>
@@ -81,6 +85,8 @@
       <item path="stell2019.c" ex="false" tool="0" flavor2="0">
         <cTool flags="0">
         </cTool>
+      </item>
+      <item path="stell2019.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="stell2019.mod.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
