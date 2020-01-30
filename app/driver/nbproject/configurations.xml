@@ -86,8 +86,6 @@
         <cTool flags="0">
         </cTool>
       </item>
-      <item path="stell2019.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="stell2019.mod.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
           <preprocessorList>
