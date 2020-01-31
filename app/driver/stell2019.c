@@ -28,9 +28,16 @@ static int stell_remove(struct spi_device *spi)
 	return -1;
 }
 
+static int setupSpi(struct stell_dev* dev)
+{
+	return -1;
+}
+
 static int stell_open(struct inode * inode, struct file * file)
 {
 	struct stell_dev* dev;
+	int result;
+
 	dev = container_of(inode->i_cdev, struct stell_dev, cdev);
 	spin_lock(&dev->spin);
 	if (dev->ownerProcess) {
@@ -39,6 +46,10 @@ static int stell_open(struct inode * inode, struct file * file)
 	}
 	dev->ownerProcess = current;
 	spin_unlock(&dev->spin);
+	result = setupSpi(dev);
+	if (result) {
+		return result;
+	}
 	printk(STELL_ALERT"stell_open called\n");
 	return 0;
 }
@@ -70,7 +81,7 @@ static ssize_t stell_read(struct file * file, char __user * __buffer, size_t num
 {
 	printk(STELL_ALERT"stell_read called\n");
 	if (!__buffer) {
-		return -1;
+		return -EFAULT;
 	}
 	return numBytes;
 }
@@ -80,6 +91,7 @@ static ssize_t stell_write(struct file * file, const char __user * __buffer, siz
 	printk(STELL_ALERT"stell_write called\n");
 	return -1;
 }
+
 
 static const struct spi_device_id stell2019_id_table[] = {
 	{

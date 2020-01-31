@@ -51,6 +51,7 @@ bool spiIsBusy()
 bool spiPollData(TDataPacket* dataBuffer)
 {
   bool result = 0;
+#if SPI_ENABLED==1
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
   {
@@ -61,6 +62,7 @@ bool spiPollData(TDataPacket* dataBuffer)
       offset = 0;
     }
   }
+#endif
   return result;
 }
 

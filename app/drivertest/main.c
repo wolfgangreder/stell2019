@@ -26,15 +26,27 @@ void printError()
 
 int main(int argc, char** argv)
 {
+	int result = EXIT_SUCCESS;
 	int f = open("/dev/stell2019", O_RDWR);
 	if (f < 0) {
 		printError();
-		return(EXIT_FAILURE);
+		result = (EXIT_FAILURE);
+		goto exit;
 	}
 	unsigned char buffer[4];
 	size_t bread = read(f, buffer, sizeof(buffer));
-	bread = read(f, 0, sizeof(buffer));
+	if (bread == -1) {
+		printError();
+		goto cleanup;
+	}
+	bread = read(f, buffer, sizeof(buffer));
+	if (bread == -1) {
+		printError();
+		goto cleanup;
+	}
+cleanup:
 	close(f);
-	return(EXIT_SUCCESS);
+exit:
+	return result;
 }
 
