@@ -17,5 +17,47 @@ limitations under the License.
 
 
 <layout>
-  <mapping></mapping>
+  <fields>
+    <track label="G107.1" decoder="-1" port="-1" field="20"/>
+    <turnout label="W1" decoder="6" port="0" field="4">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W2" decoder="6" port="2" field="5">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W3" decoder="7" port="0" field="6">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W4" decoder="7" port="2" field="7">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W5" decoder="8" port="0" field="8">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W6" decoder="8" port="2" field="9">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W7" decoder="9" port="0" field="10">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W8" decoder="9" port="2" field="11">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W9" decoder="10" port="0" field="12">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+    <turnout label="W10" decoder="10" port="2" field="13">
+      <mapping state="STRAIT" value="0"/>
+      <mapping state="DEFLECTION" value="1"/>
+    </turnout>
+  </fields>
 </layout>

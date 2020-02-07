@@ -15,6 +15,7 @@
  */
 package at.or.reder.rpi.mapping;
 
+import at.or.reder.rpi.field.ModuleType;
 import at.or.reder.rpi.field.TurnoutState;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,9 +88,25 @@ public class TurnoutMapping extends FieldMapping
             forEach(values::add);
   }
 
+  @Override
+  public void setType(ModuleType type)
+  {
+    switch (type) {
+      case W1:
+      case W2:
+      case W3:
+      case W4:
+        super.setType(type);
+        break;
+      default:
+        super.setType(ModuleType.W1);
+    }
+  }
+
   @XmlElement(name = "mapping")
   public List<StatePair> getMappingLists()
   {
     return values;
   }
+
 }

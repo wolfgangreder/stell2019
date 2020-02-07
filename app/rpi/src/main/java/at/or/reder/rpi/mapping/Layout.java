@@ -18,6 +18,8 @@ package at.or.reder.rpi.mapping;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "layout")
@@ -26,9 +28,13 @@ public class Layout
 
   private final List<FieldMapping> mappings = new ArrayList<>();
 
-  @XmlElement(name = "mapping")
+  @XmlElementWrapper(name = "fields")
+  @XmlElements({
+    @XmlElement(type = TurnoutMapping.class, name = "turnout"),
+    @XmlElement(type = TrackMapping.class, name = "track")})
   public List<FieldMapping> getMappings()
   {
     return mappings;
   }
+
 }

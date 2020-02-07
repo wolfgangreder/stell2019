@@ -15,48 +15,70 @@
  */
 package at.or.reder.rpi.mapping;
 
+import at.or.reder.rpi.field.ModuleType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-public abstract class FieldMapping {
+public abstract class FieldMapping
+{
 
+  private ModuleType type;
   private String label;
   private int decoderAddress;
   private int fieldAddress;
   private int port;
 
+  @XmlAttribute(name = "type")
+  public ModuleType getType()
+  {
+    return type;
+  }
+
+  public void setType(ModuleType type)
+  {
+    this.type = type;
+  }
+
   @XmlAttribute(name = "label")
-  public String getLabel() {
+  public String getLabel()
+  {
     return label;
   }
 
-  public void setLabel(String label) {
+  public void setLabel(String label)
+  {
     this.label = label;
   }
 
   @XmlAttribute(name = "decoder")
-  public int getDecoderAddress() {
+  public int getDecoderAddress()
+  {
     return decoderAddress;
   }
 
-  public void setDecoderAddress(int decoderAddress) {
+  public void setDecoderAddress(int decoderAddress)
+  {
     this.decoderAddress = decoderAddress;
   }
 
   @XmlAttribute(name = "field")
-  public int getFieldAddress() {
+  public int getFieldAddress()
+  {
     return fieldAddress;
   }
 
-  public void setFieldAddress(int fieldAddress) {
+  public void setFieldAddress(int fieldAddress)
+  {
     this.fieldAddress = fieldAddress;
   }
 
   @XmlAttribute(name = "port")
-  public int getPort() {
+  public int getPort()
+  {
     return port;
   }
 
-  public void setPort(int port) {
+  public void setPort(int port)
+  {
     this.port = port;
   }
 
