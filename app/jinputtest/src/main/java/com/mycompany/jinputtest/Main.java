@@ -142,7 +142,7 @@ public class Main extends javax.swing.JFrame
   {
     switch (ev.getAction()) {
       case CONNECT:
-        if ("ev:0003:054c:09cc:8111".equals(ev.getController().getId())) {
+        if ("ev:0003:054c:09cc:8111".equals(ev.getController().getId().toString())) {
           connectController(ev.getController());
         }
         break;
@@ -156,7 +156,7 @@ public class Main extends javax.swing.JFrame
   {
     List<Controller> controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
     for (Controller c : controllers) {
-      if ("ev:0003:054c:09cc:8111".equals(c.getId())) {
+      if ("ev:0003:054c:09cc:8111".equals(c.getId().toString())) {
         return connectController(c);
       }
     }
