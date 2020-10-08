@@ -7,6 +7,7 @@ package com.mycompany.jinputtest;
 
 import java.awt.geom.Point2D;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,8 @@ import net.java.games.input.ControllerEvent;
 public class Main extends javax.swing.JFrame
 {
 
+  public static final Set<String> ids = Set.of("ev:0003:054c:09cc:8111",
+                                               "ev:0005:054c:09cc:8001");
   private Controller controller;
   private Component xAxis;
   private Component yAxis;
@@ -142,7 +145,7 @@ public class Main extends javax.swing.JFrame
   {
     switch (ev.getAction()) {
       case CONNECT:
-        if ("ev:0003:054c:09cc:8111".equals(ev.getController().getId().toString())) {
+        if (ids.contains(ev.getController().getId().toString())) {
           connectController(ev.getController());
         }
         break;
@@ -156,7 +159,7 @@ public class Main extends javax.swing.JFrame
   {
     List<Controller> controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
     for (Controller c : controllers) {
-      if ("ev:0003:054c:09cc:8111".equals(c.getId().toString())) {
+      if (ids.contains(c.getId().toString())) {
         return connectController(c);
       }
     }
@@ -183,16 +186,16 @@ public class Main extends javax.swing.JFrame
       y = controller.getComponent(Component.Identifier.Button.Y);
 
       rightThumb = controller.getComponent(
-              Component.Identifier.Button.RIGHT_THUMB);
+          Component.Identifier.Button.RIGHT_THUMB);
       leftThumb = controller.getComponent(Component.Identifier.Button.LEFT_THUMB);
       rightThumb2 = controller.getComponent(
-              Component.Identifier.Button.RIGHT_THUMB2);
+          Component.Identifier.Button.RIGHT_THUMB2);
       leftThumb2 = controller.getComponent(
-              Component.Identifier.Button.LEFT_THUMB2);
+          Component.Identifier.Button.LEFT_THUMB2);
       rightThumb3 = controller.getComponent(
-              Component.Identifier.Button.RIGHT_THUMB3);
+          Component.Identifier.Button.RIGHT_THUMB3);
       leftThumb3 = controller.getComponent(
-              Component.Identifier.Button.LEFT_THUMB3);
+          Component.Identifier.Button.LEFT_THUMB3);
 
       select = controller.getComponent(Component.Identifier.Button.SELECT);
       start = controller.getComponent(Component.Identifier.Button.START);
@@ -474,24 +477,24 @@ public class Main extends javax.swing.JFrame
       }
     } catch (ClassNotFoundException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-              java.util.logging.Level.SEVERE,
-              null,
-              ex);
+          java.util.logging.Level.SEVERE,
+          null,
+          ex);
     } catch (InstantiationException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-              java.util.logging.Level.SEVERE,
-              null,
-              ex);
+          java.util.logging.Level.SEVERE,
+          null,
+          ex);
     } catch (IllegalAccessException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-              java.util.logging.Level.SEVERE,
-              null,
-              ex);
+          java.util.logging.Level.SEVERE,
+          null,
+          ex);
     } catch (javax.swing.UnsupportedLookAndFeelException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-              java.util.logging.Level.SEVERE,
-              null,
-              ex);
+          java.util.logging.Level.SEVERE,
+          null,
+          ex);
     }
     //</editor-fold>
 
