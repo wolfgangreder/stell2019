@@ -30,8 +30,14 @@ public class Layout
 
   @XmlElementWrapper(name = "fields")
   @XmlElements({
-    @XmlElement(type = TurnoutMapping.class, name = "turnout"),
-    @XmlElement(type = TrackMapping.class, name = "track")})
+    @XmlElement(type = TurnoutMapping.class,
+                name = "turnout"),
+    @XmlElement(type = TrackMapping.class,
+                name = "track"),
+    @XmlElement(type = W3Mapping.class,
+                name = "w3"),
+    @XmlElement(type = DKWMapping.class,
+                name = "dkw")})
   public List<FieldMapping> getMappings()
   {
     return mappings;

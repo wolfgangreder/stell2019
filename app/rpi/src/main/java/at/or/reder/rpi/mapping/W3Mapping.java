@@ -16,7 +16,7 @@
 package at.or.reder.rpi.mapping;
 
 import at.or.reder.rpi.field.ModuleType;
-import at.or.reder.rpi.field.TurnoutState;
+import at.or.reder.rpi.field.ThreewayState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,33 +25,33 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "tournout")
-public class TurnoutMapping extends FieldMapping
+@XmlRootElement(name = "w3")
+public class W3Mapping extends FieldMapping
 {
 
-  public static class TurnoutStatePair
+  public static class W3StatePair
   {
 
-    private TurnoutState state;
+    private ThreewayState state;
     private int portValue;
 
-    public TurnoutStatePair()
+    public W3StatePair()
     {
     }
 
-    public TurnoutStatePair(Map.Entry<TurnoutState, Integer> e)
+    public W3StatePair(Map.Entry<ThreewayState, Integer> e)
     {
       this.state = e.getKey();
       this.portValue = e.getValue();
     }
 
     @XmlAttribute(name = "state")
-    public TurnoutState getState()
+    public ThreewayState getState()
     {
       return state;
     }
 
-    public void setState(TurnoutState state)
+    public void setState(ThreewayState state)
     {
       this.state = state;
     }
@@ -69,22 +69,47 @@ public class TurnoutMapping extends FieldMapping
 
   }
 
-  private final List<TurnoutStatePair> values = new ArrayList<>();
+  private int decoderAddress2;
+  private int port2;
 
-  public Map<TurnoutState, Integer> getMappings()
+  @XmlAttribute(name = "decoder2")
+  public int getDecoderAddress2()
+  {
+    return decoderAddress2;
+  }
+
+  public void setDecoderAddress2(int decoderAddress2)
+  {
+    this.decoderAddress2 = decoderAddress2;
+  }
+
+  @XmlAttribute(name = "port2")
+  public int getPort2()
+  {
+    return port2;
+  }
+
+  public void setPort2(int port2)
+  {
+    this.port2 = port2;
+  }
+
+  private final List<W3StatePair> values = new ArrayList<>();
+
+  public Map<ThreewayState, Integer> getMappings()
   {
     return values.stream().
             filter((e) -> e != null && e.state != null).
-            collect(Collectors.toMap(TurnoutStatePair::getState,
-                                     TurnoutStatePair::getPortValue));
+            collect(Collectors.toMap(W3StatePair::getState,
+                                     W3StatePair::getPortValue));
   }
 
-  public void setMappings(Map<TurnoutState, Integer> m)
+  public void setMappings(Map<ThreewayState, Integer> m)
   {
     values.clear();
     m.entrySet().
             stream().
-            map(TurnoutStatePair::new).
+            map(W3StatePair::new).
             forEach(values::add);
   }
 
@@ -92,22 +117,20 @@ public class TurnoutMapping extends FieldMapping
   public void setType(ModuleType type)
   {
     switch (type) {
-      case W1:
-      case W2:
-      case W3:
-      case W4:
+      case DW1:
+      case DW2:
+      case DW3:
         super.setType(type);
         break;
       default:
-        super.setType(ModuleType.W1);
+        super.setType(ModuleType.DW1);
     }
   }
 
   @XmlElement(name = "mapping",
-              type = TurnoutMapping.TurnoutStatePair.class)
-  public List<TurnoutStatePair> getMappingLists()
+              type = W3Mapping.W3StatePair.class)
+  public List<W3StatePair> getMappingLists()
   {
     return values;
   }
-
 }
