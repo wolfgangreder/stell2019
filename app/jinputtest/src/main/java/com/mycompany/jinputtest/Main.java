@@ -6,6 +6,7 @@
 package com.mycompany.jinputtest;
 
 import java.awt.geom.Point2D;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,6 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.ControllerEvent;
-import net.java.games.input.ControllerListener;
 
 /**
  *
@@ -135,33 +135,37 @@ public class Main extends javax.swing.JFrame
   private void registerListener()
   {
     ControllerEnvironment env = ControllerEnvironment.getDefaultEnvironment();
-    env.addControllerListener(new ControllerListener()
-    {
-      @Override
-      public void controllerRemoved(ControllerEvent ev)
-      {
-        controller = null;
-      }
+    env.addControllerListener(this::onControllerEvent);
+  }
 
-      @Override
-      public void controllerAdded(ControllerEvent ev)
-      {
-        if (controller == null) {
-          connectController();
+  private void onControllerEvent(ControllerEvent ev)
+  {
+    switch (ev.getAction()) {
+      case CONNECT:
+        if ("ev:0003:054c:09cc:8111".equals(ev.getController().getId())) {
+          connectController(ev.getController());
         }
-      }
-    });
+        break;
+      case DISCONNECT:
+        controller = null;
+        break;
+    }
   }
 
   private boolean connectController()
   {
-    Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+    List<Controller> controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
     for (Controller c : controllers) {
-      if ("Wireless Controller".equals(c.getName())) {
-        controller = c;
-        break;
+      if ("ev:0003:054c:09cc:8111".equals(c.getId())) {
+        return connectController(c);
       }
     }
+    return false;
+  }
+
+  private boolean connectController(Controller c)
+  {
+    controller = c;
     if (controller != null) {
       xAxis = controller.getComponent(Component.Identifier.Axis.X);
       yAxis = controller.getComponent(Component.Identifier.Axis.Y);
@@ -179,16 +183,16 @@ public class Main extends javax.swing.JFrame
       y = controller.getComponent(Component.Identifier.Button.Y);
 
       rightThumb = controller.getComponent(
-          Component.Identifier.Button.RIGHT_THUMB);
+              Component.Identifier.Button.RIGHT_THUMB);
       leftThumb = controller.getComponent(Component.Identifier.Button.LEFT_THUMB);
       rightThumb2 = controller.getComponent(
-          Component.Identifier.Button.RIGHT_THUMB2);
+              Component.Identifier.Button.RIGHT_THUMB2);
       leftThumb2 = controller.getComponent(
-          Component.Identifier.Button.LEFT_THUMB2);
+              Component.Identifier.Button.LEFT_THUMB2);
       rightThumb3 = controller.getComponent(
-          Component.Identifier.Button.RIGHT_THUMB3);
+              Component.Identifier.Button.RIGHT_THUMB3);
       leftThumb3 = controller.getComponent(
-          Component.Identifier.Button.LEFT_THUMB3);
+              Component.Identifier.Button.LEFT_THUMB3);
 
       select = controller.getComponent(Component.Identifier.Button.SELECT);
       start = controller.getComponent(Component.Identifier.Button.START);
@@ -218,6 +222,7 @@ public class Main extends javax.swing.JFrame
     btnB = new javax.swing.JToggleButton();
     btnY = new javax.swing.JToggleButton();
     btnA = new javax.swing.JToggleButton();
+    jButton1 = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter()
@@ -342,6 +347,15 @@ public class Main extends javax.swing.JFrame
 
     btnMode.setText("Mode");
 
+    jButton1.setText("Rescan");
+    jButton1.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton1ActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -352,14 +366,16 @@ public class Main extends javax.swing.JFrame
           .addGroup(layout.createSequentialGroup()
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addGroup(layout.createSequentialGroup()
-                .addGap(187, 187, 187)
-                .addComponent(btnMode, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
               .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(332, 332, 332)))
+                .addGap(332, 332, 332))
+              .addGroup(layout.createSequentialGroup()
+                .addGap(187, 187, 187)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jButton1)
+                  .addComponent(btnMode, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addComponent(leftCross, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -421,7 +437,9 @@ public class Main extends javax.swing.JFrame
           .addGroup(layout.createSequentialGroup()
             .addGap(101, 101, 101)
             .addComponent(btnMode)))
-        .addContainerGap(180, Short.MAX_VALUE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+        .addComponent(jButton1)
+        .addGap(77, 77, 77))
     );
 
     pack();
@@ -432,6 +450,11 @@ public class Main extends javax.swing.JFrame
     executor.shutdown();
   }//GEN-LAST:event_formWindowClosed
 
+  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+  {//GEN-HEADEREND:event_jButton1ActionPerformed
+    ControllerEnvironment.getDefaultEnvironment().rescanController();
+  }//GEN-LAST:event_jButton1ActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -440,7 +463,7 @@ public class Main extends javax.swing.JFrame
     /* Set the Nimbus look and feel */
     //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
     /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+     * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
      */
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -451,34 +474,30 @@ public class Main extends javax.swing.JFrame
       }
     } catch (ClassNotFoundException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-          java.util.logging.Level.SEVERE,
-          null,
-          ex);
+              java.util.logging.Level.SEVERE,
+              null,
+              ex);
     } catch (InstantiationException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-          java.util.logging.Level.SEVERE,
-          null,
-          ex);
+              java.util.logging.Level.SEVERE,
+              null,
+              ex);
     } catch (IllegalAccessException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-          java.util.logging.Level.SEVERE,
-          null,
-          ex);
+              java.util.logging.Level.SEVERE,
+              null,
+              ex);
     } catch (javax.swing.UnsupportedLookAndFeelException ex) {
       java.util.logging.Logger.getLogger(Main.class.getName()).log(
-          java.util.logging.Level.SEVERE,
-          null,
-          ex);
+              java.util.logging.Level.SEVERE,
+              null,
+              ex);
     }
     //</editor-fold>
 
     /* Create and display the form */
-    java.awt.EventQueue.invokeLater(new Runnable()
-    {
-      public void run()
-      {
-        new Main().setVisible(true);
-      }
+    java.awt.EventQueue.invokeLater(() -> {
+      new Main().setVisible(true);
     });
   }
 
@@ -496,6 +515,7 @@ public class Main extends javax.swing.JFrame
   private final javax.swing.JToggleButton btnStart = new javax.swing.JToggleButton();
   private javax.swing.JToggleButton btnX;
   private javax.swing.JToggleButton btnY;
+  private javax.swing.JButton jButton1;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JPanel jPanel2;
   private final com.mycompany.jinputtest.DualAxisPanel leftCross = new com.mycompany.jinputtest.DualAxisPanel();
