@@ -29,6 +29,7 @@ EEMEM TEEPromFile ee_eepromFile = {
 TEEPromFile eepromFile;
 const PROGMEM TFlashFile fl_flashFile = {.fw_major = FW_MAJOR, .fw_minor = FW_MINOR};
 TFlashFile flashFile;
+uint8_t blinkPostScale;
 
 inline void doSendAck()
 {
@@ -186,6 +187,10 @@ void internalProcessCommand(TDataPacket* packet, packetsource_t source)
       break;
     case REG_VCC_REF:
       result = 2560; // 2.56V
+      break;
+    case REG_PWM_OUT:
+      OCR1B = (packet->rxData << 8) + packet->rxData;
+      break;
     default:
       return;
   }
@@ -242,6 +247,14 @@ void initHW()
   TCCR1B = _BV(WGM12) | eepromFile.blinkPrescale;
   ADMUX = _BV(REFS0) | _BV(MUX1) | _BV(MUX2) | _BV(MUX3);
   ADCSRA = _BV(ADEN) | _BV(ADFR) | _BV(ADPS0) | _BV(ADPS1) | _BV(ADPS2) | _BV(ADSC);
+}
+
+ISR(TIMER1_OVF_vect)
+{
+  //  if (blinkPostScale++ == TIMER1_BLINK_POSTSCALE) {
+  //    BLINK_PORT ^= _BV(BLINK);
+  //    blinkPostScale = 0;
+  //  }
 }
 
 int main()

@@ -1,0 +1,8 @@
+#!/bin/bash
+echo $1
+echo $2
+echo $3
+echo $4
+#echo  $2 > '/sys/bus/hid/devices/'+$1+'/leds/'+$1+':red/brightness'
+#echo  $3 > '/sys/bus/hid/devices/'+$1+'/leds/'+$1+':green/brightness'
+#echo  $4 > '/sys/bus/hid/devices/'+$1+'/leds/'+$1+':blue/brightness'

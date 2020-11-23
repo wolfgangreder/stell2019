@@ -4,9 +4,6 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/config.h</file>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/spi.c</file>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi/twi.h</file>
-            <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/include/spi.h</file>
             <file>file:/home/wolfi/eagle/stell2019/tools/twi2uart.X/source/main.c</file>
         </group>
     </open-files>

@@ -36,7 +36,8 @@ public enum Register
   REG_TWI_BAUD(16),
   REG_BLINK_COUNTER_H(17),
   REG_BLINK_COUNTER_L(18),
-  REG_BLINK_PRESCALE(19);
+  REG_BLINK_PRESCALE(19),
+  REG_PWM_POS(20);
   private final byte index;
 
   private Register(int i)

@@ -13,17 +13,17 @@
 <layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
 <layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
 <layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="21" name="tPlace" color="7" fill="1" visible="no" active="yes"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="yes"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="yes"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
@@ -48,7 +48,7 @@
 <layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="51" name="tDocu" color="7" fill="1" visible="no" active="yes"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="no" active="no"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="no" active="no"/>
 <layer number="93" name="Pins" color="2" fill="1" visible="no" active="no"/>
@@ -73,7 +73,7 @@
 <wire x1="14" y1="30" x2="16" y2="30" width="0" layer="46" curve="180"/>
 <wire x1="30" y1="16" x2="30" y2="14" width="0" layer="46" curve="180"/>
 <wire x1="14" y1="0" x2="16" y2="0" width="0" layer="46" curve="-180"/>
-<wire x1="14" y1="30" x2="16" y2="30" width="0" layer="20" curve="180"/>
+<wire x1="14" y1="30" x2="16" y2="30" width="0" layer="46" curve="180"/>
 <text x="4.826" y="22.606" size="1.778" layer="16" rot="MR0">1.0</text>
 <text x="15.494" y="8.382" size="1.016" layer="51" rot="R90">SDA</text>
 <text x="18.034" y="8.382" size="1.016" layer="51" rot="R90">SCL</text>
@@ -593,9 +593,9 @@ Your Multi-CB Team
 <attribute name="NAME" x="22.479" y="23.876" size="1.27" layer="26" rot="MR0"/>
 <attribute name="VALUE" x="19.05" y="20.955" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="C2" library="rclwolfi" package="CT7343" value="47µ" x="22.479" y="12.954" smashed="yes" rot="MR0">
-<attribute name="NAME" x="24.511" y="15.748" size="1.27" layer="26" rot="MR0"/>
-<attribute name="VALUE" x="25.019" y="9.144" size="1.27" layer="28" rot="MR0"/>
+<element name="C2" library="rclwolfi" package="CT7343" value="47µ" x="22.225" y="12.192" smashed="yes" rot="MR0">
+<attribute name="NAME" x="24.257" y="14.986" size="1.27" layer="26" rot="MR0"/>
+<attribute name="VALUE" x="24.765" y="8.382" size="1.27" layer="28" rot="MR0"/>
 </element>
 <element name="R10" library="rclwolfi" package="R0805" value="100k" x="3.81" y="8.128" smashed="yes" rot="MR180">
 <attribute name="NAME" x="1.905" y="10.668" size="1.27" layer="26" rot="MR180"/>
@@ -613,16 +613,16 @@ Your Multi-CB Team
 <wire x1="15.24" y1="3.556" x2="16.764" y2="2.032" width="1.016" layer="16"/>
 <wire x1="16.764" y1="2.032" x2="19.304" y2="2.032" width="1.016" layer="16"/>
 <wire x1="19.304" y1="2.032" x2="21.082" y2="3.81" width="1.016" layer="16"/>
-<wire x1="21.082" y1="3.81" x2="21.082" y2="9.652" width="1.016" layer="16"/>
-<wire x1="21.082" y1="9.652" x2="19.304" y2="11.43" width="1.016" layer="16"/>
-<wire x1="19.304" y1="11.43" x2="19.304" y2="12.929" width="1.016" layer="16"/>
-<wire x1="19.304" y1="12.929" x2="19.279" y2="12.954" width="1.016" layer="16"/>
-<wire x1="19.279" y1="12.954" x2="20.828" y2="12.954" width="1.016" layer="16"/>
+<wire x1="21.082" y1="3.81" x2="21.336" y2="11.938" width="1.016" layer="16"/>
+<wire x1="21.336" y1="11.938" x2="19.304" y2="12.446" width="0.3048" layer="16"/>
+<wire x1="19.304" y1="12.446" x2="19.304" y2="12.929" width="1.016" layer="16"/>
+<wire x1="19.304" y1="12.929" x2="19.025" y2="12.192" width="1.016" layer="16"/>
+<wire x1="19.025" y1="12.192" x2="20.828" y2="12.954" width="1.016" layer="16"/>
 <wire x1="20.828" y1="12.954" x2="21.59" y2="13.716" width="1.016" layer="16"/>
 <wire x1="21.59" y1="13.716" x2="21.59" y2="19.05" width="1.016" layer="16"/>
 <wire x1="21.59" y1="19.05" x2="21.59" y2="21.375" width="1.016" layer="16"/>
 <wire x1="21.55" y1="19.09" x2="21.59" y2="19.05" width="1.016" layer="16"/>
-<wire x1="19.279" y1="12.954" x2="14.506" y2="12.954" width="0.3048" layer="16"/>
+<wire x1="19.025" y1="12.192" x2="14.506" y2="12.954" width="0.3048" layer="16"/>
 <wire x1="14.506" y1="12.954" x2="12.46" y2="15" width="0.3048" layer="16"/>
 <wire x1="19.725" y1="19.09" x2="20.026" y2="19.09" width="0.3048" layer="16"/>
 <wire x1="20.026" y1="19.09" x2="20.066" y2="19.05" width="0.3048" layer="16"/>
@@ -830,7 +830,7 @@ Your Multi-CB Team
 <wire x1="19.812" y1="24.384" x2="19.725" y2="24.49" width="0.254" layer="16"/>
 <wire x1="26.67" y1="17.526" x2="26.67" y2="13.716" width="1.016" layer="16"/>
 <wire x1="21.59" y1="22.86" x2="22.098" y2="22.86" width="0.254" layer="16"/>
-<wire x1="26.67" y1="13.716" x2="25.679" y2="12.954" width="1.016" layer="16"/>
+<wire x1="26.67" y1="13.716" x2="25.425" y2="12.192" width="1.016" layer="16"/>
 <wire x1="21.59" y1="22.86" x2="21.59" y2="23.075" width="0.6096" layer="16"/>
 <wire x1="24.638" y1="19.558" x2="26.67" y2="17.526" width="0.6096" layer="1"/>
 <wire x1="26.67" y1="17.526" x2="27.686" y2="16.51" width="0.6096" layer="1"/>

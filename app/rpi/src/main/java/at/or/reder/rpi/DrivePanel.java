@@ -39,29 +39,9 @@ public class DrivePanel extends DevicePanel
   private void initComponents()
   {
 
-    jLabel1 = new javax.swing.JLabel();
-
-    jLabel1.setText(org.openide.util.NbBundle.getMessage(DrivePanel.class, "DrivePanel.jLabel1.text")); // NOI18N
-
-    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-    this.setLayout(layout);
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(jLabel1)
-        .addContainerGap(359, Short.MAX_VALUE))
-    );
-    layout.setVerticalGroup(
-      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(jLabel1)
-        .addContainerGap(274, Short.MAX_VALUE))
-    );
+    setLayout(new java.awt.BorderLayout());
   }// </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JLabel jLabel1;
   // End of variables declaration//GEN-END:variables
 }

@@ -6,124 +6,126 @@
  */
 
 #ifndef CONFIG_H
-#  define CONFIG_H
+#define CONFIG_H
 
-#  include <avr/io.h>
-#  include <avr/eeprom.h>
-#  include <avr/pgmspace.h>
+#include <avr/io.h>
+#include <avr/eeprom.h>
+#include <avr/pgmspace.h>
 
-#  ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-#  endif
+#endif
 
-#  ifndef _AVR_IOM8_H_
-#    error unsupported cpu
-#  endif
+#ifndef _AVR_IOM8_H_
+#error unsupported cpu
+#endif
 
-#  ifndef UART_ENABLED
-#    define UART_ENABLED 1
-#  endif
+#ifndef UART_ENABLED
+#define UART_ENABLED 1
+#endif
 
-#  ifndef SPI_ENABLED
-#    define SPI_ENABLED 0
-#  endif
+#ifndef SPI_ENABLED
+#define SPI_ENABLED 0
+#endif
 
-#  ifndef IND_DEBUG
-#    define IND_DEBUG 0
-#  endif
+#ifndef IND_DEBUG
+#define IND_DEBUG 0
+#endif
 
-#  ifndef FW_MAJOR
-#    define FW_MAJOR 0
-#  endif
+#ifndef FW_MAJOR
+#define FW_MAJOR 0
+#endif
 
-#  ifndef FW_MINOR
-#    define FW_MINOR 1
-#  endif
+#ifndef FW_MINOR
+#define FW_MINOR 1
+#endif
 
-#  if IND_DEBUG==1
-#    define IND_0_OFF (PORTD&=~_BV(PD2))
-#    define IND_0_ON (PORTD|=_BV(PD2))
-#    define IND_1_OFF (PORTD&=~_BV(PD3))
-#    define IND_1_ON (PORTD|=_BV(PD3))
-#    define IND_2_OFF (PORTD&=~_BV(PD4))
-#    define IND_2_ON (PORTD|=_BV(PD4))
-#    define IND_3_OFF (PORTD&=~_BV(PB5))
-#    define IND_3_ON (PORTD|=_BV(PB5))
-#    define IND_INIT   DDRD |= (_BV(PD2)|_BV(PD3)|_BV(PD4)|_BV(PD5));
-#  elif IND_DEBUG==2
-#    undef IND_0_OFF
-#    undef IND_0_ON
-#    undef IND_1_OFF
-#    undef IND_1_ON
-#    undef IND_2_OFF
-#    undef IND_2_ON
-#    undef IND_3_OFF
-#    undef IND_3_ON
-#    undef IND_INIT
-#  else
-#    define IND_0_OFF
-#    define IND_0_ON
-#    define IND_1_OFF
-#    define IND_1_ON
-#    define IND_2_OFF
-#    define IND_2_ON
-#    define IND_3_OFF
-#    define IND_3_ON
-#    define IND_INIT
-#  endif
+#if IND_DEBUG==1
+#define IND_0_OFF (PORTD&=~_BV(PD2))
+#define IND_0_ON (PORTD|=_BV(PD2))
+#define IND_1_OFF (PORTD&=~_BV(PD3))
+#define IND_1_ON (PORTD|=_BV(PD3))
+#define IND_2_OFF (PORTD&=~_BV(PD4))
+#define IND_2_ON (PORTD|=_BV(PD4))
+#define IND_3_OFF (PORTD&=~_BV(PB5))
+#define IND_3_ON (PORTD|=_BV(PB5))
+#define IND_INIT   DDRD |= (_BV(PD2)|_BV(PD3)|_BV(PD4)|_BV(PD5));
+#elif IND_DEBUG==2
+#undef IND_0_OFF
+#undef IND_0_ON
+#undef IND_1_OFF
+#undef IND_1_ON
+#undef IND_2_OFF
+#undef IND_2_ON
+#undef IND_3_OFF
+#undef IND_3_ON
+#undef IND_INIT
+#else
+#define IND_0_OFF
+#define IND_0_ON
+#define IND_1_OFF
+#define IND_1_ON
+#define IND_2_OFF
+#define IND_2_ON
+#define IND_3_OFF
+#define IND_3_ON
+#define IND_INIT
+#endif
 
 
   typedef unsigned char bool;
 
-#  define FREQ 8000000
+#define FREQ 8000000
 
-#  if FREQ==1000000
-#    if UART_ENABLED==1
-#      define UART_BAUD    12 // 9600
-#      define UART_U2X     1
-#    endif
-#    define TWI_BAUD     2 // 50k
-#    define TWI_PRESCALE 0
-#    define TIMER1_PRESCALE _BV(CS11) // 8
-#    define TIMER1_TOP   15625  // 8Hz
-#  elif FREQ==8000000
-#    if UART_ENABLED==1
-#      define UART_BAUD    12 // 38400
-#      define UART_U2X     0
-#    endif
-#    define TWI_BAUD     32 // 100k
-#    define TWI_PRESCALE 0
-#    define TIMER1_PRESCALE (_BV(CS11)|_BV(CS10)) // 64
-#    define TIMER1_TOP    7690  // 8Hz
-#  else
-#    error undefined frequency
-#  endif
+#if FREQ==1000000
+#if UART_ENABLED==1
+#define UART_BAUD    12 // 9600
+#define UART_U2X     1
+#endif
+#define TWI_BAUD     2 // 50k
+#define TWI_PRESCALE 0
+#define TIMER1_PRESCALE _BV(CS11) // 8
+#define TIMER1_TOP   15625  // 8Hz
+#elif FREQ==8000000
+#if UART_ENABLED==1
+#define UART_BAUD    12 // 38400
+#define UART_U2X     0
+#endif
+#define TWI_BAUD     32 // 100k
+#define TWI_PRESCALE 0
+#define TIMER1_PRESCALE (_BV(CS11)|_BV(CS10)) // 64
+#define TIMER1_TOP    2500  // 48Hz
+#define TIMER1_BLINK_POSTSCALE 6
+#else
+#error undefined frequency
+#endif
 
 
-#  define TWI_ADDR   1
+#define TWI_ADDR   1
 
-#  define BLINK_PORT PORTB
-#  define BLINK_PIN  PINB
-#  define BLINK_DIR  DDRB
-#  define BLINK      PB1
+#define BLINK_PORT PORTB
+#define BLINK_PIN  PINB
+#define BLINK_DIR  DDRB
+#define BLINK      PB1
+#define PWM        PB2
 
-#  define INT_PORT   PORTB
-#  define INT_PIN    PINB
-#  define INT_DIR    DDRB
-#  define INT        PB0
+#define INT_PORT   PORTB
+#define INT_PIN    PINB
+#define INT_DIR    DDRB
+#define INT        PB0
 
-#  if SPI_ENABLED==1
-#    define SPI_PORT   PORTB
-#    define SPI_DIR    DDRB
-#    define SPI_PIN    PINB
-#    define SPI_MOSI   PB3
-#    define SPI_MISO   PB4
-#    define SPI_SS     PB2
-#    define SPI_SCK    PB5
-#    define SPI_SS_INT_OR (_BV(ISC00))
-#    define SPI_SS_INT_EN _BV(INT0)
-#    define SPI_SS_INT_vec INT0_vect
-#  endif
+#if SPI_ENABLED==1
+#define SPI_PORT   PORTB
+#define SPI_DIR    DDRB
+#define SPI_PIN    PINB
+#define SPI_MOSI   PB3
+#define SPI_MISO   PB4
+#define SPI_SS     PB2
+#define SPI_SCK    PB5
+#define SPI_SS_INT_OR (_BV(ISC00))
+#define SPI_SS_INT_EN _BV(INT0)
+#define SPI_SS_INT_vec INT0_vect
+#endif
 
   typedef enum {
     REG_STATE = 0,
@@ -134,7 +136,8 @@ extern "C" {
     REG_BLINK_COUNTER_H = 17,
     REG_BLINK_COUNTER_L = 18,
     REG_BLINK_PRESCALE = 19,
-    REG_FW_VERSION = 14
+    REG_FW_VERSION = 14,
+    REG_PWM_OUT = 20
   } register_t;
 
   typedef struct {
@@ -224,9 +227,9 @@ extern "C" {
   extern const PROGMEM TFlashFile fl_flashFile;
   extern TFlashFile flashFile;
 
-#  ifdef __cplusplus
+#ifdef __cplusplus
 }
-#  endif
+#endif
 
 #endif /* CONFIGRECORD_H */
 

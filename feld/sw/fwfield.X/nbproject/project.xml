@@ -15,6 +15,7 @@
             <sourceRootList>
                 <sourceRootElem>source</sourceRootElem>
                 <sourceRootElem>include</sourceRootElem>
+                <sourceRootElem>../../../tools/twi</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
