@@ -15,9 +15,12 @@ import at.or.reder.dcc.ControllerProvider;
 import at.or.reder.dcc.Locomotive;
 import at.or.reder.dcc.LocomotiveFuncEvent;
 import at.or.reder.dcc.LocomotiveSpeedEvent;
+import at.or.reder.dcc.LocomotiveTachoEvent;
 import at.or.reder.tools.edk750.EDK750;
 import at.or.reder.zcan20.MX10PropertiesSet;
+import at.or.reder.zcan20.ZCAN;
 import at.or.reder.zcan20.impl.MX10ControllerProvider;
+import at.or.reder.zcan20.packet.Packet;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -27,11 +30,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -88,13 +95,26 @@ public class Main extends javax.swing.JFrame
     factory.addPSControllerEventListener(this::onPSController);
     factory.startScanning();
     mx10 = connect2MX10();
-    mx10.addLocomotiveSpeedEventListener(750,
+    mx10.addLocomotiveSpeedEventListener(2062,
                                          this::onLocoSpeed);
-    mx10.addLocomotiveFuncEventListener(750,
+    mx10.addLocomotiveFuncEventListener(2062,
                                         this::onLocoFunc);
+    mx10.addLocomotiveTachoEventListener(2062,
+                                         this::onLocoTacho);
+    ZCAN zimo = mx10.getLookup().lookup(ZCAN.class);
+//    zimo.addPacketListener(createSimplePacketMatcher(2062),
+//                           this::onPacket);
     Locomotive edkLoc = mx10.getLocomotive(750);
+    Map<String, String> config = new HashMap<>();
     edk = new EDK750(edkLoc,
-                     controller);
+                     controller,
+                     config);
+  }
+
+  private Predicate<Packet> createSimplePacketMatcher(int address)
+  {
+    return (Packet p) -> p.getData().getShort(0) == (short) address
+                                 && p.getCommandGroup().getMagic() == (byte) 0x18;
   }
 
   private ControllerProvider findMX10Provider()
@@ -654,19 +674,60 @@ public class Main extends javax.swing.JFrame
   }//GEN-LAST:event_formWindowClosing
 
   private final AtomicInteger eventCounter = new AtomicInteger();
+  private final Set<Byte> toIgnore = Set.of((byte) 1,
+                                            (byte) 8,
+                                            (byte) 0x10);
+
+  private void onPacket(ZCAN zcan,
+                        Packet packet)
+  {
+    ByteBuffer data = packet.getData();
+    byte selector = data.get(3);
+    if (!toIgnore.contains(selector)) {
+      int b = data.get(4) & 0xff;
+      System.err.println(MessageFormat.format("{0}:{1} {2}",
+                                              new Object[]{eventCounter.incrementAndGet(), packet.toString(), b}));
+    }
+  }
+
+  int lastTacho = -1;
+
+  private void onLocoTacho(LocomotiveTachoEvent evt)
+  {
+    if (evt.isSpeedSet()) {
+      if (lastTacho == -1 || evt.getSpeed() != lastTacho) {
+        lastTacho = evt.getSpeed();
+        System.err.println(MessageFormat.format("{2,number,0}:Locomotive {0,number,0}: Tacho {1} km/h",
+                                                new Object[]{evt.getDecoder(), evt.getSpeed(), eventCounter.
+                                                             incrementAndGet()}));
+      }
+    }
+    if (evt.isDirectionSet()) {
+      System.err.println(MessageFormat.format("{3,number,0}:Locomotive {0,number,0}: Direction {1}, Pending {2} ",
+                                              new Object[]{evt.getDecoder(), evt.getDirection(), evt.isDirectionPending(),
+                                                           eventCounter.incrementAndGet()}));
+
+    }
+    if (evt.isVoltageSet()) {
+      System.err.println(MessageFormat.format("{2,number,0}:Locomotive {0,number,0}: Voltage {1,number,0.0}V ",
+                                              new Object[]{evt.getDecoder(), evt.getVoltage(),
+                                                           eventCounter.incrementAndGet()}));
+
+    }
+  }
 
   private void onLocoSpeed(LocomotiveSpeedEvent evt)
   {
-//    System.err.println(MessageFormat.format("{3}:Locomotive {0}: Speed: {1}, Direction {2}",
-//                                            new Object[]{evt.getDecoder(), evt.getSpeed(), evt.getDirection(), eventCounter.
-//                                                         incrementAndGet()}));
+    System.err.println(MessageFormat.format("{3,number,0}:Locomotive {0,number,0}: Speed: {1}, Direction {2}",
+                                            new Object[]{evt.getDecoder(), evt.getSpeed(), evt.getDirection(), eventCounter.
+                                                         incrementAndGet()}));
   }
 
   private void onLocoFunc(LocomotiveFuncEvent evt)
   {
-//    System.err.println(MessageFormat.format("{3}:Locomotive {0}: Function: {1}, Value {2}",
-//                                            new Object[]{evt.getDecoder(), evt.getFuncNr(), evt.getFuncValue(), eventCounter.
-//                                                         incrementAndGet()}));
+    System.err.println(MessageFormat.format("{3,number,0}:Locomotive {0,number,0}: Function: {1}, Value {2}",
+                                            new Object[]{evt.getDecoder(), evt.getFuncNr(), evt.getFuncValue(), eventCounter.
+                                                         incrementAndGet()}));
   }
 
   /**
@@ -684,10 +745,13 @@ public class Main extends javax.swing.JFrame
       }
     }
     if (!loggerInitialized) {
-      try (InputStream is = Main.class.getResourceAsStream("/logging.properties")) {
-        if (is != null) {
+      try (InputStream is = Main.class
+              .getResourceAsStream("/logging.properties")) {
+        if (is
+                    != null) {
           LogManager.getLogManager().readConfiguration(is);
         }
+
       } catch (IOException ex) {
         Exceptions.printStackTrace(ex);
       }
