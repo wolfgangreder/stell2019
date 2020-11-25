@@ -41,7 +41,7 @@ public final class EDKAxisController
                                  3);
   }
 
-  private final Locomotive loc;
+  private Locomotive loc;
   private final int onNeg;
   private final int onPos;
   private int currentPos;
@@ -53,6 +53,16 @@ public final class EDKAxisController
     this.loc = loc;
     this.onNeg = onNeg;
     this.onPos = onPos;
+  }
+
+  public Locomotive getLoc()
+  {
+    return loc;
+  }
+
+  public void setLoc(Locomotive loc)
+  {
+    this.loc = loc;
   }
 
   private int getPos(int value)
@@ -77,16 +87,21 @@ public final class EDKAxisController
   public void stop() throws IOException
   {
     currentPos = 0;
-    loc.setFunction(onNeg,
-                    false);
-    loc.setFunction(onPos,
-                    false);
-    loc.setFunction(9,
-                    false);
+    if (loc != null) {
+      loc.setFunction(onNeg,
+                      false);
+      loc.setFunction(onPos,
+                      false);
+      loc.setFunction(9,
+                      false);
+    }
   }
 
   public void setSpeed(int speed) throws IOException
   {
+    if (loc == null) {
+      return;
+    }
     int pos = getPos(speed);
     if (currentPos != pos) {
       if (pos == 0) {

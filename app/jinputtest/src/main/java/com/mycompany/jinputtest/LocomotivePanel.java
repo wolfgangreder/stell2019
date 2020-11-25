@@ -5,17 +5,25 @@
  */
 package com.mycompany.jinputtest;
 
-import at.or.reder.dcc.Controller;
+import at.or.reder.dcc.Direction;
 import at.or.reder.dcc.Locomotive;
 import at.or.reder.dcc.LocomotiveFuncEvent;
 import at.or.reder.dcc.LocomotiveFuncEventListener;
 import at.or.reder.dcc.LocomotiveSpeedEvent;
 import at.or.reder.dcc.LocomotiveSpeedEventListener;
-import at.or.reder.zcan20.PacketListener;
+import at.or.reder.dcc.LocomotiveTachoEvent;
+import at.or.reder.dcc.LocomotiveTachoEventListener;
+import at.or.reder.zcan20.LocoSpeed;
 import at.or.reder.zcan20.ZCAN;
-import at.or.reder.zcan20.packet.Packet;
-import java.util.function.Predicate;
+import eu.hansolo.steelseries.tools.Section;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -24,15 +32,50 @@ import javax.swing.JPanel;
 public class LocomotivePanel extends JPanel
 {
 
+  private static final String PROP_FUNC = "dcc.func";
   private Locomotive loc;
-  private final PacketListener packetListener = this::onPacket;
-  private Predicate<Packet> packetMatcher;
   private final LocomotiveFuncEventListener locoFuncListener = this::onLocoFunc;
   private final LocomotiveSpeedEventListener locoSpeedListener = this::onLocoSpeed;
+  private final LocomotiveTachoEventListener locoTachoListener = this::onLocoTacho;
+  private int direction;
+  private int realDirection;
+  private final List<JToggleButton> funcButtons = new ArrayList<>(28);
 
   public LocomotivePanel()
   {
     initComponents();
+    for (int i = 0; i < ZCAN.NUM_FUNCTION; ++i) {
+      JToggleButton b = new JToggleButton("F " + i);
+      b.putClientProperty(PROP_FUNC,
+                          i);
+      b.addActionListener(this::onFuncClicked);
+      jPanel1.add(b);
+      funcButtons.add(b);
+    }
+    tacho.setMinValue(-70);
+    tacho.setMaxValue(70);
+    tacho.setSections(new Section(-80,
+                                  -61,
+                                  Color.RED),
+                      new Section(61,
+                                  80,
+                                  Color.RED));
+    tacho.setSectionsVisible(true);
+  }
+
+  private void onFuncClicked(ActionEvent evt)
+  {
+    JToggleButton btn = (JToggleButton) evt.getSource();
+    Object tmp = btn.getClientProperty(PROP_FUNC);
+    if (tmp instanceof Number && loc != null) {
+      int i = ((Number) tmp).intValue();
+      try {
+        loc.setFunction(i,
+                        btn.isSelected());
+      } catch (IOException ex) {
+        Exceptions.printStackTrace(ex);
+      }
+    }
   }
 
   public Locomotive getLoc()
@@ -54,12 +97,7 @@ public class LocomotivePanel extends JPanel
     if (loc != null) {
       loc.removeLocomotiveFuncEventListener(locoFuncListener);
       loc.removeLocomotiveSpeedEventListener(locoSpeedListener);
-      Controller controller = loc.getController();
-      ZCAN mx10 = controller.getLookup().lookup(ZCAN.class);
-      if (mx10 != null && packetMatcher != null) {
-        mx10.removePacketListener(packetMatcher,
-                                  packetListener);
-      }
+      loc.removeLocomotiveTachoEventListener(locoTachoListener);
     }
   }
 
@@ -68,31 +106,43 @@ public class LocomotivePanel extends JPanel
     if (loc != null) {
       loc.addLocomotiveFuncEventListener(locoFuncListener);
       loc.addLocomotiveSpeedEventListener(locoSpeedListener);
-      ZCAN mx10 = loc.getController().getLookup().lookup(ZCAN.class);
-      if (mx10 != null) {
-        packetMatcher = mx10.getLocoDecoderPacketMatcher(loc.getAddress());
-        mx10.addPacketListener(packetMatcher,
-                               packetListener);
-      } else {
-        packetMatcher = null;
+      loc.addLocomotiveTachoEventListener(locoTachoListener);
+      try {
+        loc.scanSpeed();
+        loc.scanFunctions();
+      } catch (IOException ex) {
+        Exceptions.printStackTrace(ex);
       }
     }
   }
 
   private void onLocoFunc(LocomotiveFuncEvent evt)
   {
-
+    funcButtons.get(evt.getFuncNr()).setSelected(evt.getFuncValue() != 0);
   }
 
   private void onLocoSpeed(LocomotiveSpeedEvent evt)
   {
-
+    double tmp = evt.getSpeed() * 70d / 1008d;
+    direction = evt.getDirection() == Direction.FORWARD ? 1 : -1;
+    tacho.setThreshold(tmp * direction);
+    LocoSpeed ls = evt.getLookup().lookup(LocoSpeed.class);
+    if (ls != null) {
+      System.err.println(ls.getDivisor());
+    }
   }
 
-  private void onPacket(ZCAN zcan,
-                        Packet packet)
+  private void onLocoTacho(LocomotiveTachoEvent evt)
   {
-    System.err.println(packet.toString());
+    if (evt.isSpeedSet()) {
+      tacho.setValue(evt.getSpeed() * realDirection);
+      boolean overSpeed = evt.getSpeed() > 60;
+      tacho.setUserLedBlinking(overSpeed);
+      tacho.setUserLedOn(overSpeed);
+      tacho.setLcdValue(evt.getSpeed());
+    } else if (evt.isDirectionSet()) {
+      realDirection = evt.getDirection() == Direction.FORWARD ? 1 : -1;
+    }
   }
 
   /**
@@ -104,18 +154,48 @@ public class LocomotivePanel extends JPanel
   private void initComponents()
   {
 
+    jPanel1 = new javax.swing.JPanel();
+
+    tacho.setBackgroundColor(eu.hansolo.steelseries.tools.BackgroundColor.WHITE);
+    tacho.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.ANTHRACITE);
+    tacho.setLcdUnitString(org.openide.util.NbBundle.getMessage(LocomotivePanel.class, "LocomotivePanel.tacho.lcdUnitString")); // NOI18N
+    tacho.setLedVisible(false);
+    tacho.setMinValue(-70.0);
+    tacho.setThreshold(0.0);
+    tacho.setThresholdType(eu.hansolo.steelseries.tools.ThresholdType.ARROW);
+    tacho.setThresholdVisible(true);
+    tacho.setTitle(org.openide.util.NbBundle.getMessage(LocomotivePanel.class, "LocomotivePanel.tacho.title")); // NOI18N
+    tacho.setUnitString(org.openide.util.NbBundle.getMessage(LocomotivePanel.class, "LocomotivePanel.tacho.unitString")); // NOI18N
+    tacho.setUserLedVisible(true);
+
+    jPanel1.setLayout(new java.awt.GridLayout(4, 7, 5, 5));
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 400, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(tacho, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 300, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addGroup(layout.createSequentialGroup()
+            .addGap(6, 6, 6)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+          .addComponent(tacho, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addGap(222, 222, 222))
     );
   }// </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JPanel jPanel1;
+  private final eu.hansolo.steelseries.gauges.Radial tacho = new eu.hansolo.steelseries.gauges.Radial();
   // End of variables declaration//GEN-END:variables
 }

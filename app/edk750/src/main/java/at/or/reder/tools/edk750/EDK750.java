@@ -10,9 +10,11 @@ import at.or.reder.controller.PSControllerEvent;
 import at.or.reder.controller.PSControllerEventListener;
 import at.or.reder.controller.PSControllerEventType;
 import at.or.reder.controller.PSDirection;
+import at.or.reder.dcc.Controller;
 import at.or.reder.dcc.Direction;
 import at.or.reder.dcc.Locomotive;
 import at.or.reder.dcc.LocomotiveFuncEvent;
+import at.or.reder.dcc.LocomotiveFuncEventListener;
 import at.or.reder.dcc.PowerMode;
 import at.or.reder.dcc.PowerPort;
 import java.awt.Point;
@@ -23,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,14 +33,17 @@ public class EDK750
 {
 
   public static final Logger LOGGER = Logger.getLogger("at.or.reder.edk750");
-  protected final Locomotive edk;
   private final PropertyChangeListener controllerListener = this::onControllerPropertyChange;
   private final PSControllerEventListener controllerEventListener = this::onControllerEvent;
+  private final LocomotiveFuncEventListener funcListener = this::onFunc;
   protected final EDKAxisController winch;
   protected final EDKAxisController beam;
   protected final EDKAxisController beamShift;
 
   private PSController controller;
+  protected Controller dccController;
+  private int address;
+  protected Locomotive _edk;
   private String controllerId;
   private int lastWinch;
   private int lastRotate;
@@ -47,22 +53,25 @@ public class EDK750
   private long f1On = -1;
   private final Map<String, String> config;
 
-  public EDK750(Locomotive edk,
+  public EDK750(int address,
+                Controller dcc,
                 PSController controller,
-                Map<String, String> config)
+                Map<String, String> config) throws IOException
   {
-    this.edk = edk;
-    edk.addLocomotiveFuncEventListener(this::onFunc);
-    winch = EDKAxisController.getWinch(edk);
-    beam = EDKAxisController.getBeam(edk);
-    beamShift = EDKAxisController.getBeamShift(edk);
+    this.address = address;
+    winch = EDKAxisController.getWinch(null);
+    beam = EDKAxisController.getBeam(null);
+    beamShift = EDKAxisController.getBeamShift(null);
+    setDCCController(dcc);
     if (config != null) {
       this.config = Collections.unmodifiableMap(new HashMap<>(config));
     } else {
       this.config = Collections.emptyMap();
     }
     setController(controller);
-    setStarted(edk.isFunction(1));
+    if (_edk != null) {
+      setStarted(_edk.isFunction(1));
+    }
   }
 
   public boolean isAxisLock()
@@ -87,23 +96,33 @@ public class EDK750
 
   public final boolean isStarted()
   {
+    Locomotive edk = getLocomotive();
     long f1;
     synchronized (this) {
       f1 = f1On;
     }
-    boolean result = !isStrictMode() || (edk.isFunction(1) && f1 != -1 && (System.currentTimeMillis() - f1) > 2000);
+    boolean result = edk != null && (!isStrictMode()
+                                     || (edk.isFunction(1) && f1 != -1 && (System.currentTimeMillis() - f1) > 2000));
     LOGGER.log(Level.FINEST,
                () -> "Engine is " + (result ? "started"
                                      : "not running"));
     return result;
   }
 
+  private Locomotive getLocomotive()
+  {
+    synchronized (this) {
+      return _edk;
+    }
+  }
+
   public final void setStarted(boolean s)
   {
-    if (isStarted() != s) {
+    Locomotive e = getLocomotive();
+    if (e != null && isStarted() != s) {
       try {
-        edk.setFunction(1,
-                        s);
+        e.setFunction(1,
+                      s);
       } catch (IOException ex) {
         processException("setStarted",
                          ex);
@@ -134,6 +153,69 @@ public class EDK750
   public final String getControllerId()
   {
     return controllerId;
+  }
+
+  public final synchronized Controller getDCCController()
+  {
+    return dccController;
+  }
+
+  public final synchronized void setDCCController(Controller dcc) throws IOException
+  {
+    if (dccController != dcc) {
+      disconnectDCC();
+      this.dccController = dcc;
+      connectDCC();
+    }
+  }
+
+  private void disconnectDCC()
+  {
+    assert Thread.holdsLock(this);
+    if (_edk != null) {
+      _edk.removeLocomotiveFuncEventListener(funcListener);
+    }
+    if (winch != null) {
+      winch.setLoc(null);
+    }
+    if (beam != null) {
+      beam.setLoc(null);
+    }
+    if (beamShift != null) {
+      beamShift.setLoc(null);
+    }
+    _edk = null;
+    dccController = null;
+  }
+
+  private void connectDCC() throws IOException
+  {
+    assert Thread.holdsLock(this);
+    if (dccController != null) {
+      try {
+        _edk = dccController.getLocomotive(address);
+        winch.setLoc(_edk);
+        beam.setLoc(_edk);
+        beamShift.setLoc(_edk);
+      } catch (TimeoutException ex) {
+        throw new IOException(ex);
+      }
+      _edk.addLocomotiveFuncEventListener(funcListener);
+    }
+  }
+
+  public int getAddress()
+  {
+    return address;
+  }
+
+  public void setAddress(int address) throws IOException
+  {
+    if (this.address != address) {
+      this.address = address;
+      disconnectDCC();
+      connectDCC();
+    }
   }
 
   public final void setControllerId(String controllerId)
@@ -235,6 +317,10 @@ public class EDK750
 
   private void onControllerPropertyChange(PropertyChangeEvent evt)
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     boolean em = isInEmergencyMode();
     try {
       switch (evt.getPropertyName()) {
@@ -384,6 +470,10 @@ public class EDK750
 
   protected void processRight(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     Point p = applyAxisLock(controller.getRight());
     float fmx = controller.getRangeMax(PSController.Axis.RX);
     if (lastWinch != p.y) {
@@ -404,6 +494,10 @@ public class EDK750
 
   protected void processZAxis(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     int levelL = controller.getL2Level();
     int levelR = controller.getR2Level();
     if (levelL != 0 && levelR != 0) {
@@ -420,6 +514,10 @@ public class EDK750
 
   protected void processL1(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     boolean en = (Boolean) evt.getNewValue();
     edk.setFunction(15,
                     en);
@@ -427,12 +525,20 @@ public class EDK750
 
   protected void processR1(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     edk.setFunction(13,
                     controller.isR1Pressed());
   }
 
   protected void processDirection(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     PSDirection dir = (PSDirection) evt.getNewValue();
     if (dir.isNorth()) {
       edk.toggleFunction(16);
@@ -455,6 +561,10 @@ public class EDK750
 
   protected void processA(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     boolean en = (Boolean) evt.getNewValue();
     if (en) {
       edk.toggleFunction(14);
@@ -463,6 +573,10 @@ public class EDK750
 
   protected void processB(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     boolean en = (Boolean) evt.getNewValue();
     if (en) {
       edk.toggleFunction(1);
@@ -471,6 +585,10 @@ public class EDK750
 
   protected void processX(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     boolean en = (Boolean) evt.getNewValue();
     if (en) {
       edk.toggleFunction(10);
@@ -479,6 +597,10 @@ public class EDK750
 
   protected void processY(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     boolean en = (Boolean) evt.getNewValue();
     if (en) {
       edk.toggleFunction(0);
@@ -487,12 +609,20 @@ public class EDK750
 
   protected void processMode(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     edk.setFunction(12,
                     controller.isModePressed());
   }
 
   protected void processSelect(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     if (controller.isSelectPressed()) {
       edk.getController().setPowerMode(PowerPort.OUT_1,
                                        PowerMode.ON);
@@ -505,15 +635,20 @@ public class EDK750
 
   protected void processStart(PropertyChangeEvent evt) throws IOException
   {
+    Locomotive edk = getLocomotive();
+    if (edk == null) {
+      return;
+    }
     edk.toggleFunction(11);
   }
 
   protected void processException(String context,
                                   Throwable th)
   {
+    Locomotive edk = getLocomotive();
     LOGGER.log(Level.SEVERE,
                th,
-               () -> context + ":" + edk.toString());
+               () -> context + ":" + edk != null ? edk.toString() : "not connected");
   }
 
 }

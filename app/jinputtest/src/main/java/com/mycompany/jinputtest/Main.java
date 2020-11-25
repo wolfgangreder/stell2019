@@ -95,20 +95,22 @@ public class Main extends javax.swing.JFrame
     factory.addPSControllerEventListener(this::onPSController);
     factory.startScanning();
     mx10 = connect2MX10();
-    mx10.addLocomotiveSpeedEventListener(2062,
-                                         this::onLocoSpeed);
-    mx10.addLocomotiveFuncEventListener(2062,
-                                        this::onLocoFunc);
-    mx10.addLocomotiveTachoEventListener(2062,
-                                         this::onLocoTacho);
+//    mx10.addLocomotiveSpeedEventListener(2062,
+//                                         this::onLocoSpeed);
+//    mx10.addLocomotiveFuncEventListener(2062,
+//                                        this::onLocoFunc);
+//    mx10.addLocomotiveTachoEventListener(2062,
+//                                         this::onLocoTacho);
     ZCAN zimo = mx10.getLookup().lookup(ZCAN.class);
 //    zimo.addPacketListener(createSimplePacketMatcher(2062),
 //                           this::onPacket);
-    Locomotive edkLoc = mx10.getLocomotive(750);
     Map<String, String> config = new HashMap<>();
-    edk = new EDK750(edkLoc,
+    edk = new EDK750(750,
+                     mx10,
                      controller,
                      config);
+    Locomotive l2 = mx10.getLocomotive(2062);
+    loc2062.setLoc(l2);
   }
 
   private Predicate<Packet> createSimplePacketMatcher(int address)
@@ -134,7 +136,9 @@ public class Main extends javax.swing.JFrame
     try {
       ControllerProvider mx10Provider = findMX10Provider();
       result = mx10Provider.createController(Map.of(MX10PropertiesSet.PROP_HOST,
-                                                    "192.168.1.145"));
+                                                    "192.168.1.145",
+                                                    MX10PropertiesSet.PROP_APPNAME,
+                                                    "Wolfgang Reder"));
       result.open();
     } catch (IllegalArgumentException | IOException ex) {
       Exceptions.printStackTrace(ex);
@@ -608,6 +612,7 @@ public class Main extends javax.swing.JFrame
     );
 
     jTabbedPane1.addTab("PS Controller", jPanel3);
+    jTabbedPane1.addTab("2062", loc2062);
 
     getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
@@ -825,6 +830,7 @@ public class Main extends javax.swing.JFrame
   private javax.swing.JPanel jPanel3;
   private javax.swing.JTabbedPane jTabbedPane1;
   private final com.mycompany.jinputtest.DualAxisPanel leftCross = new com.mycompany.jinputtest.DualAxisPanel();
+  private final com.mycompany.jinputtest.LocomotivePanel loc2062 = new com.mycompany.jinputtest.LocomotivePanel();
   private javax.swing.JToggleButton povE;
   private javax.swing.JToggleButton povN;
   private javax.swing.JToggleButton povS;
