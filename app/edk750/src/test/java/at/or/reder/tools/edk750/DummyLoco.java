@@ -9,6 +9,7 @@ import at.or.reder.dcc.Controller;
 import at.or.reder.dcc.Direction;
 import at.or.reder.dcc.Locomotive;
 import at.or.reder.zcan20.ZCAN;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.SortedMap;
@@ -122,6 +123,18 @@ public class DummyLoco implements Locomotive
 
   @Override
   public void clearCV()
+  {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void scanSpeed() throws IOException
+  {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void scanFunctions() throws IOException
   {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }

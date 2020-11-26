@@ -17,6 +17,7 @@ import at.or.reder.dcc.LocomotiveFuncEvent;
 import at.or.reder.dcc.LocomotiveSpeedEvent;
 import at.or.reder.dcc.LocomotiveTachoEvent;
 import at.or.reder.tools.edk750.EDK750;
+import at.or.reder.tools.edk750.EDK750Factory;
 import at.or.reder.zcan20.MX10PropertiesSet;
 import at.or.reder.zcan20.ZCAN;
 import at.or.reder.zcan20.impl.MX10ControllerProvider;
@@ -105,10 +106,10 @@ public class Main extends javax.swing.JFrame
 //    zimo.addPacketListener(createSimplePacketMatcher(2062),
 //                           this::onPacket);
     Map<String, String> config = new HashMap<>();
-    edk = new EDK750(750,
-                     mx10,
-                     controller,
-                     config);
+    edk = Lookup.getDefault().lookup(EDK750Factory.class).createInstance(750,
+                                                                         mx10,
+                                                                         controller,
+                                                                         config);
     Locomotive l2 = mx10.getLocomotive(2062);
     loc2062.setLoc(l2);
   }
@@ -263,7 +264,7 @@ public class Main extends javax.swing.JFrame
     try {
       factory.stopScanning();
       controller = c;
-      edk.setController(controller);
+      edk.setPSController(controller);
       edk.setControllerId(controller.getId());
       controller.addPropertyChangeListener(controllerChangeListener);
       slRX.setValue((int) (controller.getDeadRange(Axis.RX) * 100));
@@ -281,7 +282,7 @@ public class Main extends javax.swing.JFrame
   private void disconnect()
   {
     if (controller != null) {
-      edk.setController(null);
+      edk.setPSController(null);
       controller.removePropertyChangeListener(controllerChangeListener);
     }
     controller = null;

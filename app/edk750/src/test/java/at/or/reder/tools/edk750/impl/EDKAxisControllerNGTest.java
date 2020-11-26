@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.or.reder.tools.edk750;
+package at.or.reder.tools.edk750.impl;
 
 import at.or.reder.dcc.Direction;
+import at.or.reder.tools.edk750.DummyLoco;
 import at.or.reder.zcan20.ZCAN;
 import java.io.IOException;
 import static org.testng.AssertJUnit.assertEquals;

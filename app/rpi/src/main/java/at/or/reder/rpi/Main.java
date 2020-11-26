@@ -20,6 +20,7 @@ import at.or.reder.dcc.ControllerProvider;
 import at.or.reder.dcc.LinkState;
 import at.or.reder.dcc.LinkStateListener;
 import at.or.reder.dcc.PropertySet;
+import at.or.reder.zcan20.MX10PropertiesSet;
 import java.awt.CardLayout;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -30,9 +31,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -53,6 +56,8 @@ public final class Main extends JFrame implements ContainerListener
   private static final String LAYOUT_DASHBOARD = "dashboard";
   private static final String LAYOUT_POWER = "power";
   private static final String LAYOUT_DRIVE = "drive";
+  private static final String LAYOUT_EDK = "edk";
+
   private static final String LAYOUT_SWITCH = "switch";
   private static final String LAYOUT_SETTINGS = "settings";
   private static final String LAYOUT_PROGRAM = "program";
@@ -66,6 +71,8 @@ public final class Main extends JFrame implements ContainerListener
     setUndecorated(undecorated);
     cardPanel.addContainerListener(this);
     initComponents();
+    btEDK.putClientProperty(PROP_LAYOUT,
+                            LAYOUT_EDK);
     cardLayout = (CardLayout) cardPanel.getLayout();
     setBounds(0,
               0,
@@ -84,6 +91,39 @@ public final class Main extends JFrame implements ContainerListener
                                              5000,
                                              TimeUnit.MILLISECONDS);
     }
+  }
+
+  private String getHostName()
+  {
+    String os = System.getProperty("os.name").toLowerCase();
+    String result = null;
+    if (os.contains("win")) {
+      result = System.getenv("COMPUTERNAME");
+      if (result == null || result.isBlank()) {
+        result = execReadToString("hostname");
+      }
+    } else if (os.contains("nix") || os.contains("nux") || os.contains("mac os x")) {
+      result = System.getenv("HOSTNAME");
+      if (result == null || result.isBlank()) {
+        result = execReadToString("hostname");
+      }
+      if (result == null || result.isBlank()) {
+        result = execReadToString("cat /etc/hostname");
+      }
+    }
+    return result;
+  }
+
+  private static String execReadToString(String execCommand)
+  {
+    try (Scanner s = new Scanner(Runtime.getRuntime().exec(execCommand).getInputStream()).useDelimiter("\\A")) {
+      return s.hasNext() ? s.next() : "";
+    } catch (IOException ex) {
+      LOGGER.log(Level.WARNING,
+                 ex,
+                 () -> "Cannot execute " + execCommand);
+    }
+    return null;
   }
 
   private void tryReconnect()
@@ -119,6 +159,8 @@ public final class Main extends JFrame implements ContainerListener
 //                  "230.1.1.1");
 //        props.put(MX10PropertiesSet.PROP_OUTPORT,
 //                  "14373");
+        props.put(MX10PropertiesSet.PROP_APPNAME,
+                  getHostName());
         device = provider.createController(props);
         for (DevicePanel p : devicePanels) {
           p.setDevice(device);
@@ -194,6 +236,7 @@ public final class Main extends JFrame implements ContainerListener
     switchPanel1 = new at.or.reder.rpi.SwitchPanel();
     programPanel1 = new at.or.reder.rpi.ProgramPanel();
     settigsPanel1 = new at.or.reder.rpi.SettigsPanel();
+    eDKPanel1 = new at.or.reder.rpi.edk.EDKPanel();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter()
@@ -248,6 +291,18 @@ public final class Main extends JFrame implements ContainerListener
     });
     jPanel1.add(btDrive);
 
+    buttonGroup1.add(btEDK);
+    btEDK.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+    btEDK.setText("EDK 750");
+    btEDK.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        btEDKActionPerformed(evt);
+      }
+    });
+    jPanel1.add(btEDK);
+
     buttonGroup1.add(btSwitch);
     btSwitch.putClientProperty(PROP_LAYOUT,LAYOUT_SWITCH);
     btSwitch.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
@@ -298,6 +353,7 @@ public final class Main extends JFrame implements ContainerListener
     cardPanel.add(switchPanel1, "switch");
     cardPanel.add(programPanel1, "program");
     cardPanel.add(settigsPanel1, "settings");
+    cardPanel.add(eDKPanel1, "edk");
 
     getContentPane().add(cardPanel, java.awt.BorderLayout.CENTER);
 
@@ -338,6 +394,11 @@ public final class Main extends JFrame implements ContainerListener
   {//GEN-HEADEREND:event_formWindowClosing
     disconnect();
   }//GEN-LAST:event_formWindowClosing
+
+  private void btEDKActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btEDKActionPerformed
+  {//GEN-HEADEREND:event_btEDKActionPerformed
+    showSelectedPanel((JComponent) evt.getSource());
+  }//GEN-LAST:event_btEDKActionPerformed
 
   /**
    * @param args the command line arguments
@@ -416,6 +477,7 @@ public final class Main extends JFrame implements ContainerListener
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private final javax.swing.JToggleButton btDashboard = new javax.swing.JToggleButton();
   private final javax.swing.JToggleButton btDrive = new javax.swing.JToggleButton();
+  private final javax.swing.JToggleButton btEDK = new javax.swing.JToggleButton();
   private final javax.swing.JToggleButton btEnergy = new javax.swing.JToggleButton();
   private final javax.swing.JToggleButton btProgram = new javax.swing.JToggleButton();
   private final javax.swing.JToggleButton btSettings = new javax.swing.JToggleButton();
@@ -424,6 +486,7 @@ public final class Main extends JFrame implements ContainerListener
   private final javax.swing.JPanel cardPanel = new javax.swing.JPanel();
   private at.or.reder.rpi.DashboardPanel dashboardPanel1;
   private at.or.reder.rpi.DrivePanel drivePanel1;
+  private at.or.reder.rpi.edk.EDKPanel eDKPanel1;
   private at.or.reder.rpi.EnergyPanel energyPanel1;
   private javax.swing.JPanel jPanel1;
   private at.or.reder.rpi.ProgramPanel programPanel1;
