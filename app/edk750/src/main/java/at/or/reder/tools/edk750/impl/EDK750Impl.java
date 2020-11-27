@@ -62,7 +62,7 @@ class EDK750Impl implements EDK750
   private int lastRotate;
   private boolean axisLock = true;
   private boolean strictMode = true;
-  private long emergencyMode = -1;
+  private boolean emergencyMode = false;
   private boolean f1On = false;
   private final Map<String, String> config;
 
@@ -463,13 +463,13 @@ class EDK750Impl implements EDK750
                                   boolean stopEngine)
   {
     boolean wasInEm = isInEmergencyMode();
-    if (en) {
-      emergencyMode = System.currentTimeMillis();
-      if (stopEngine) {
-        setStarted(false);
+    synchronized (this) {
+      emergencyMode = en;
+      if (en) {
+        if (stopEngine) {
+          setStarted(false);
+        }
       }
-    } else {
-      emergencyMode = -1;
     }
     boolean isInEm = isInEmergencyMode();
     if (wasInEm != isInEm) {
@@ -484,12 +484,13 @@ class EDK750Impl implements EDK750
   @Override
   public boolean isInEmergencyMode()
   {
-    long delta = (System.currentTimeMillis() - emergencyMode);
-    boolean result = emergencyMode != -1 && delta < 5000;
+    boolean result;
+    synchronized (this) {
+      result = emergencyMode;
+    }
     LOGGER.log(Level.FINEST,
-               () -> MessageFormat.format("Emergency mode is {0} ({1} ms))",
-                                          new Object[]{result ? "on" : "off",
-                                                       result ? delta : -1}));
+               () -> MessageFormat.format("Emergency mode is {0}",
+                                          new Object[]{result ? "on" : "off"}));
     return result;
   }
 
@@ -671,8 +672,9 @@ class EDK750Impl implements EDK750
     if (edk == null) {
       return;
     }
-    edk.setFunction(12,
-                    controller.isModePressed());
+    if (controller.isModePressed()) {
+      edk.toggleFunction(12);
+    }
   }
 
   protected void processSelect(PropertyChangeEvent evt) throws IOException
