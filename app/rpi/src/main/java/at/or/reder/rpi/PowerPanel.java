@@ -20,16 +20,11 @@ import at.or.reder.dcc.PowerEvent;
 import at.or.reder.dcc.PowerEventListener;
 import at.or.reder.dcc.PowerMode;
 import at.or.reder.dcc.PowerPort;
-import at.or.reder.zcan20.packet.PowerInfo;
 import eu.hansolo.steelseries.tools.Section;
 import java.awt.Color;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle.Messages;
 
-/**
- *
- * @author Wolfgang Reder
- */
 @Messages({"PowerPanel_PORT_OUT_1=Schiene 1",
            "PowerPanel_PORT_OUT_2=Schiene 2",
            "PowerPanel_UNKNOWN=Eingang"})
@@ -44,7 +39,7 @@ public final class PowerPanel extends DevicePanel
   private PowerMode mode;
   private final PowerEventListener packetListener = this::onPacket;
   private boolean listenerConnected;
-  private PowerPort port;
+  private PowerPort _port;
 
   public PowerPanel()
   {
@@ -73,66 +68,58 @@ public final class PowerPanel extends DevicePanel
 
   private void onPacket(PowerEvent event)
   {
-    if (port != null) {
-      PowerInfo power = event.getLookup().lookup(PowerInfo.class);
-      if (power != null) {
-        SwingUtilities.invokeLater(() -> assignPowerInfo(power));
-      } else {
-        SwingUtilities.invokeLater(() -> assignPowerState(event.getPort(),
-                                                          event.getMode()));
-      }
+    PowerPort port = getPort();
+    if (event.getPort() == port) {
+      SwingUtilities.invokeLater(() -> assignPower(event));
     }
   }
 
-  private void assignPowerInfo(PowerInfo power)
+  private void assignPower(PowerEvent evt)
   {
-    if (port != PowerPort.UNKNOWN) {
-      setCurrent(power.getOutputCurrent(port));
-      setVoltage(power.getOutputVoltage(port));
-    } else {
-      setCurrent(power.getInputCurrent());
-      setVoltage(power.getInputVoltage());
-    }
+    _assignPowerInfo(evt);
+    setPowerMode(evt.getMode());
   }
 
-  private void assignPowerState(PowerPort port,
-                                PowerMode mode)
+  private void _assignPowerInfo(PowerEvent power)
   {
-    if (port == this.port) {
-      setPowerMode(mode);
-    }
+    setCurrent(power.getCurrent());
+    setVoltage(power.getVoltage());
   }
 
   public PowerPort getPort()
   {
-    return port;
+    synchronized (this) {
+      return _port;
+    }
   }
 
   public void setPort(PowerPort port)
   {
-    if (this.port != port) {
-      this.port = port;
-      switch (port) {
-        case OUT_1:
-          lbCaption.setText(Bundle.PowerPanel_PORT_OUT_1());
-          setPowerMode(PowerMode.PENDING);
-          connectListener();
-          break;
-        case OUT_2:
-          lbCaption.setText(Bundle.PowerPanel_PORT_OUT_2());
-          setPowerMode(PowerMode.PENDING);
-          connectListener();
-          break;
-        case UNKNOWN:
-          lbCaption.setText(Bundle.PowerPanel_UNKNOWN());
-          setPowerMode(PowerMode.ON);
-          connectListener();
-          break;
-        default:
-          this.port = null;
-          lbCaption.setText(null);
-          setPowerMode(PowerMode.PENDING);
-          disconnectListener();
+    synchronized (this) {
+      if (this._port != port) {
+        this._port = port;
+        switch (port) {
+          case OUT_1:
+            lbCaption.setText(Bundle.PowerPanel_PORT_OUT_1());
+            setPowerMode(PowerMode.PENDING);
+            connectListener();
+            break;
+          case OUT_2:
+            lbCaption.setText(Bundle.PowerPanel_PORT_OUT_2());
+            setPowerMode(PowerMode.PENDING);
+            connectListener();
+            break;
+          case UNKNOWN:
+            lbCaption.setText(Bundle.PowerPanel_UNKNOWN());
+            setPowerMode(PowerMode.ON);
+            connectListener();
+            break;
+          default:
+            this._port = null;
+            lbCaption.setText(null);
+            setPowerMode(PowerMode.PENDING);
+            disconnectListener();
+        }
       }
     }
   }

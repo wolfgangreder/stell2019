@@ -84,7 +84,7 @@ public class PowerControlPanel extends DevicePanel
   {
     this.powerMode = mode;
     enableButton(btOff,
-                 mode != PowerMode.OFF,
+                 mode != PowerMode.OFF && mode != PowerMode.OVERCURRENT,
                  red,
                  gray);
     enableButton(btSSPEm,
