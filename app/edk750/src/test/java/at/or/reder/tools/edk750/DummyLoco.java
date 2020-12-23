@@ -6,9 +6,9 @@
 package at.or.reder.tools.edk750;
 
 import at.or.reder.dcc.Controller;
+import at.or.reder.dcc.DCCConstants;
 import at.or.reder.dcc.Direction;
 import at.or.reder.dcc.Locomotive;
-import at.or.reder.zcan20.ZCAN;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -103,7 +103,7 @@ public class DummyLoco implements Locomotive
                                         speed != null ? speed : 0,
                                         dir != null && dir == Direction.REVERSE ? '<' : '>'));
     builder.append(' ');
-    for (int i = 0; i < ZCAN.NUM_FUNCTION; ++i) {
+    for (int i = 0; i < DCCConstants.NUM_FUNCTION; ++i) {
       Integer v = functions.get(i);
       if (v != null) {
         builder.append(v != 0 ? '1' : '0');

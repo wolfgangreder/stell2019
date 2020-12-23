@@ -5,9 +5,9 @@
  */
 package at.or.reder.tools.edk750.impl;
 
+import at.or.reder.dcc.DCCConstants;
 import at.or.reder.dcc.Direction;
 import at.or.reder.tools.edk750.DummyLoco;
-import at.or.reder.zcan20.ZCAN;
 import java.io.IOException;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.BeforeClass;
@@ -39,7 +39,7 @@ public class EDKAxisControllerNGTest
                              boolean sl2)
   {
     StringBuilder builder = new StringBuilder("0000> ");
-    for (int i = 0; i < ZCAN.NUM_FUNCTION; ++i) {
+    for (int i = 0; i < DCCConstants.NUM_FUNCTION; ++i) {
       if (i == f1) {
         builder.append(s1 ? '1' : '0');
       } else if (i == f2) {
